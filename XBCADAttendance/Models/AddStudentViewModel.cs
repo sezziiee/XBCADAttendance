@@ -7,12 +7,8 @@
         public string Username { get; set;}
         public string Password { get; set;}
 
-        public AddStudentViewModel(string UserID, string StudentNo, string Username, string Password)
+        public AddStudentViewModel()
         {
-            this.UserID = UserID;
-            this.StudentNo = StudentNo;
-            this.Username = Username;
-            this.Password = Password;
         }
     }
 }

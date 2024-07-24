@@ -20,34 +20,38 @@
             return instance;
         }
 
-        public string AddStudent(string UserID, string studentNo, string Username, string Password)
+        public string AddStudent(string userID, string studentNo, string userName, string passWord)
         {
-            try
+            //userID = "TestUser";
+            if (userID != null && studentNo != null && userName != null && passWord != null)
             {
-                TblUser newUser = new TblUser
+                try
                 {
-                    UserId = UserID,
-                    UserName = Username,
-                    Password = Password
-                    
-                };
+                    TblUser newUser = new TblUser
+                    {
+                        UserId = userID,
+                        UserName = userName,
+                        Password = passWord
 
-                TblStudent newStudent = new TblStudent
+                    };
+
+                    TblStudent newStudent = new TblStudent
+                    {
+                        StudentNo = studentNo,
+                        UserId = userID,
+                    };
+
+                    context.TblUsers.Add(newUser);
+                    context.TblStudents.Add(newStudent);
+                    context.SaveChanges();
+
+                    return "Success";
+
+                } catch (Exception e)
                 {
-                    StudentNo = studentNo,
-                    UserId = UserID,
-                };
-
-                context.TblUsers.Add(newUser);
-                context.TblStudents.Add(newStudent);
-                context.SaveChanges();
-
-                return "Success";
-            
-            }catch (Exception e)
-            {
-                return e.ToString();
-            }
+                    return e.ToString();
+                }
+            } else return "Please Fill in all fields";
         }
     }
 }
