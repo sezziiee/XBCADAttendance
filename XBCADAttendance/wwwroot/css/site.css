@@ -177,3 +177,111 @@ body {
         text-decoration: none;
         color: #13829e;
     }
+
+    /*-SideBar 2.0-*/
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.custom-top-bar {
+    width: 100%;
+    background-color: #13829e;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.app-name h1 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.profile-info {
+    display: flex;
+    align-items: center;
+}
+
+.profile-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.custom-container {
+    display: flex;
+    height: calc(100vh - 60px); /* Adjust height based on top bar height */
+}
+
+.custom-sidebar {
+    width: 250px;
+    background-color: #333;
+    color: white;
+    height: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+    .custom-sidebar img {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .custom-nav-links {
+    list-style-type: none;
+    padding: 0;
+}
+
+    .custom-nav-links li {
+        margin: 15px 0;
+    }
+
+    .custom-nav-links a {
+        color: white;
+        text-decoration: none;
+    }
+
+.custom-content {
+    padding: 20px;
+    flex-grow: 1;
+    background-color: #f4f4f4;
+    overflow-y: auto;
+}
+
+    .custom-content form {
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .custom-content .form-text {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+
+    .custom-content button {
+        padding: 10px 20px;
+        background-color: #13829e;
+        border: none;
+        color: white;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+        .custom-content button:hover {
+            background-color: #0f6c7a;
+        }
+
