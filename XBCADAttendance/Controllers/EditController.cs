@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using XBCADAttendance.Models;
 
 namespace XBCADAttendance.Controllers
 {
@@ -9,8 +10,9 @@ namespace XBCADAttendance.Controllers
             return View();
         }
 
-        public IActionResult Update()
+        public IActionResult Update(OverrideModel model)
         {
+            DataAccess.GetContext().Update
             return View();
         }
 
