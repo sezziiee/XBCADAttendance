@@ -19,6 +19,8 @@ namespace XBCADAttendance.Controllers
         [HttpPost]
         public IActionResult AddStudent(AddStudentViewModel model)
         {
+            DataAccess.GetContext().AddStudent(model.UserID, model.StudentNo, model.Username, model.Password);
+
             return View();
         }
 
