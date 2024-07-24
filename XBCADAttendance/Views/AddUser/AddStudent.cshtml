@@ -1,0 +1,9 @@
+﻿@model AddStudentViewModel;
+@{
+    <form>
+        Student Number: <br /><input type="text" asp-for=@Model.StudentNo class="form-text"/><br />
+        Username: <br /><input type="text" asp-for=@Model.Username class="form-text" /><br />
+        Password: <br /><input type="password" asp-for=@Model.Password class="form-text" /><br /><br />
+        <button>Add!</button>
+    </form>
+}
