@@ -4,19 +4,6 @@
     ViewBag.Title = "Add Student";
 }
 
-<form asp-action="AddStudent" method="post">
-    Student Number: <br /><input type="text" asp-for=@Model.StudentNo class="form-text" /><br />
-    Username: <br /><input type="text" asp-for=@Model.Username class="form-text" /><br />
-    Password: <br /><input type="password" asp-for=@Model.Password class="form-text" /><br /><br />
-    <button>Add!</button>
-</form>
-
-<!-- Display the message -->
-@if (!string.IsNullOrEmpty(ViewBag.Message))
-{
-    <div class="alert alert-info">@ViewBag.Message</div>
-}
-
 <div class="custom-top-bar">
     <div class="app-name">
         <h1>Lecturer Overview</h1>
@@ -30,12 +17,22 @@
 <div class="custom-container">
     @await Html.PartialAsync("_DashSidebarPartial")
     <div class="custom-content">
-        <form>
-            Student Number: <br /><input type="text" asp-for="StudentNo" class="form-text" /><br />
-            Username: <br /><input type="text" asp-for="Username" class="form-text" /><br />
-            Password: <br /><input type="password" asp-for="Password" class="form-text" /><br /><br />
-            <button>Add!</button>
+        <form asp-action="AddStudent" method="post">
+            Student Number: <br /><input type="text" asp-for=@Model.StudentNo class="form-text" /><br />
+            Username: <br /><input type="text" asp-for=@Model.Username class="form-text" /><br />
+            Password: <br /><input type="password" asp-for=@Model.Password class="form-text" /><br /><br />
+            <button type="submit">Add!</button>
         </form>
+
+        <!-- Display the message -->
+        @if (!string.IsNullOrEmpty(ViewBag.Message))
+        {
+            <div class="alert alert-info">@ViewBag.Message</div>
+        }
     </div>
 </div>
+
+
+
+
 
