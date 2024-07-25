@@ -1,0 +1,27 @@
+﻿@model List<LecturerReportViewModel>
+@{
+    ViewData["Title"] = "LectureReport";
+}
+
+<h1>LectureReport</h1>
+
+<table>
+    <thead>
+        <tr>
+			<th>Student Number</th>
+			<th>Date</th>
+			<th>Attendance</th>
+        </tr>   
+    </thead>
+    <tbody>
+        <tr>
+            @foreach(var item in Model)
+            {
+                <td>@item.stNumber</td>
+                <td>@item.date</td>
+                <td>@item.attendance</td>
+            }
+        </tr>
+    </tbody>
+</table>
+
