@@ -20,6 +20,9 @@
             return instance;
         }
 
+        //CRUD Operations
+
+        //Create
         public string AddStudent(string userID, string studentNo, string userName, string passWord)
         {
             //userID = "TestUser";
@@ -53,5 +56,70 @@
                 }
             } else return "Please Fill in all fields";
         }
+
+        //Read
+        public List<TblStudent> GetAllStudents()
+        {
+            var data = context.TblStudents.ToList();
+
+            if (data != null)
+            {
+                return data;
+            } else return null;
+        }
+
+        public List<TblLecture> GetAllLectures()
+        {
+            var data = context.TblLectures.ToList();
+
+            if (data != null)
+            {
+                return data;
+            } else return null;
+        }
+
+        public List<TblModule> GetAllModules()
+        {
+            var data = context.TblModules.ToList();
+
+            if (data != null)
+            {
+                return data;
+            } else return null;
+        }
+
+        public List<TblUser> GetAllUsers()
+        {
+            var data = context.TblUsers.ToList();
+
+            if (data != null)
+            {
+                return data;
+            } else return null;
+        }
+
+        public List<TblStaff> GetAllStaff()
+        {
+            var data = context.TblStaffs.ToList();
+
+            if (data != null)
+            {
+                return data;
+            } else return null;
+        }
+
+        public List<TblRole> GetAllRoles()
+        {
+            var data = context.TblRoles.ToList();
+
+            if (data != null)
+            {
+                return data;
+            } else return null;
+        }
+
+        //Update
+
+        //Delete
     }
 }
