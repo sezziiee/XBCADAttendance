@@ -1,13 +1,15 @@
-﻿namespace XBCADAttendance.Models
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace XBCADAttendance.Models
 {
     public class DataAccess
     {
         public DbWilContext context = new DbWilContext();
-        public static DataAccess instance = null;
-        
+        public static DataAccess? instance = null;
+
         public DataAccess()
-        { 
-            
+        {
+
         }
 
         public static DataAccess GetContext()
@@ -119,7 +121,117 @@
         }
 
         //Update
+        public string UpdateUser(string userID, string? userName, string? passWord)
+        {
+            bool updateName = false;
+            bool updatePassword = false;
+
+            //Get User from DB using userID
+            var user = context.TblUsers.Where(x => x.UserId == userID).FirstOrDefault();
+
+            //Null check for User
+            if (user != null)
+            {
+                //Null check for username
+                if (userName != null)
+                {
+                    updateName = true;
+                }
+
+                //Null check for password
+                if (passWord != null)
+                {
+                    updatePassword = true;
+                }
+
+                if (updateName && updatePassword) //Update both username and password
+                { 
+                    user.UserName = userName;
+                    user.Password = passWord;
+
+                    context.SaveChanges();
+                    return "User updated successfully";
+
+                } else if (updateName && !updatePassword) //Update username
+                {
+                    user.Password = passWord;
+
+                    context.SaveChanges();
+                    return "Password updated successfully";
+
+                } else if (!updateName && updatePassword) //Update password
+                {
+                    user.UserName = userName;
+
+                    context.SaveChanges();
+                    return "Username updated successfully";
+
+                } else //Handle if no variables are entered
+                {
+                    return "No values were updated";
+                }
+            } else //Handle if userID is not found 
+            {
+                return "User not found";
+            }
+            
+        }
 
         //Delete
+        public string DeleteUser(string userID)
+        {
+            try
+            {
+                var user = context.TblUsers.Where(x => x.UserId == userID).FirstOrDefault();
+
+
+                if (user != null)
+                {
+                    user.TblLectures.Clear();
+                    user.TblStaffs.Clear();
+                    user.TblStudents.Clear();
+                }
+
+                context.TblUsers.Where(x => x.UserId == userID).ExecuteDelete();
+
+                context.SaveChanges();
+                return "User deleted successfully";
+
+            }catch (Exception e)
+            {
+                return $"Error: {e}";
+            }
+            
+        }
+
+        public string DeleteLecture(string lectureID)
+        {
+            try
+            {
+                context.TblLectures.Where(x => x.LectureId == lectureID).ExecuteDelete();
+                context.SaveChanges();
+                return "Lecture deleted successfully";
+
+            } catch (Exception e)
+            {
+                return $"Error: {e}";
+            }
+        }
+
+        public string DeleteModule(string moduleCode)
+        {
+            try
+            {
+                context.TblModules.Where(x => x.ModuleCode == moduleCode).ExecuteDelete();
+                context.SaveChanges();
+                return "Module deleted successfully";
+
+            } catch (Exception e)
+            {
+                return $"Error: {e}";
+            }
+        }
+
+
     }
 }
