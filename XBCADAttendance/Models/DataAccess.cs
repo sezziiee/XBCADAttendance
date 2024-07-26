@@ -22,6 +22,9 @@ namespace XBCADAttendance.Models
             return instance;
         }
 
+        //CRUD Operations
+
+        //Create
         public string AddStudent(string userID, string studentNo, string userName, string passWord)
         {
             //userID = "TestUser";
@@ -228,6 +231,7 @@ namespace XBCADAttendance.Models
                 return $"Error: {e}";
             }
         }
+
 
     }
 }

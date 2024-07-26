@@ -1,0 +1,42 @@
+﻿@model List<StudentReportViewModel>
+
+    <style>
+    .centered-table {
+        margin: 0 auto;
+    }
+
+    table {
+        border-collapse: collapse;
+        width: 80%; 
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+</style>
+
+<table>
+    <thead>
+        <tr>
+            <th>Lecture Date</th>
+            <th>Classroom Code</th>
+            <th>Scan In</th>
+            <th>Scan Out</th>
+            <th>Module</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var report in Model)
+        {
+            <tr>
+                <td>@report.LectureDate.ToShortDateString()</td>
+                <td>@report.ClassroomCode</td>
+                <td>@report.ScanIn.ToShortTimeString()</td>
+                <td>@report.ScanOut.ToShortTimeString()</td>
+                <td>@report.ModuleCode</td>
+            </tr>
+        }
+    </tbody>
+</table>
