@@ -20,5 +20,7 @@ namespace XBCADAttendance.Models
 			this.attendance = attendance;
 			this.totalDays = totalDays;
 		}
+
+
     }
 }

@@ -22,6 +22,41 @@ namespace XBCADAttendance.Models
             return instance;
         }
 
+        public string LoginUser(LoginViewModel model)
+        {
+            if (model.identifier.Length > 5)//Check if id is for user/staff
+            {
+                var student = context.TblStudents.Where(x => x.StudentNo == model.identifier).FirstOrDefault();
+
+                if (student != null)
+                {
+                    if (student.User.Password == model.password)
+                    {//Add Login logic later
+                        return "Successful login";
+                    } else return "Incorrect password";
+
+                }else
+                {
+                    return "Student not found";
+                }
+
+            } else
+            {
+                var staff = context.TblStaffs.Where(x => x.StaffId == model.identifier).FirstOrDefault();
+
+                if (staff != null)
+                {
+                    if (staff.User.Password == model.password)
+                    {//Add Login logic later
+                        return "Successful login";
+                    } else return "Incorrect password";
+                }else
+                {
+                    return "Staff not found";
+                }
+            }
+        }
+
         //CRUD Operations
 
         //Create
@@ -70,17 +105,9 @@ namespace XBCADAttendance.Models
             } else return null;
         }
 
-        public List<LecturerReportViewModel> GetAllLectures()
+        public List<TblLecture> GetAllLectures()
         {
-            var data = context.TblLectures.Join(context.TblStudents,
-                         lecture => lecture.UserId,
-                         student => student.UserId,
-                         (lecture, student) => new LecturerReportViewModel(
-                            lecture.UserId,
-                            student.StudentNo,
-                            lecture.LectureDate.ToString(),
-                            "Yes",
-                            8)).ToList();
+            var data = context.TblLectures.ToList();
 
             if (data != null)
             {
