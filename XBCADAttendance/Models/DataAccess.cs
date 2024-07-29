@@ -70,22 +70,15 @@ namespace XBCADAttendance.Models
             } else return null;
         }
 
-        public List<LecturerReportViewModel> GetAllLectures()
+        public List<TblLecture> GetAllLectures()
         {
-            var data = context.TblLectures.Join(context.TblStudents,
-                         lecture => lecture.UserId,
-                         student => student.UserId,
-                         (lecture, student) => new LecturerReportViewModel(
-                            lecture.UserId,
-                            student.StudentNo,
-                            lecture.LectureDate.ToString(),
-                            "Yes",
-                            8)).ToList();
+            var data = context.TblLectures.ToList();
 
             if (data != null)
             {
                 return data;
-            } else return null;
+            }
+            else return null;
         }
 
         public List<TblModule> GetAllModules()
