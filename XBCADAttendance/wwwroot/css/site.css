@@ -131,7 +131,8 @@ body {
         font-size: 20px;
     }
 
-    /*--Sidebar--*/
+/*--Sidebar--*/
+
 .sidebar {
     width: 25%;
     background-color: #13829e;
@@ -285,3 +286,18 @@ body {
             background-color: #0f6c7a;
         }
 
+        /*-pluks style-*/
+.centered-table {
+    margin: 0 auto;
+}
+
+table {
+    border-collapse: collapse;
+    width: 80%;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
