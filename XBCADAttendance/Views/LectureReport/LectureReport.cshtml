@@ -4,6 +4,12 @@
 }
 
 <h1>LectureReport</h1>
+@foreach (var item in Model)
+{
+    <label>@item.module</label>
+    <label>@item.duration</label>
+}
+
 
 <table>
     <thead>
@@ -14,16 +20,16 @@
             <th>Days Attended</th>
         </tr>   
     </thead>
-    <tbody>
-        <tr>
+    <tbody>   
             @foreach(var item in Model)
-            {
-                <td>@item.stNumber</td>
-                <td>@item.date</td>
-                <td>@item.attendance</td>
-                <td>@item.totalDays</td>
+            {   <tr>
+                    <td>@item.stNumber</td>
+                    <td>@item.date</td>
+                    <td>@item.attendance</td>
+                    <td>@item.totalDays</td>
+                </tr>
             }
-        </tr>
+        
     </tbody>
 </table>
 

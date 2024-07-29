@@ -7,27 +7,11 @@ namespace XBCADAttendance.Controllers
 {
 	public class LectureReportController : Controller
 	{
-		List<LecturerReportViewModel> lists = new List<LecturerReportViewModel>();
+		public DataAccess data = new DataAccess();
 
-        private readonly DbWilContext context;
-
-        //contructor passing the context into the controller
-        public LectureReportController(DbWilContext _context)
-        {
-            context = _context;
-        }
-
-        public IActionResult Index()
+		public IActionResult Index()
 		{
-            var report = context.TblLectures.Join(context.TblStudents,
-                         lecture => lecture.UserId,
-                         student => student.UserId,
-                         (lecture, student) => new LecturerReportViewModel(
-                            lecture.UserId,
-                            student.StudentNo,
-                            lecture.LectureDate.ToString(),
-                            "Yes",
-                            8)).ToList();
+			var report = data.GetAllLectures();
 
             return View("LectureReport", report);
 		}

@@ -68,9 +68,17 @@
             } else return null;
         }
 
-        public List<TblLecture> GetAllLectures()
+        public List<LecturerReportViewModel> GetAllLectures()
         {
-            var data = context.TblLectures.ToList();
+            var data = context.TblLectures.Join(context.TblStudents,
+                         lecture => lecture.UserId,
+                         student => student.UserId,
+                         (lecture, student) => new LecturerReportViewModel(
+                            lecture.UserId,
+                            student.StudentNo,
+                            lecture.LectureDate.ToString(),
+                            "Yes",
+                            8)).ToList();
 
             if (data != null)
             {
