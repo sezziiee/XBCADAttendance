@@ -1,28 +1,20 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model LoginViewModel;
 @{
 }
 
 <div class="both">
     @await Html.PartialAsync("_SidebarPartial")
     <div class="main-content">
-        @* <p>
-        Welcome to our educational platform. We aim to provide the best resources and tools for both lecturers and students to enhance their learning and teaching experiences. Whether you are here to manage your classes, assignments, or to check the latest updates, we have got you covered. Sign in below to access your personalized dashboard and start exploring the numerous features we offer.
-        </p> *@
-        <div class="login-form">
-            <h2>Login</h2>
-            <form asp-controller="Login" action="Post">
-                <div class="form-group">
-                    <label>Student Number:</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="password">Password:</label>
-                    <input type="password" id="password" name="password" required>
-                </div>
-                <button type="submit">Login</button>
-            </form>
-        </div>
+        <form asp-action="AddStudent" method="post">
+            Student Number: <br /><input type="text" asp-for=@Model.identifier class="form-text" /><br />
+            Password: <br /><input type="password" asp-for=@Model.password class="form-text" /><br /><br />
+            <button type="submit">Login</button>
+        </form>
+
+        <!-- Display the message -->
+        @if (!string.IsNullOrEmpty(ViewBag.Message))
+        {
+            <div class="alert alert-info">@ViewBag.Message</div>
+        }
     </div>
 </div>

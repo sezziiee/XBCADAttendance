@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace XBCADAttendance.Models
 {
@@ -20,6 +21,41 @@ namespace XBCADAttendance.Models
             }
 
             return instance;
+        }
+
+        public string LoginUser(LoginViewModel model)
+        {
+            if (model.identifier.Length > 5)//Check if id is for user/staff
+            {
+                var student = context.TblStudents.Where(x => x.StudentNo == model.identifier).FirstOrDefault();
+
+                if (student != null)
+                {
+                    if (student.User.Password == model.password)
+                    {//Add Login logic later
+                        return "Successful login";
+                    } else return "Incorrect password";
+
+                }else
+                {
+                    return "Student not found";
+                }
+
+            } else
+            {
+                var staff = context.TblStaffs.Where(x => x.StaffId == model.identifier).FirstOrDefault();
+
+                if (staff != null)
+                {
+                    if (staff.User.Password == model.password)
+                    {//Add Login logic later
+                        return "Successful login";
+                    } else return "Incorrect password";
+                }else
+                {
+                    return "Staff not found";
+                }
+            }
         }
 
         //CRUD Operations
@@ -74,6 +110,29 @@ namespace XBCADAttendance.Models
         {
             var data = context.TblLectures.ToList();
 
+            if (data != null)
+            {
+                return data;
+            }
+            else return null;
+        }
+        //Read
+       public List<StudentReportViewModel> GetIndividualStudents()
+        {
+            var data = context.TblLectures.Join(context.TblStudents,
+               lecture => lecture.UserId,
+               student => student.UserId,
+               (lecture, student) => new StudentReportViewModel(
+                   lecture.UserId,
+                   student.StudentNo,
+                   lecture.LectureDate,
+                   lecture.ClassroomCode,
+                   lecture.ScanIn,
+                   lecture.ScanOut,
+                   lecture.ModuleCode)).ToList();
+            //Join tblLecture and tblStudents and convert to a list.
+
+            //Null check for data
             if (data != null)
             {
                 return data;

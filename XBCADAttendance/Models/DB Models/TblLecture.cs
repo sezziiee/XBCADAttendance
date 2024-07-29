@@ -15,7 +15,7 @@ public partial class TblLecture
 
     public TimeOnly ScanIn { get; set; }
 
-    public TimeOnly? ScanOut { get; set; }
+    public TimeOnly ScanOut { get; set; }
 
     public string ModuleCode { get; set; } = null!;
 
