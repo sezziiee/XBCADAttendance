@@ -2,9 +2,12 @@
 @{
     ViewData["Title"] = "Lecture Report";
 }
+@await Html.PartialAsync("_TopbarPartial")
+<div class="custom-container">
+    @await Html.PartialAsync("_DashSidebarPartial")
 
-<h1>LectureReport</h1>
-
+    <div class="custom-content">
+        <h1>LectureReport</h1>
 <table>
     <thead>
         <tr>
@@ -26,21 +29,6 @@
         </tr>
     </tbody>
 </table>
-
-<style>
-    .centered-table {
-        margin: 0 auto;
-    }
-
-    table {
-        border-collapse: collapse;
-        width: 80%;
-    }
-
-    th, td {
-        border: 1px solid #ddd;
-        padding: 8px;
-        text-align: left;
-    }
-</style>
+</div>
+</div>
 
