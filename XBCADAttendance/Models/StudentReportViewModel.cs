@@ -2,6 +2,8 @@
 {
     public class StudentReportViewModel
     {
+        public StudentReportViewModel() { }
+
         public StudentReportViewModel(string userID, string studentNo, DateOnly lectureDate, string classroomCode, TimeOnly scanIn, TimeOnly scanOut, string moduleCode)
         {
             UserID = userID;
@@ -33,7 +35,7 @@
                    lecture.LectureDate,
                    lecture.ClassroomCode,
                    lecture.ScanIn,
-                   lecture.ScanOut,
+                   (TimeOnly)lecture.ScanOut!,
                    lecture.ModuleCode)).ToList();
             //Join tblLecture and tblStudents and convert to a list.
 

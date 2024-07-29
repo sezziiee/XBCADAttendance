@@ -1,4 +1,4 @@
-@model List<XBCADAttendance.Models.LecturerReportViewModel>
+@model LectureReportViewModel
 @{
     ViewData["Title"] = "Lecture Report";
 }
@@ -8,7 +8,7 @@
 
 
 <h1>LectureReport</h1>
-@foreach (var item in Model)
+@foreach (var item in Model.lstReports)
 {
     <label>@item.module</label>
     <label>@item.duration</label>
@@ -29,12 +29,12 @@
         </tr>   
     </thead>
     <tbody>   
-            @foreach(var item in Model)
+            @foreach(var item in Model.lstReports)
             {   <tr>
                     <td>@item.stNumber</td>
                     <td>@item.date</td>
                     <td>@item.attendance</td>
-                    <td>@item.totalDays</td>
+                        <!--<td>item.totalDays</td>-->
                 </tr>
             }
         
