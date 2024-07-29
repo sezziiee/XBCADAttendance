@@ -113,7 +113,8 @@ namespace XBCADAttendance.Models
             if (data != null)
             {
                 return data;
-            } else return null;
+            }
+            else return null;
         }
         //Read
        public List<StudentReportViewModel> GetIndividualStudents()
