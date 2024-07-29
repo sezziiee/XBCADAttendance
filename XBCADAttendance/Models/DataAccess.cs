@@ -116,29 +116,7 @@ namespace XBCADAttendance.Models
             }
             else return null;
         }
-        //Read
-       public List<StudentReportViewModel> GetIndividualStudents()
-        {
-            var data = context.TblLectures.Join(context.TblStudents,
-               lecture => lecture.UserId,
-               student => student.UserId,
-               (lecture, student) => new StudentReportViewModel(
-                   lecture.UserId,
-                   student.StudentNo,
-                   lecture.LectureDate,
-                   lecture.ClassroomCode,
-                   lecture.ScanIn,
-                   lecture.ScanOut,
-                   lecture.ModuleCode)).ToList();
-            //Join tblLecture and tblStudents and convert to a list.
-
-            //Null check for data
-            if (data != null)
-            {
-                return data;
-            }
-            else return null;
-        }
+       
 
         public List<TblModule> GetAllModules()
         {
