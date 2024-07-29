@@ -7,13 +7,10 @@ namespace XBCADAttendance.Controllers
 {
 	public class LectureReportController : Controller
 	{
-		public DataAccess data = new DataAccess();
 
-		public IActionResult Index()
+		public IActionResult LectureReport(LectureReportViewModel model)
 		{
-			var report = data.GetAllLectures();
-
-            return View("LectureReport", report);
+            return View(model);
 		}
 	}
 }
