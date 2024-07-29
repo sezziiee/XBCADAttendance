@@ -1,31 +1,35 @@
 ﻿@model List<StudentReportViewModel>
 
-    @await Html.PartialAsync("_StudTopbarPartial")
+@await Html.PartialAsync("_StudTopbarPartial")
 <div class="custom-container">
     @await Html.PartialAsync("_StudSidebarPartial")
     <div class="custom-content">
-<table>
-    <thead>
-        <tr>
-            <th>Lecture Date</th>
-            <th>Classroom Code</th>
-            <th>Scan In</th>
-            <th>Scan Out</th>
-            <th>Module</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var report in Model)
-        {
-            <tr>
-                <td>@report.LectureDate.ToShortDateString()</td>
-                <td>@report.ClassroomCode</td>
-                <td>@report.ScanIn.ToShortTimeString()</td>
-                <td>@report.ScanOut.ToShortTimeString()</td>
-                <td>@report.ModuleCode</td>
-            </tr>
-        }
-    </tbody>
-</table>
-</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Lecture Date</th>
+                    <th>Classroom Code</th>
+                    <th>Scan In</th>
+                    <th>Scan Out</th>
+                    <th>Module</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null)
+                {
+                    @foreach (var report in Model)
+                    {
+                        <tr>
+                            <td>@report.LectureDate.ToShortDateString()</td>
+                            <td>@report.ClassroomCode</td>
+                            <td>@report.ScanIn.ToShortTimeString()</td>
+                            <td>@report.ScanOut.ToShortTimeString()</td>
+                            <td>@report.ModuleCode</td>
+                        </tr>
+                    }
+                }
+
+            </tbody>
+        </table>
+    </div>
 </div>

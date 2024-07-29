@@ -20,5 +20,29 @@
         public TimeOnly ScanIn { get; set; }
         public TimeOnly ScanOut { get; set; }
         public string ModuleCode { get; set; }
+
+        //Read
+        public List<StudentReportViewModel> GetIndividualStudents(DataAccess context)
+        {
+            var data = context.GetAllLectures().Join(context.GetAllStudents(),
+               lecture => lecture.UserId,
+               student => student.UserId,
+               (lecture, student) => new StudentReportViewModel(
+                   lecture.UserId,
+                   student.StudentNo,
+                   lecture.LectureDate,
+                   lecture.ClassroomCode,
+                   lecture.ScanIn,
+                   lecture.ScanOut,
+                   lecture.ModuleCode)).ToList();
+            //Join tblLecture and tblStudents and convert to a list.
+
+            //Null check for data
+            if (data != null)
+            {
+                return data;
+            }
+            else return null;
+        }
     }
 }

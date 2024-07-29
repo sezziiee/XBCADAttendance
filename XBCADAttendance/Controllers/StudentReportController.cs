@@ -5,12 +5,10 @@ using XBCADAttendance.Models;
 namespace XBCADAttendance.Controllers
 {
     public class StudentReportController : Controller
-    {
-       public DataAccess context = new DataAccess();
-      
-        public IActionResult StudentReport()
+    {      
+        public IActionResult StudentReport(StudentReportViewModel model)
         {
-            var report = context.GetIndividualStudents();
+            var report = model.GetIndividualStudents(DataAccess.GetContext());
             return View(report);
         }
     }
