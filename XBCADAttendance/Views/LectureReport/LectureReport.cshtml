@@ -1,7 +1,11 @@
-﻿@model List<XBCADAttendance.Models.LecturerReportViewModel>
+@model List<XBCADAttendance.Models.LecturerReportViewModel>
 @{
     ViewData["Title"] = "Lecture Report";
 }
+@await Html.PartialAsync("_TopbarPartial")
+<div class="custom-container">
+    @await Html.PartialAsync("_DashSidebarPartial")
+
 
 <h1>LectureReport</h1>
 @foreach (var item in Model)
@@ -10,6 +14,10 @@
     <label>@item.duration</label>
 }
 
+
+
+    <div class="custom-content">
+        <h1>LectureReport</h1>
 
 <table>
     <thead>
@@ -32,21 +40,6 @@
         
     </tbody>
 </table>
-
-<style>
-    .centered-table {
-        margin: 0 auto;
-    }
-
-    table {
-        border-collapse: collapse;
-        width: 80%;
-    }
-
-    th, td {
-        border: 1px solid #ddd;
-        padding: 8px;
-        text-align: left;
-    }
-</style>
+</div>
+</div>
 
