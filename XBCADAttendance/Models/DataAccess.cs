@@ -56,7 +56,7 @@ namespace XBCADAttendance.Models
                 {
                     return e.ToString();
                 }
-            } else return "Please Fill in all fields";
+            } else return "Please fill in all fields";
         }
 
         //Read
