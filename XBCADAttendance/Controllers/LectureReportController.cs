@@ -1,17 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using XBCADAttendance.Models;
 
 namespace XBCADAttendance.Controllers
 {
 	public class LectureReportController : Controller
 	{
-		List<LecturerReportViewModel> lists = new List<LecturerReportViewModel>();
+		public DataAccess data = new DataAccess();
 
 		public IActionResult Index()
 		{
-			var list = new LecturerReportViewModel("st10185639", "shap", "Y", 8);
-			lists.Add(list);
-			return View("LectureReport", lists);
+			var report = data.GetAllLectures();
+
+            return View("LectureReport", report);
 		}
 	}
 }

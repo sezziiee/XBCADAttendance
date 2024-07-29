@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using XBCADAttendance.Models;
+
 namespace XBCADAttendance
 {
     public class Program
@@ -8,6 +11,7 @@ namespace XBCADAttendance
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+   
 
             var app = builder.Build();
 
