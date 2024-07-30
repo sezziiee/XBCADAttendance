@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using XBCADAttendance.Models.ViewModels;
 
 namespace XBCADAttendance.Models
 {
@@ -31,8 +32,15 @@ namespace XBCADAttendance.Models
 
                 if (student != null)
                 {
-                    if (student.User.Password == model.password)
-                    {//Add Login logic later
+                    Hasher passwordHasher = new Hasher(student.User.Password!);
+
+                    string userPassword = passwordHasher.GetHash();
+
+                    if (passwordHasher.CompareHashedPasswords(userPassword, model.password))
+                    {//Login logic
+
+                        
+
                         return "Successful login";
                     } else return "Incorrect password";
 
@@ -63,17 +71,18 @@ namespace XBCADAttendance.Models
         //Create
         public string AddStudent(string userID, string studentNo, string userName, string passWord)
         {
-            //userID = "TestUser";
+            //userID = "Pleasewo";
             if (userID != null && studentNo != null && userName != null && passWord != null)
             {
+                Hasher hasher = new Hasher(passWord);
+
                 try
                 {
                     TblUser newUser = new TblUser
                     {
                         UserId = userID,
                         UserName = userName,
-                        Password = passWord
-
+                        Password = hasher.GetHash()
                     };
 
                     TblStudent newStudent = new TblStudent

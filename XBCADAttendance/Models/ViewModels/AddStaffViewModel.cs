@@ -1,4 +1,4 @@
-﻿namespace XBCADAttendance.Models
+﻿namespace XBCADAttendance.Models.ViewModels
 {
     public class AddStaffViewModel
     {

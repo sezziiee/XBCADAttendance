@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using XBCADAttendance.Models;
+using XBCADAttendance.Models.ViewModels;
 
 namespace XBCADAttendance.Controllers
 {

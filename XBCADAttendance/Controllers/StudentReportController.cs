@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Storage.Json;
 using XBCADAttendance.Models;
+using XBCADAttendance.Models.ViewModels;
 
 namespace XBCADAttendance.Controllers
 {
