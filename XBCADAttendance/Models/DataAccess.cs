@@ -9,10 +9,7 @@ namespace XBCADAttendance.Models
         public DbWilContext context = new DbWilContext();
         public static DataAccess? instance = null;
 
-        public DataAccess()
-        {
-
-        }
+        public DataAccess() {}
 
         public static DataAccess GetContext()
         {
@@ -126,7 +123,6 @@ namespace XBCADAttendance.Models
             else return null;
         }
        
-
         public List<TblModule> GetAllModules()
         {
             var data = context.TblModules.ToList();
@@ -278,7 +274,5 @@ namespace XBCADAttendance.Models
                 return $"Error: {e}";
             }
         }
-
-
     }
 }
