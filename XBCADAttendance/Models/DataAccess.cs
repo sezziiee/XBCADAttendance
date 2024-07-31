@@ -1,5 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Google.Apis.Admin.Directory.directory_v1.Data;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Security.Claims;
 using XBCADAttendance.Models.ViewModels;
 
 namespace XBCADAttendance.Models
@@ -24,7 +29,8 @@ namespace XBCADAttendance.Models
             return instance;
         }
 
-        public string LoginUser(LoginViewModel model)
+        [ValidateAntiForgeryToken]
+        public string LoginUser(HttpContext httpContext, LoginViewModel model)
         {
             if (model.identifier.Length > 5)//Check if id is for user/staff
             {
@@ -36,20 +42,26 @@ namespace XBCADAttendance.Models
 
                     string userPassword = passwordHasher.GetHash();
 
+
+
                     if (passwordHasher.CompareHashedPasswords(userPassword, model.password))
                     {//Login logic
 
-                        
+                        StoreUserCookies(httpContext, student.StudentNo, "Student");
+
 
                         return "Successful login";
-                    } else return "Incorrect password";
+                    }
+                    else return "Incorrect password";
 
-                }else
+                }
+                else
                 {
                     return "Student not found";
                 }
 
-            } else
+            }
+            else
             {
                 var staff = context.TblStaffs.Where(x => x.StaffId == model.identifier).FirstOrDefault();
 
@@ -57,15 +69,53 @@ namespace XBCADAttendance.Models
                 {
                     if (staff.User.Password == model.password)
                     {//Add Login logic later
+                        var role = GetAllRoles().Where(x => x.RoleId == staff.RoleId).Select(x => x.RoleName).ToString();
+                        StoreUserCookies(httpContext, staff.StaffId, role);
                         return "Successful login";
-                    } else return "Incorrect password";
-                }else
+                    }
+                    else return "Incorrect password";
+                }
+                else
                 {
                     return "Staff not found";
                 }
             }
         }
 
+        //Sign in and authentication
+        // Stores user authentication cookies using ASP.NET Core's cookie authentication.
+        public async Task StoreUserCookies(HttpContext httpContext, string studentNo, string identifier)
+        {
+            // Create a list of claims for the user with the student's number as the user's name.
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, studentNo),
+                new Claim(ClaimTypes.Role, identifier)
+            };
+
+            // Create a ClaimsIdentity using the claims list and the default authentication scheme for cookies.
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            // Define authentication properties, making the session persistent (e.g., "Remember Me").
+            var authProperties = new AuthenticationProperties
+            {
+                IsPersistent = true
+            };
+
+            // Sign in the user asynchronously, storing their identity and properties in a cookie.
+            await httpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,  // Authentication scheme used.
+                new ClaimsPrincipal(claimsIdentity),  // The user's identity information.
+                authProperties  // Properties for session persistence.
+            );
+        }
+
+        public async Task Logout(HttpContext httpContext)
+        {
+            // Removing the users cookies
+            await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+        }
         //CRUD Operations
 
         //Create
@@ -97,11 +147,13 @@ namespace XBCADAttendance.Models
 
                     return "Success";
 
-                } catch (Exception e)
+                }
+                catch (Exception e)
                 {
                     return e.ToString();
                 }
-            } else return "Please fill in all fields";
+            }
+            else return "Please fill in all fields";
         }
 
         //Read
@@ -112,7 +164,8 @@ namespace XBCADAttendance.Models
             if (data != null)
             {
                 return data;
-            } else return null;
+            }
+            else return null;
         }
 
         public List<TblLecture> GetAllLectures()
@@ -125,7 +178,7 @@ namespace XBCADAttendance.Models
             }
             else return null;
         }
-       
+
 
         public List<TblModule> GetAllModules()
         {
@@ -134,7 +187,8 @@ namespace XBCADAttendance.Models
             if (data != null)
             {
                 return data;
-            } else return null;
+            }
+            else return null;
         }
 
         public List<TblUser> GetAllUsers()
@@ -144,7 +198,8 @@ namespace XBCADAttendance.Models
             if (data != null)
             {
                 return data;
-            } else return null;
+            }
+            else return null;
         }
 
         public List<TblStaff> GetAllStaff()
@@ -154,7 +209,8 @@ namespace XBCADAttendance.Models
             if (data != null)
             {
                 return data;
-            } else return null;
+            }
+            else return null;
         }
 
         public List<TblRole> GetAllRoles()
@@ -164,7 +220,8 @@ namespace XBCADAttendance.Models
             if (data != null)
             {
                 return data;
-            } else return null;
+            }
+            else return null;
         }
 
         //Update
@@ -192,36 +249,40 @@ namespace XBCADAttendance.Models
                 }
 
                 if (updateName && updatePassword) //Update both username and password
-                { 
+                {
                     user.UserName = userName;
                     user.Password = passWord;
 
                     context.SaveChanges();
                     return "User updated successfully";
 
-                } else if (updateName && !updatePassword) //Update username
+                }
+                else if (updateName && !updatePassword) //Update username
                 {
                     user.Password = passWord;
 
                     context.SaveChanges();
                     return "Password updated successfully";
 
-                } else if (!updateName && updatePassword) //Update password
+                }
+                else if (!updateName && updatePassword) //Update password
                 {
                     user.UserName = userName;
 
                     context.SaveChanges();
                     return "Username updated successfully";
 
-                } else //Handle if no variables are entered
+                }
+                else //Handle if no variables are entered
                 {
                     return "No values were updated";
                 }
-            } else //Handle if userID is not found 
+            }
+            else //Handle if userID is not found 
             {
                 return "User not found";
             }
-            
+
         }
 
         //Delete
@@ -244,11 +305,12 @@ namespace XBCADAttendance.Models
                 context.SaveChanges();
                 return "User deleted successfully";
 
-            }catch (Exception e)
+            }
+            catch (Exception e)
             {
                 return $"Error: {e}";
             }
-            
+
         }
 
         public string DeleteLecture(string lectureID)
@@ -259,7 +321,8 @@ namespace XBCADAttendance.Models
                 context.SaveChanges();
                 return "Lecture deleted successfully";
 
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 return $"Error: {e}";
             }
@@ -273,7 +336,8 @@ namespace XBCADAttendance.Models
                 context.SaveChanges();
                 return "Module deleted successfully";
 
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 return $"Error: {e}";
             }
