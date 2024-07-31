@@ -19,7 +19,7 @@ namespace XBCADAttendance.Controllers
         [HttpPost]
         public IActionResult StudentLogin(LoginViewModel model) 
         {
-            string message = DataAccess.GetContext().LoginUser(model);
+            string message = DataAccess.GetContext().LoginUser(HttpContext, model);
 
             ViewBag.Message = message;
 
