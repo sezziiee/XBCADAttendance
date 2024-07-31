@@ -23,7 +23,7 @@ namespace XBCADAttendance.Controllers
 
             ViewBag.Message = message;
 
-            return View(model);
+            return RedirectToAction("StudentReport", "StudentReport");
         }
     }
 }
