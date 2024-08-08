@@ -28,6 +28,7 @@ public partial class DbWilContext : DbContext
     public virtual DbSet<TblUser> TblUsers { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer(Environment.GetEnvironmentVariable("CONNECTION_STRING"));
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -95,49 +96,49 @@ public partial class DbWilContext : DbContext
 
         modelBuilder.Entity<TblStaff>(entity =>
         {
-            entity.HasKey(e => e.StaffId).HasName("PK__tblStaff__96D4AAF7F85862C2");
+            entity.HasKey(e => e.UserId).HasName("PK__tblStaff__96D4AAF7F85862C2");
 
             entity.ToTable("tblStaff");
 
-            entity.Property(e => e.StaffId)
-                .HasMaxLength(10)
-                .IsFixedLength()
-                .HasColumnName("StaffID");
-            entity.Property(e => e.RoleId)
-                .HasMaxLength(10)
-                .IsFixedLength()
-                .HasColumnName("RoleID");
             entity.Property(e => e.UserId)
                 .HasMaxLength(8)
                 .IsFixedLength()
                 .HasColumnName("UserID");
+            entity.Property(e => e.RoleId)
+                .HasMaxLength(10)
+                .IsFixedLength()
+                .HasColumnName("RoleID");
+            entity.Property(e => e.StaffId)
+                .HasMaxLength(10)
+                .IsFixedLength()
+                .HasColumnName("StaffID");
 
             entity.HasOne(d => d.Role).WithMany(p => p.TblStaffs)
                 .HasForeignKey(d => d.RoleId)
                 .HasConstraintName("FK__tblStaff__RoleID__76969D2E");
 
-            entity.HasOne(d => d.User).WithMany(p => p.TblStaffs)
-                .HasForeignKey(d => d.UserId)
+            entity.HasOne(d => d.User).WithOne(p => p.TblStaff)
+                .HasForeignKey<TblStaff>(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__tblStaff__UserID__75A278F5");
         });
 
         modelBuilder.Entity<TblStudent>(entity =>
         {
-            entity.HasKey(e => e.StudentNo).HasName("PK__tblStude__32C4C02A7885B30D");
+            entity.HasKey(e => e.UserId).HasName("PK__tblStude__32C4C02A7885B30D");
 
             entity.ToTable("tblStudent");
 
-            entity.Property(e => e.StudentNo)
-                .HasMaxLength(10)
-                .IsFixedLength();
             entity.Property(e => e.UserId)
                 .HasMaxLength(8)
                 .IsFixedLength()
                 .HasColumnName("UserID");
+            entity.Property(e => e.StudentNo)
+                .HasMaxLength(10)
+                .IsFixedLength();
 
-            entity.HasOne(d => d.User).WithMany(p => p.TblStudents)
-                .HasForeignKey(d => d.UserId)
+            entity.HasOne(d => d.User).WithOne(p => p.TblStudent)
+                .HasForeignKey<TblStudent>(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__tblStuden__UserI__7D439ABD");
         });

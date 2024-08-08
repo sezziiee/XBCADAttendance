@@ -292,8 +292,14 @@ namespace XBCADAttendance.Models
                 if (user != null)
                 {
                     user.TblLectures.Clear();
-                    user.TblStaffs.Clear();
-                    user.TblStudents.Clear();
+
+                    if (user.TblStaff != null)
+                    {
+                        context.TblStaffs.Where(x => x.UserId == userID).ExecuteDelete();
+                    }else if (user.TblStudent != null)
+                    {
+                        context.TblStudents.Where(x => x.UserId == userID).ExecuteDelete();
+                    }
                 }
 
                 context.TblUsers.Where(x => x.UserId == userID).ExecuteDelete();
