@@ -6,7 +6,7 @@ using XBCADAttendance.Models.ViewModels;
 
 namespace XBCADAttendance.Controllers
 {
-    [Authorize(Policy ="UserOnly")]
+    //[Authorize(Policy = "UserOnly")]
     public class StudentReportController : Controller
     {      
         public IActionResult StudentReport(StudentReportViewModel model)

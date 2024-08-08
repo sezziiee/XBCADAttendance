@@ -13,7 +13,7 @@ public partial class TblUser
 
     public virtual ICollection<TblLecture> TblLectures { get; set; } = new List<TblLecture>();
 
-    public virtual ICollection<TblStaff> TblStaffs { get; set; } = new List<TblStaff>();
+    public virtual TblStaff? TblStaff { get; set; }
 
-    public virtual ICollection<TblStudent> TblStudents { get; set; } = new List<TblStudent>();
+    public virtual TblStudent? TblStudent { get; set; }
 }
