@@ -8,8 +8,11 @@ namespace XBCADAttendance.Controllers
 {
     public class LectureReportController : Controller
 	{
-
-		public IActionResult LectureReport(LectureReportViewModel model)
+        public IActionResult Index()
+        {
+            return View();
+        }
+        public IActionResult LectureReport(LectureReportViewModel model)
 		{
             return View(model);
 		}
