@@ -5,9 +5,121 @@
         <img src="~/img/logo.png" alt="Logo">
     </div>
     <ul class="custom-nav-links">
-        <li><a asp-controller="LectureReport" asp-action="Index">Overview</a></li>
-        <li><a href="#">Report</a></li>
-        <li><a href="#">Attendance</a></li>
-        <li><a href="#"></a></li>
+        <li>
+            <a asp-controller="LectureReport" asp-action="Index">Overview</a>
+        </li>
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle">Students</a>
+            <ul class="dropdown-menu">
+                <li><a asp-controller="LectureReport" asp-action="Index">Student List</a></li>
+                <li><a asp-controller="LectureReport" asp-action="LectureReport">Student Attendance</a></li>
+            </ul>
+        </li>
     </ul>
 </div>
+
+<style>
+
+
+    .custom-sidebar {
+        width: 250px;
+        background-color: #2c3e50;
+        color: white;
+        height: 100%;
+        box-sizing: border-box;
+        overflow-y: auto;
+        left: 0;
+        top: 0;
+    }
+
+        .custom-sidebar img {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+    .custom-nav-links {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+
+        .custom-nav-links li {
+            margin: 15px 0;
+        }
+
+        .custom-nav-links a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+            .custom-nav-links a:hover {
+                background-color: #34495e;
+            }
+
+    .dropdown-menu {
+        display: none;
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        background-color: #34495e;
+        border-radius: 5px;
+        width: 100%;
+    }
+
+        .dropdown-menu li a {
+            padding-left: 20px;
+        }
+
+    .dropdown:hover .dropdown-menu {
+        display: block;
+    }
+
+
+        .custom-content form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .custom-content .form-text {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .custom-content button {
+            padding: 10px 20px;
+            background-color: #13829e;
+            border: none;
+            color: white;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+            .custom-content button:hover {
+                background-color: #0f6c7a;
+            }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+
+        dropdownToggles.forEach(toggle => {
+            toggle.addEventListener('click', function (e) {
+                e.preventDefault();
+                const dropdownMenu = this.nextElementSibling;
+                dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+            });
+        });
+    });
+</script>

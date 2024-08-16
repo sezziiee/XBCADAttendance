@@ -1,5 +1,96 @@
 ﻿@await Html.PartialAsync("_StudTopbarPartial")
+<style>
+    .dashboard {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 20px;
+    }
 
+    .grid-container {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        margin-bottom: 20px;
+    }
 
+    .chart-container {
+        display: grid;
+        grid-template-columns: 2fr 3fr;
+        gap: 20px;
+    }
+
+    .card, .chart {
+        background: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        transition: transform 0.2s;
+    }
+
+        .card:hover, .chart:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h2, .chart h2 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .card p, .chart p {
+            color: #666;
+        }
+
+    .logout-button {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        padding: 10px 20px;
+        background-color: #ff4b4b;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+        .logout-button:hover {
+            background-color: #e04343;
+        }
+</style>
+
+<div class="custom-container">
     @await Html.PartialAsync("_StudSidebarPartial")
-    
+    <div class="custom-content dashboard">
+
+        <div class="grid-container">
+            <div class="card">
+                <h2>69</h2>
+                <p>Days Attended</p>
+            </div>
+            <div class="card">
+                <h2>6</h2>
+                <p>Late days</p>
+            </div>
+            <div class="card">
+                <h2>7</h2>
+                <p>Absent Days</p>
+            </div>
+            <div class="card">
+                <h2>70%</h2>
+                <p>Attendance</p>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart">
+                <h2>Pie Chart</h2>
+
+            </div>
+            <div class="chart">
+                <h2>Bar Graph</h2>
+
+            </div>
+        </div>
+    </div>
+</div>

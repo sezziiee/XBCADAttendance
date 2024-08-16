@@ -18,5 +18,17 @@ namespace XBCADAttendance.Controllers
             var report = model.GetIndividualStudents(DataAccess.GetContext());
             return View(report);
         }
+        public IActionResult Profile()
+        {
+            return View();
+        }
+        public IActionResult Modules()
+        {
+            return View();
+        }
+        public IActionResult AttendanceHistory()
+        {
+            return View();
+        }
     }
 }
