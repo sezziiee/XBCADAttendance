@@ -1,0 +1,33 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@await Html.PartialAsync("_StudTopbarPartial")
+<div class="custom-container">
+    @await Html.PartialAsync("_StudSidebarPartial")
+    <div class="custom-content">
+        <h1>Attendance History</h1>
+        <table>
+            <thead>
+                <tr>ID</tr>
+                <tr>Date Attended</tr>
+                <tr>Duration</tr>
+                <tr>Classroom</tr>
+            </thead>
+            <tbody>
+                @if (Model != null)
+                {
+                    @foreach (var report in Model)
+                    {
+                        <tr>
+                            <td></td>
+                        </tr>
+                    }
+                }
+
+            </tbody>
+        </table>
+    </div>
+</div>
