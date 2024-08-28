@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration.UserSecrets;
+using XBCADAttendance.Models;
 
 namespace XBCADAttendance.Models
 {
@@ -61,6 +62,10 @@ public class LectureReport()
         //Add Logic
     }
 
-    
+
+    public int GetAttendance()
+    {
+        return DataAccess.GetContext().CalcDaysAttended(userID);
+    }
 }
 

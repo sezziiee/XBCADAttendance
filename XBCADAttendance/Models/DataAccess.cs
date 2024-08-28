@@ -107,6 +107,22 @@ namespace XBCADAttendance.Models
             );
         }
 
+        public int CalcDaysAttended(string userID)
+        {
+            List<TblLecture> studentLectures = GetAllLecturesByStudentID(userID);
+            int count = 0;
+
+            foreach(TblLecture lecture in studentLectures)
+            {
+                if(lecture.ScanOut != null)
+                {
+                    count++;
+                }
+            }
+            
+            return count;
+        }
+
         public async Task Logout(HttpContext httpContext)
         {
             // Removing the users cookies
@@ -174,6 +190,16 @@ namespace XBCADAttendance.Models
                 return data;
             }
             else return null;
+        }
+
+        public List<TblLecture> GetAllLecturesByStudentID(string studentID)
+        {
+            var data = context.TblLectures.Where(x => x.UserId == studentID).ToList();
+
+            if (data != null)
+            {
+                return data;
+            } else return null;
         }
 
         public List<TblModule> GetAllModules()
