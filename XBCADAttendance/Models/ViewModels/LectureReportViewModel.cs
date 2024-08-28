@@ -60,5 +60,7 @@ public class LectureReport()
     {
         //Add Logic
     }
+
+    
 }
 
