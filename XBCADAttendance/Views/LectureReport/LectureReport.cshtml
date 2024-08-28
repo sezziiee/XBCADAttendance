@@ -5,20 +5,8 @@
 @await Html.PartialAsync("_TopbarPartial")
 <div class="custom-container">
     @await Html.PartialAsync("_DashSidebarPartial")
-
-
-<h1>LectureReport</h1>
-@foreach (var item in Model.lstReports)
-{
-    <label>@item.module</label>
-    <label>@item.duration</label>
-}
-
-
-
     <div class="custom-content">
         <h1>LectureReport</h1>
-        LectureReport
 
 <table>
     <thead>
@@ -36,6 +24,7 @@
                     <td>@item.date</td>
                     <td>@item.attendance</td>
                     <td>@item.GetAttendance()</td>
+
                 </tr>
             }
         

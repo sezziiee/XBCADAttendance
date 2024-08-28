@@ -62,6 +62,7 @@ public class LectureReport()
         //Add Logic
     }
 
+
     public int GetAttendance()
     {
         return DataAccess.GetContext().CalcDaysAttended(userID);
