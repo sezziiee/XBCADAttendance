@@ -1,27 +1,80 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-    <div class="profile-container">
-        <div class="profile-header">
-            <h1>@Model.FullName's Profile</h1>
-        </div>
-        <div class="profile-info">
-            <img src="@Model.ProfilePictureUrl" alt="Profile Picture" class="profile-pic">
-            <div class="profile-details">
-                <p><strong>Email:</strong> @Model.Email</p>
-                <p><strong>Student ID:</strong> @Model.StudentId</p>
-                <p><strong>Enrolled Courses:</strong></p>
-                <ul>
-                    @foreach (var course in Model.Courses)
-                    {
-                        <li>@course</li>
-                    }
-                </ul>
+﻿@await Html.PartialAsync("_StudTopbarPartial")
+<div class="custom-container">
+    @await Html.PartialAsync("_StudSidebarPartial")
+    <div class="custom-content">
+        <div class="profile-container">
+            <div class="profile-header">
+                <h1>Ben Ten</h1>
+            </div>
+            <div class="profile-info">
+                <img src="" alt="Profile Picture" class="profile-pic">
+                <div class="profile-details">
+                    <p><strong>Email:</strong> Ben@gmail.com</p>
+                    <p><strong>Student Number:</strong> ST10132642</p>
+                </div>
+            </div>
+            <div class="profile-actions">
+                <a asp-action="logout" class="btn btn-logout">Logout</a>
             </div>
         </div>
-        <div class="profile-actions">
-            <a href="/Student/Logout" class="btn btn-logout">Logout</a>
-        </div>
     </div>
-}
+</div>
+<style>
+
+    .profile-container {
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile-header h1 {
+        font-size: 24px;
+        color: #333333;
+        margin-bottom: 15px;
+    }
+
+    /* .profile-info {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+    } */
+
+    .profile-pic {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-right: 20px;
+        border: 2px solid #ddd;
+    }
+
+    .profile-details p {
+        font-size: 16px;
+        color: #555555;
+        margin: 5px 0;
+    }
+
+    .profile-details strong {
+        color: #333333;
+    }
+
+    .profile-actions {
+        margin-top: 20px;
+    }
+
+    .btn-logout {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #d9534f;
+        color: #ffffff;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-logout:hover {
+            background-color: #c9302c;
+        }
+
+</style>
