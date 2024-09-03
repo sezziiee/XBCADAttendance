@@ -1,4 +1,4 @@
-﻿@model List<StudentReportViewModel>
+﻿@model StudentReportViewModel
 
 @await Html.PartialAsync("_StudTopbarPartial")
 <div class="custom-container">
@@ -18,13 +18,17 @@
             <tbody>
                 @if (Model != null)
                 {
-                    @foreach (var report in Model)
+                    @foreach (var report in Model.lstLectures)
                     {
                         <tr>
                             <td>@report.LectureDate.ToShortDateString()</td>
                             <td>@report.ClassroomCode</td>
                             <td>@report.ScanIn.ToShortTimeString()</td>
-                            <td>@report.ScanOut.ToShortTimeString()</td>
+                            @if (@report.ScanOut != null)
+                            {
+                                TimeOnly scanout = (TimeOnly)@report.ScanOut;
+                                <td>@scanout.ToShortTimeString()</td>
+                            }
                             <td>@report.ModuleCode</td>
                         </tr>
                     }

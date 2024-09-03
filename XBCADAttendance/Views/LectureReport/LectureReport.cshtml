@@ -8,28 +8,28 @@
     <div class="custom-content">
         <h1>LectureReport</h1>
 
-<table>
-    <thead>
-        <tr>
-			<th>Student Number</th>
-			<th>Date</th>
-			<th>Attendance</th>
-            <th>Days Attended</th>
-        </tr>   
-    </thead>
-    <tbody>   
-            @foreach(var item in Model.lstReports)
-            {   <tr>
-                    <td>@item.stNumber</td>
-                    <td>@item.date</td>
-                    <td>@item.attendance</td>
-                    <td>@item.GetAttendance()</td>
-
+        <table>
+            <thead>
+                <tr>
+                    <th>Student Number</th>
+                    <th>Name</th>
+                    <th>Attendance</th>
                 </tr>
-            }
-        
-    </tbody>
-</table>
-</div>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.lstStudents)
+                {
+                    if (item.TblStudentLectures != null && item.TblStudentLectures.Count > 0)
+                    {
+                        <tr>
+                            <td>@item.studentNo</td>
+                            <td>@item.name</td>
+                            <td>@item.DisplayAttendancePerc()</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
 

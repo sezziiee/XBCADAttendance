@@ -1,71 +1,80 @@
 ﻿using Microsoft.Extensions.Configuration.UserSecrets;
+using System.ComponentModel.DataAnnotations;
 using XBCADAttendance.Models;
 
 namespace XBCADAttendance.Models
 {
     public class LectureReportViewModel
     {
-        public List<LectureReport> lstReports = new List<LectureReport>();
+        public List<TblStudentLecture> lstLectures = new List<TblStudentLecture>();
+        public List<Student> lstStudents = new List<Student>();
 
-        public LectureReportViewModel() 
+        public LectureReportViewModel()
         {
-            GetAllLectures();
+            var students = DataAccess.GetContext().GetAllStudents();
+
+            foreach (var student in students)
+            {
+                lstStudents.Add(new Student(student.StudentNo));
+            }
+
+            lstLectures = DataAccess.GetContext().GetAllLectures();
         }
 
-        public int CalculateDaysAttended()
+        public string GetAttendance(TblStudentLecture lecture)
         {
-            var day = from x in DataAccess.GetContext().GetAllLectures()
-                      where x.ScanOut != null
-                      select x;
-
-            return day.Count();
+            return lecture.ScanOut != null ? "Attended" : "Absent";
         }
-        public void GetAllLectures()
+
+        /*public void GetAllLectures()
         {
-            var tblLectures = DataAccess.GetContext().GetAllLectures();
+            var TblStudentLectures = DataAccess.GetContext().GetAllLectures();
             var tblStudents = DataAccess.GetContext().GetAllStudents();
 
-            var output = tblLectures.Join(tblStudents,
+            var output = TblStudentLectures.Join(tblStudents,
                      lecture => lecture.UserId,
                      student => student.UserId,
                      (lecture, student) => new LectureReport(
                         lecture.UserId,
                         student.StudentNo,
                         lecture.LectureDate.ToString(),
-                        "Yes",
+                        true,
                         lecture.ModuleCode)).ToList();
             lstReports.AddRange(output);
         }
-    }
-}
 
-public class LectureReport() 
-{
-    public string userID { get; set; }
-    public string stNumber { get; set; }
-    public string date { get; set; }
-    public string attendance { get; set; }
-    public string module { get; set; }
-    public double duration { get; set; }
+        public string GetAttendance()
+        {
+            int attendance = 0;
 
-    public LectureReport(string userID, string stNumber, string date, string attendance, string module): this()
-    {
-        this.userID = userID;
-        this.stNumber = stNumber;
-        this.date = date;
-        this.attendance = attendance;
-        this.module = module;
+            foreach (var report in lstReports)
+            {
+                attendance += report.attendance ? 1 : 0;
+            }
+            return attendance.ToString();
+        }*/
     }
 
-    public void CalculateDuration()
+    public class Student
     {
-        //Add Logic
-    }
+        public string studentNo { get; set; }
+        public string name { get; set; }
+        public float attendancePerc {  get; set; }
 
+        public List<TblStudentLecture> TblStudentLectures = new List<TblStudentLecture>();
 
-    public int GetAttendance()
-    {
-        return DataAccess.GetContext().CalcDaysAttended(userID);
+        public Student(string studentNo)
+        {
+            this.studentNo = studentNo;
+            name = DataAccess.GetContext().GetUserById(DataAccess.GetContext().GetIdByStudentNo(studentNo)).UserName;
+            TblStudentLectures = DataAccess.GetContext().GetAllLecturesByStudentNo(studentNo);
+            attendancePerc = DataAccess.GetContext().GetStudentAttendance(studentNo);
+        }
+
+        public string DisplayAttendancePerc()
+        {
+            return $"{attendancePerc}%";
+        }
     }
 }
 

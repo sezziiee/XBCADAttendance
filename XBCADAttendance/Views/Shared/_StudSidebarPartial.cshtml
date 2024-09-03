@@ -6,13 +6,13 @@
     </div>
     <ul class="custom-nav-links">
         <li>
-            <a asp-controller="StudentReport" asp-action="Index">Overview</a>
+            <a asp-controller="StudentReport" asp-action="Index" asp-route-userID="@Model.UserID">Overview</a>
         </li>
         <li>
-            <a asp-controller="StudentReport" asp-action="Modules">My Modules</a>
+            <a asp-controller="StudentReport" asp-action="Modules" asp-route-userID="@Model.UserID" >My Modules</a>
         </li>
         <li>
-            <a asp-controller="StudentReport" asp-action="AttendanceHistory">Attendance History</a>
+            <a asp-controller="StudentReport" asp-action="AttendanceHistory" asp-route-userID="@Model.UserID" >Attendance History</a>
         </li>
     </ul>
 </div>

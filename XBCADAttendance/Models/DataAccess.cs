@@ -107,12 +107,12 @@ namespace XBCADAttendance.Models
             );
         }
 
-        public int CalcDaysAttended(string userID)
+        public int CalcDaysAttended(string studentNo)
         {
-            List<TblLecture> studentLectures = GetAllLecturesByStudentID(userID);
+            List<TblStudentLecture> studentLectures = GetAllLecturesByStudentNo(studentNo);
             int count = 0;
 
-            foreach(TblLecture lecture in studentLectures)
+            foreach(TblStudentLecture lecture in studentLectures)
             {
                 if(lecture.ScanOut != null)
                 {
@@ -170,6 +170,11 @@ namespace XBCADAttendance.Models
         }
 
         //Read
+        public TblUser? GetUserById(string userID)
+        {
+            return context.TblUsers.Where(x => x.UserId == userID).FirstOrDefault();
+        }
+
         public List<TblStudent> GetAllStudents()
         {
             var data = context.TblStudents.ToList();
@@ -181,9 +186,43 @@ namespace XBCADAttendance.Models
             else return null;
         }
 
-        public List<TblLecture> GetAllLectures()
+        public List<TblStudentLecture>? GetStudentLectures(string userID)
         {
-            var data = context.TblLectures.ToList();
+            var lectures = context.TblStudentLectures.Where(x => x.UserId == userID).ToList();
+
+            return lectures;
+        }
+
+        public float GetStudentAttendance(string studentNo)
+        {
+            var student = context.TblStudents.Where(x => x.StudentNo == studentNo).FirstOrDefault();
+            var totalLectures = GetStudentLectures(student.UserId);
+            var attendance = context.TblStudentLectures.Where(x => x.UserId == student.UserId && x.ScanOut != null).ToList();
+
+            if (totalLectures.Count > 0)
+            {
+                return ((float)attendance.Count / totalLectures.Count) * 100;
+            }
+
+            return 0;
+            
+        }
+
+        public string? GetIdByStudentNo(string studentNo) 
+        { 
+            var students = context.TblUsers.Where(x => x.TblStudent != null).Select(x => x.TblStudent);
+
+            return students.Where(x => x!.StudentNo == studentNo).Select(x => x!.UserId).FirstOrDefault();
+        }
+
+        public string? GetStudentNoById(string userID)
+        {
+            return context.TblUsers.Where(x => x.UserId == userID && x.TblStudent != null).Select(x => x.TblStudent!.StudentNo).FirstOrDefault();
+        }
+
+        public List<TblStudentLecture> GetAllLectures()
+        {
+            var data = context.TblStudentLectures.ToList();
 
             if (data != null)
             {
@@ -192,9 +231,10 @@ namespace XBCADAttendance.Models
             else return null;
         }
 
-        public List<TblLecture> GetAllLecturesByStudentID(string studentID)
+        public List<TblStudentLecture>? GetAllLecturesByStudentNo(string studentNo)
         {
-            var data = context.TblLectures.Where(x => x.UserId == studentID).ToList();
+            var studentID = context.TblUsers.Where(x => x.TblStudent != null && x.TblStudent.StudentNo == studentNo).Select(x => x.UserId).FirstOrDefault().ToString();
+            var data = context.TblStudentLectures.Where(x => x.UserId == studentID).ToList();
 
             if (data != null)
             {
@@ -211,6 +251,23 @@ namespace XBCADAttendance.Models
                 return data;
             }
             else return null;
+        }
+
+        public List<TblModule> GetModulesByStudentNo(string studentNo)
+        {
+            string userId = GetIdByStudentNo(studentNo)!;
+            var lectures = context.TblStudentLectures.Where(x => x.UserId == userId).Select(x => x.ModuleCode).ToList();
+            var modules = context.TblModules.ToList();
+            
+            List<TblModule> lstModules = new List<TblModule>();
+
+            foreach (var lecture in lectures) 
+            {
+                var studentModules = modules.Where(x => x.ModuleCode == lecture).ToList();
+                lstModules.AddRange(studentModules);
+            }
+
+            return lstModules;
         }
 
         public List<TblUser> GetAllUsers()
@@ -317,14 +374,17 @@ namespace XBCADAttendance.Models
 
                 if (user != null)
                 {
-                    user.TblLectures.Clear();
+                    //user.TblStudentLectures.Clear();
 
                     if (user.TblStaff != null)
                     {
                         context.TblStaffs.Where(x => x.UserId == userID).ExecuteDelete();
+                        context.TblStaffLectures.Where(x => x.UserId == userID).ExecuteDelete();
+
                     }else if (user.TblStudent != null)
                     {
                         context.TblStudents.Where(x => x.UserId == userID).ExecuteDelete();
+                        context.TblStudentLectures.Where(x => x.UserId == userID).ExecuteDelete();
                     }
                 }
 
@@ -345,7 +405,7 @@ namespace XBCADAttendance.Models
         {
             try
             {
-                context.TblLectures.Where(x => x.LectureId == lectureID).ExecuteDelete();
+                context.TblStudentLectures.Where(x => x.LectureId == lectureID).ExecuteDelete();
                 context.SaveChanges();
                 return "Lecture deleted successfully";
 
@@ -369,6 +429,11 @@ namespace XBCADAttendance.Models
             {
                 return $"Error: {e}";
             }
+        }
+
+        internal TblStudent GetStudentByNo(string studentNo)
+        {
+            throw new NotImplementedException();
         }
     }
 }

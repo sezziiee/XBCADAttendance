@@ -1,33 +1,43 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model StudentReportViewModel
 @await Html.PartialAsync("_StudTopbarPartial")
 <div class="custom-container">
     @await Html.PartialAsync("_StudSidebarPartial")
     <div class="custom-content">
         <h1>Attendance History</h1>
-        <table>
-            <thead>
-                <tr>ID</tr>
-                <tr>Date Attended</tr>
-                <tr>Duration</tr>
-                <tr>Classroom</tr>
-            </thead>
-            <tbody>
-                @if (Model != null)
-                {
-                    @foreach (var report in Model)
-                    {
-                        <tr>
-                            <td></td>
-                        </tr>
-                    }
-                }
 
-            </tbody>
-        </table>
+        @if (Model.lstLectures.Count > 0)
+        {
+            <table>
+                <tr>
+                    <th>Module Code</th>
+                    <th>Date</th>
+                    <th>Duration</th>
+                    <th>Classroom</th>
+                    <th>Attendance</th>
+                </tr>
+                <tbody>
+                    @if (Model != null)
+                    {
+
+                        @foreach (var lecture in Model.lstLectures)
+                        {
+                            <tr>
+                                <td>@lecture.ModuleCode</td>
+                                <td>@lecture.LectureDate</td>
+                                <td>@Model.CalcDuration(lecture)</td>
+                                <td>@lecture.ClassroomCode</td>
+                                <td>@Model.GetAttendance(lecture)</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        } else
+        {
+            <h3>
+                You haven't had a lecture yet, check back once you have.
+            </h3>
+        }
+
     </div>
 </div>

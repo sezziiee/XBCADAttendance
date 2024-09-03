@@ -8,27 +8,100 @@ namespace XBCADAttendance.Controllers
 {
     //[Authorize(Policy ="UserOnly")]
     public class StudentReportController : Controller
-    {      
-        public IActionResult Index()
+    {
+        StudentReportViewModel? model;
+
+        public IActionResult Index(string? userID = null)
         {
-            return View();
+            if (model != null)
+            {
+                return View(model);
+            } else
+            {
+                if (userID != null)
+                {
+                    StudentReportViewModel newModel = new StudentReportViewModel(userID);
+
+                    model = newModel;
+                    return View(newModel);
+                } else
+                {
+                    //TODO Add error and redirect to homepage or login
+                    return RedirectToAction();
+                }
+            }
         }
-        public IActionResult StudentReport(StudentReportViewModel model)
+        public IActionResult StudentReport(string? userID = null, string? studentNo = null)
         {
-            var report = model.GetIndividualStudents(DataAccess.GetContext());
-            return View(report);
+            if (model != null)
+            {
+                return View(model);
+            } else
+            {
+                if (userID != null)
+                {
+                    model = new StudentReportViewModel(userID);
+                } else if (studentNo != null)
+                {
+                    model = new StudentReportViewModel(null, studentNo);
+
+                } else
+                {
+                    //TODO Add error and redirect to homepage or login
+                    return RedirectToAction();
+                }
+
+                return View(model);
+            }
         }
+
+
         public IActionResult Profile()
         {
             return View();
         }
-        public IActionResult Modules()
+
+
+        public IActionResult Modules(string? userID = null)
         {
-            return View();
+            if (model != null)
+            {
+                return View(model);
+            } else
+            {
+                if (userID != null)
+                {
+                    StudentReportViewModel newModel = new StudentReportViewModel(userID);
+
+                    model = newModel;
+                    return View(newModel);
+                } else
+                {
+                    //TODO Add error and redirect to homepage or login
+                    return RedirectToAction();
+                }
+            }
         }
-        public IActionResult AttendanceHistory()
+        public IActionResult AttendanceHistory(string? userID = null)
         {
-            return View();
+            if (model != null)
+            {
+                return View(model);
+            } else
+            {
+                if (userID != null)
+                {
+                    StudentReportViewModel newModel = new StudentReportViewModel(userID);
+
+                    model = newModel;
+                    return View(newModel);
+                } else
+                {
+                    //TODO Add error and redirect to homepage or login
+                    return RedirectToAction();
+                }
+            }
         }
+
     }
 }

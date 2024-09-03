@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace XBCADAttendance.Models;
 
-public partial class TblLecture
+public partial class TblStudentLecture
 {
     public string LectureId { get; set; } = null!;
 
@@ -21,5 +21,5 @@ public partial class TblLecture
 
     public virtual TblModule ModuleCodeNavigation { get; set; } = null!;
 
-    public virtual TblUser User { get; set; } = null!;
+    public virtual TblStudent User { get; set; } = null!;
 }
