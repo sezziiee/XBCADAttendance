@@ -13,5 +13,7 @@ public partial class TblStaff
 
     public virtual TblRole? Role { get; set; }
 
+    public virtual ICollection<TblStaffLecture> TblStaffLectures { get; set; } = new List<TblStaffLecture>();
+
     public virtual TblUser User { get; set; } = null!;
 }

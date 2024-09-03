@@ -11,8 +11,6 @@ public partial class TblUser
 
     public string? Password { get; set; }
 
-    public virtual ICollection<TblLecture> TblLectures { get; set; } = new List<TblLecture>();
-
     public virtual TblStaff? TblStaff { get; set; }
 
     public virtual TblStudent? TblStudent { get; set; }

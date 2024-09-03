@@ -9,5 +9,7 @@ public partial class TblStudent
 
     public string UserId { get; set; } = null!;
 
+    public virtual ICollection<TblStudentLecture> TblStudentLectures { get; set; } = new List<TblStudentLecture>();
+
     public virtual TblUser User { get; set; } = null!;
 }
