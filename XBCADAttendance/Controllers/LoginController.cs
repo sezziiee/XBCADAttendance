@@ -25,5 +25,19 @@ namespace XBCADAttendance.Controllers
 
             return RedirectToAction("StudentReport", "StudentReport");
         }
+
+        public IActionResult StaffLogin()
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult StaffLogin(LoginViewModel model)
+        {
+            string message = DataAccess.GetContext().LoginUser(HttpContext, model);
+
+            ViewBag.Message = message;
+
+            return RedirectToAction("LectureReport", "LectureReport");
+        }
     }
 }
