@@ -19,15 +19,15 @@ namespace XBCADAttendance.Models
             if (userID != null)
             {
                 UserID = userID;
-                StudentNo = DataAccess.GetContext().GetStudentNoById(UserID)!;
-                lstModules = DataAccess.GetContext().GetModulesByStudentNo(StudentNo);
-                lstLectures = DataAccess.GetContext().GetAllLecturesByStudentNo(StudentNo);
+                StudentNo = DataAccess.GetStudentNoById(UserID)!;
+                lstModules = DataAccess.GetModulesByStudentNo(StudentNo);
+                lstLectures = DataAccess.GetAllLecturesByStudentNo(StudentNo);
             }else if (studentNo != null)
             {
                 StudentNo = studentNo;
-                lstModules = DataAccess.GetContext().GetModulesByStudentNo(StudentNo);
-                lstLectures = DataAccess.GetContext().GetAllLecturesByStudentNo(StudentNo);
-                UserID = DataAccess.GetContext().GetIdByStudentNo(StudentNo)!;
+                lstModules = DataAccess.GetModulesByStudentNo(StudentNo);
+                lstLectures = DataAccess.GetAllLecturesByStudentNo(StudentNo);
+                UserID = DataAccess.GetIdByStudentNo(StudentNo)!;
             }
         }
 
