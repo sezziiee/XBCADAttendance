@@ -1,12 +1,9 @@
 ﻿@model StudentReportViewModel
+
 @{
-    ViewData["Title"] = "Student Attendance";
+    Layout = "_StudentLayout";
 }
-@await Html.PartialAsync("_StudTopbarPartial")
-<div class="custom-container">
-    @await Html.PartialAsync("_StudSidebarPartial")
-    <div class="custom-content">
-        <h1>Student Report</h1>
+       
         <table>
             <thead>
                 <tr>
@@ -29,6 +26,4 @@
                 }
             </tbody>
         </table>
-    </div>
-</div>
 

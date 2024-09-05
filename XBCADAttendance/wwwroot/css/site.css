@@ -134,19 +134,22 @@ body {
 /*--Sidebar--*/
 
 .sidebar {
-    width: 25%;
+    width: 50.5%;
     background-color: #13829e;
     padding: 15px;
     color: white;
     height: 100vh;
     display: flex;
+    position: relative;
     flex-direction: column;
     align-items: center;
 }
 
-    .sidebar img {
-        width: 100%;
+    .sidebar .im {
+        width: auto;
+        height: 80px;
         bottom: 0;
+        padding-bottom: 20px;
     }
 
     .sidebar button {
@@ -181,7 +184,7 @@ body {
 
     /*-SideBar 2.0-*/
 
-body {
+/*body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
@@ -218,8 +221,8 @@ body {
 
 .custom-container {
     display: flex;
-    height: calc(100vh - 60px); /* Adjust height based on top bar height */
-}
+    height: calc(100vh - 60px);*/ /* Adjust height based on top bar height */
+/*}
 
 .custom-sidebar {
     width: 250px;
@@ -284,7 +287,7 @@ body {
 
         .custom-content button:hover {
             background-color: #0f6c7a;
-        }
+        }*/
 
         /*-pluks style-*/
 .centered-table {

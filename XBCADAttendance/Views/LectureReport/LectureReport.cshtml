@@ -1,12 +1,12 @@
 @model LectureReportViewModel
 @{
     ViewData["Title"] = "Lecture Report";
+    Layout = "_LecturerLayout";
 }
-@await Html.PartialAsync("_TopbarPartial")
-<div class="custom-container">
-    @await Html.PartialAsync("_DashSidebarPartial")
-    <div class="custom-content">
-        <h1>Student Attendance</h1>
+
+
+        <h1>LectureReport</h1>
+
 
         <table>
             <thead>
@@ -36,6 +36,3 @@
                 }           
             </tbody>
         </table>
-    </div>
-</div>
-

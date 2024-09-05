@@ -1,15 +1,19 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-
+<style>
+    .sidebar {
+        width:23%;
+    }
+</style>
 <div class="both">
     @await Html.PartialAsync("_SidebarPartial")
     <div class="main-content">
         <div class="bgmain"></div>
         <div class="social-links">
-            <a href="https://facebook.com" target="_blank">Facebook</a>
-            <a href="https://twitter.com" target="_blank">Twitter</a>
-            <a href="https://instagram.com" target="_blank">Instagram</a>
+            <a href="https://facebook.com" target="_blank"><i class='bx bxl-facebook-circle'></i></a>
+            <a href="https://twitter.com" target="_blank"><i class='bx bxl-twitter'></i></a>
+            <a href="https://instagram.com" target="_blank"><i class='bx bxl-instagram'></i></a>
             <a asp-controller="AddUser" asp-action="AddStudent">Temp link to add student</a>
             <a asp-controller="StudentReport" asp-action="StudentReport" asp-route-userID="3">Temp link to view student report</a>
             <a asp-controller="LectureReport" asp-action="LectureReport">Temp link to view lecture report</a>

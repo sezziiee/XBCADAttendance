@@ -5,16 +5,95 @@
 <div class="both">
     @await Html.PartialAsync("_SidebarPartial")
     <div class="main-content">
-        <form asp-action="StudentLogin" asp-controller="Login"  method="post">
-            Student Number: <br /><input type="text" asp-for=@Model.identifier class="form-text" /><br />
-            Password: <br /><input type="password" asp-for=@Model.password class="form-text" /><br /><br />
-            <button type="submit">Login</button>
-        </form>
+        <div class="flex-container">
+            <div class="text-section">
+                <p>
+                    <strong>Welcome to your Student Portal</strong><br />
+                    <br />
 
-        <!-- Display the message -->
-        @if (!string.IsNullOrEmpty(ViewBag.Message))
-        {
-            <div class="alert alert-info">@ViewBag.Message</div>
-        }
+                    Log in by clicking on <strong>Log in</strong>. If you are experiencing a problem logging into your student portal or you have forgotten your password - click on the Forgot Password link to reset your password.
+
+                    <br /><br />When resetting your password, please note the following guidelines when selecting a new password:
+
+                    <strong><br />
+                        <ol>
+                            <li>Your password must be a minimum of 8 characters</li>
+                            <li>Your password must include a minimum of 1 special character</li>
+                            <li>Your password must include a minimum of 1 numerical digit</li>
+                            <li>Your password must include a minimum of 1 capital letter</li>
+                        </ol>
+                    </strong>
+                    Please do not attempt to reset your password multiple times, it should take 5 - 10 minutes for the password to be delivered via SMS. If you are still unable to log onto your account, check your internet connection and try clearing your browser cache by pressing the following buttons on your keyboard <strong>CTRL+SHIFT+R</strong> or <strong>CTRL+F5</strong>
+                </p>
+            </div>
+            <div class="login-section">
+                <form asp-action="StudentReport" asp-controller="StudentReport" method="post">
+                    Student Number: <br /><input type="text" asp-for="identifier" class="form-text" /><br />
+                    Password: <br /><input type="password" asp-for="password" class="form-text" /><br /><br />
+                    <button type="submit" class="butt">Login</button>
+                </form>
+
+                <!-- Display the message -->
+                @if (!string.IsNullOrEmpty(ViewBag.Message))
+                {
+                    <div class="alert alert-info">@ViewBag.Message</div>
+                }
+            </div>
+        </div>
+
     </div>
 </div>
+
+<style>
+    .flex-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 40px;
+    }
+
+    .text-section p, ol, strong{
+        font-size: 14px;
+    }
+    
+    .text-section {
+        width: 60%;
+        
+        padding-right: 20px;
+    }
+
+    .login-section {
+        width: 35%;
+    }
+
+    .form-text {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+        box-sizing: border-box;
+    }
+    i{
+        font-size: 20px;
+    }
+
+    .butt {
+        padding: 10px 20px;
+        background-color: #13829e;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        transition: 0.5s;
+    }
+
+        .butt:hover {
+            background-color: #0056b3;
+        }
+
+    .alert-info {
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #d9edf7;
+        color: #31708f;
+        border: 1px solid #bce8f1;
+    }
+</style>

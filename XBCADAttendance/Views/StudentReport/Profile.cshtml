@@ -1,7 +1,6 @@
-﻿@await Html.PartialAsync("_StudTopbarPartial")
-<div class="custom-container">
-    @await Html.PartialAsync("_StudSidebarPartial")
-    <div class="custom-content">
+﻿@{
+    Layout = "_StudentLayout";
+}
         <div class="profile-container">
             <div class="profile-header">
                 <h1>Ben Ten</h1>
@@ -17,13 +16,15 @@
                 <a asp-action="logout" class="btn btn-logout">Logout</a>
             </div>
         </div>
-    </div>
-</div>
+    
+
 <style>
 
     .profile-container {
         background-color: #ffffff;
         padding: 20px;
+        height: 100%;
+        align-content: space-between;
         border-radius: 10px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
@@ -60,6 +61,8 @@
     }
 
     .profile-actions {
+        display: flex;
+        justify-content: center;
         margin-top: 20px;
     }
 

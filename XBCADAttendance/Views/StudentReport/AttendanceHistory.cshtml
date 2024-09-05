@@ -1,8 +1,7 @@
 ﻿@model StudentReportViewModel
-@await Html.PartialAsync("_StudTopbarPartial")
-<div class="custom-container">
-    @await Html.PartialAsync("_StudSidebarPartial")
-    <div class="custom-content">
+@{
+    Layout = "_StudentLayout";
+}
         <h1>Attendance History</h1>
 
         @if (Model.lstLectures.Count > 0)
@@ -44,5 +43,3 @@
             </h3>
         }
 
-    </div>
-</div>
