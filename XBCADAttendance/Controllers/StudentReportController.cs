@@ -56,9 +56,27 @@ namespace XBCADAttendance.Controllers
         }
 
 
-        public IActionResult Profile()
+        public IActionResult Profile(string? userId = null)
         {
-            return View();
+            if (model != null)
+            {
+                return View(model);
+            }
+            else
+            {
+                if (userId != null)
+                {
+                    StudentReportViewModel newModel = new StudentReportViewModel(userId);
+
+                    model = newModel;
+                    return View(newModel);
+                }
+                else
+                {
+                    //TODO Add error and redirect to homepage or login
+                    return RedirectToAction();
+                }
+            }
         }
 
 

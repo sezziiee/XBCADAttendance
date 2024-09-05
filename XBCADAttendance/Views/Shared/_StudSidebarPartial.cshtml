@@ -1,124 +1,68 @@
-﻿<!-- Views/Shared/_DashSidebarPartial.cshtml -->
-
-<div class="custom-sidebar">
-    <div class="custom-top-section">
-        <img src="~/img/logo.png" alt="Logo">
-    </div>
-    <ul class="custom-nav-links">
-        <li>
-            <a asp-controller="StudentReport" asp-action="Index" asp-route-userID="@Model.UserID">Overview</a>
+﻿<section id="sidebar">
+    <a href="#" class="brand">
+        <i class='bx bxs-graduation'></i>
+        <span class="text">Student Hub</span>
+    </a>
+    <ul class="side-menu top">
+        <li class="active">
+            <a asp-controller="StudentReport" asp-action="Index" asp-route-userID="3">
+                <i class='bx bxs-dashboard'></i>
+                <span class="text">Dashboard</span>
+            </a>
         </li>
         <li>
-            <a asp-controller="StudentReport" asp-action="Modules" asp-route-userID="@Model.UserID" >My Modules</a>
+            <a asp-controller="StudentReport" asp-action="Modules" asp-route-userID="3">
+                <i class='bx bxs-graduation'></i>
+                <span class="text">Modules</span>
+            </a>
         </li>
         <li>
-            <a asp-controller="StudentReport" asp-action="AttendanceHistory" asp-route-userID="@Model.UserID" >Attendance History</a>
+            <a asp-controller="StudentReport" asp-action="StudentReport" asp-route-userID="3">
+                <i class='bx bxs-doughnut-chart'></i>
+                <span class="text">Student Report</span>
+            </a>
+        </li>
+        <li>
+            <a asp-controller="StudentReport" asp-action="Index" asp-route-userID="3">
+                <i class='bx bx-qr'></i>
+                <span class="text">Student Scan</span>
+            </a>
+        </li>
+        <li>
+            <a asp-controller="StudentReport" asp-action="AttendanceHistory" asp-route-userID="3">
+                <i class='bx bxs-group'></i>
+                <span class="text">Attendance List</span>
+            </a>
         </li>
     </ul>
-</div>
-
-<style>
-
-
-    .custom-sidebar {
-        width: 250px;
-        background-color: #2c3e50;
-        color: white;
-        height: 100%;
-        box-sizing: border-box;
-        overflow-y: auto;
-        left: 0;
-        top: 0;
-    }
-
-        .custom-sidebar img {
-            width: 100%;
-            margin-bottom: 20px;
-        }
-
-    .custom-nav-links {
-        list-style-type: none;
-        padding: 0;
-        margin: 0;
-    }
-
-        .custom-nav-links li {
-            margin: 15px 0;
-        }
-
-        .custom-nav-links a {
-            color: white;
-            text-decoration: none;
-            display: block;
-            padding: 10px;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
-
-            .custom-nav-links a:hover {
-                background-color: #34495e;
-            }
-
-    .dropdown-menu {
-        display: none;
-        list-style-type: none;
-        padding: 0;
-        margin: 0;
-        background-color: #34495e;
-        border-radius: 5px;
-        width: 100%;
-    }
-
-        .dropdown-menu li a {
-            padding-left: 20px;
-        }
-
-    .dropdown:hover .dropdown-menu {
-        display: block;
-    }
-
-
-    .custom-content form {
-        background: #fff;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .custom-content .form-text {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 10px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-    }
-
-    .custom-content button {
-        padding: 10px 20px;
-        background-color: #13829e;
-        border: none;
-        color: white;
-        font-size: 16px;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: 0.3s;
-    }
-
-        .custom-content button:hover {
-            background-color: #0f6c7a;
-        }
-</style>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
-
-        dropdownToggles.forEach(toggle => {
-            toggle.addEventListener('click', function (e) {
-                e.preventDefault();
-                const dropdownMenu = this.nextElementSibling;
-                dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
-            });
-        });
-    });
-</script>
+    <ul class="side-menu">
+        <li>
+            <a asp-controller="StudentReport" asp-action="Profile" asp-route-userID="3" class="profile">
+                <i class='bx bxs-user'></i>
+                <span class="text">Profile</span>
+            </a>
+        </li>
+        <li>
+            <a asp-controller="StudentReport" asp-action="logout" asp-route-userID="3" class="logout">
+                <i class='bx bxs-log-out-circle'></i>
+                <span class="text">Logout</span>
+            </a>
+        </li>
+    </ul>
+</section>
+<section id="content">
+    <nav>
+        <i class='bx bx-menu'></i>
+        <div class="send-right">
+        <div class="send-right-box">
+            <input type="checkbox" id="switch-mode" hidden>
+            <label for="switch-mode" class="switch-mode"></label>
+                <a asp-controller="StudentReport" asp-action="Profile" asp-route-userID="3" class="profile">
+                <div class="p-0 m-0">
+                    <h6>Piet Pompies</h6>
+                    <h6>St10239487</h6>
+                </div>
+            </a>
+        </div>
+        </div>
+    </nav>

@@ -1,11 +1,13 @@
-﻿
-@*
-    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
-*@
-<div class="sidebar">
-    <a asp-controller="Home" asp-action="Index"><img src="~/img/logo.png" alt="Logo"></a>
-    <button><a asp-controller="Login" asp-action="StaffLogin"><i class="fas fa-chalkboard-teacher"></i> Staff</a></button>
-    <button><a asp-controller="Login" asp-action="StudentLogin"><i class="fas fa-user-graduate"></i> Student</a></button>
-    <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-    <img src="~/img/left_slice.png">
+﻿<div class="sidebar">
+    <a asp-controller="Home" asp-action="Index"><img src="~/img/logo.png" alt="Logo" class="im"></a>
+    <button><a asp-controller="Login" asp-action="StaffLogin"><i class='bx bx-book-bookmark'></i> Staff</a></button>
+    <button><a asp-controller="Login" asp-action="StudentLogin"><i class='bx bxs-graduation'></i> Student</a></button>
+    <img src="~/img/left_slice.png" class="bottom-image">
 </div>
+<style>
+    .bottom-image {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%; 
+    }</style>

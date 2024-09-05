@@ -1,4 +1,4 @@
-﻿@await Html.PartialAsync("_TopbarPartial")
+﻿
 <style>
     .dashboard {
         font-family: Arial, sans-serif;
@@ -59,9 +59,10 @@
         }
 </style>
 
-<div class="custom-container">
-    @await Html.PartialAsync("_DashSidebarPartial")
-    <div class="custom-content dashboard">
+@{
+    Layout = "_LecturerLayout";
+}
+    <div class=" dashboard">
 
     <div class="grid-container">
         <div class="card">
@@ -92,5 +93,4 @@
 
         </div>
     </div>
-</div>
 </div>

@@ -1,9 +1,8 @@
 ﻿@model StudentReportViewModel
 
-@await Html.PartialAsync("_StudTopbarPartial")
-<div class="custom-container">
-    @await Html.PartialAsync("_StudSidebarPartial")
-    <div class="custom-content">
+@{
+    Layout = "_StudentLayout";
+}
         <h1>My Modules</h1>
         <table>
             <tr>
@@ -26,5 +25,3 @@
 
             </tbody>
         </table>
-    </div>
-</div>
