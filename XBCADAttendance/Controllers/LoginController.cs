@@ -23,7 +23,9 @@ namespace XBCADAttendance.Controllers
 
             ViewBag.Message = message;
 
-            return RedirectToAction("StudentReport", "StudentReport");
+            //return View(model);
+            return RedirectToAction("StudentReport");
+            //return RedirectToAction("StudentReport", new { userID = model. });
         }
         public IActionResult StaffLogin()
         {

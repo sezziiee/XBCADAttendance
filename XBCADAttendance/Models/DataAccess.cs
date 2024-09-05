@@ -37,16 +37,17 @@ namespace XBCADAttendance.Models
             if (model.identifier.Length > 5)//Check if id is for user/staff
             {
                 var student = context.TblStudents.Where(x => x.StudentNo == model.identifier).FirstOrDefault();
+                var user = context.TblUsers.Where(x => x.UserId == student.UserId).FirstOrDefault();
 
-                if (student != null)
+                if (user != null)
                 {
-                    Hasher passwordHasher = new Hasher(student.User.Password!);
+                    Hasher passwordHasher = new Hasher(model.password!);
 
                     string userPassword = passwordHasher.GetHash();
 
 
 
-                    if (passwordHasher.CompareHashedPasswords(userPassword, model.password))
+                    if (passwordHasher.CompareHashedPasswords(userPassword, user.Password))
                     {//Login logic
 
                         StoreUserCookies(httpContext, student.StudentNo, "Student");
@@ -137,9 +138,10 @@ namespace XBCADAttendance.Models
         //CRUD Operations
 
         //Create
+        //
         public static string AddStudent(string userID, string studentNo, string userName, string passWord)
         {
-            //userID = "Pleasewo";
+            // userID = "10085210";
             if (userID != null && studentNo != null && userName != null && passWord != null)
             {
                 Hasher hasher = new Hasher(passWord);
