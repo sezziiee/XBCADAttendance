@@ -29,8 +29,6 @@ namespace XBCADAttendance.Models
             return instance;
         }
 
-
-
         [ValidateAntiForgeryToken]
         public static string LoginUser(HttpContext httpContext, LoginViewModel model)
         {
@@ -445,6 +443,11 @@ namespace XBCADAttendance.Models
             }
 
             context.SaveChanges();
+        }
+
+        public static List<TblStaffLecture> GetStaffLectures()
+        {
+            return context.TblStaffLectures.ToList();
         }
     }
 }

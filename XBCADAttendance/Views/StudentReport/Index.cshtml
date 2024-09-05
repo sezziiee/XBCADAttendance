@@ -1,4 +1,6 @@
-﻿@await Html.PartialAsync("_StudTopbarPartial")
+﻿@model StudentReportViewModel
+
+@await Html.PartialAsync("_StudTopbarPartial")
 <style>
     .dashboard {
         font-family: Arial, sans-serif;
@@ -65,19 +67,19 @@
 
         <div class="grid-container">
             <div class="card">
-                <h2>69</h2>
+                <h2>@Model.GetDaysAttended()</h2>
                 <p>Days Attended</p>
             </div>
             <div class="card">
-                <h2>6</h2>
-                <p>Late days</p>
+                <h2>@Model.GetLateLectures()</h2>
+                <p>Late Lectures</p>
             </div>
             <div class="card">
-                <h2>7</h2>
-                <p>Absent Days</p>
+                <h2>@Model.GetMissedLectures()</h2>
+                <p>Absent Lectures</p>
             </div>
             <div class="card">
-                <h2>70%</h2>
+                <h2>@Model.GetTotalAttendance()%</h2>
                 <p>Attendance</p>
             </div>
         </div>

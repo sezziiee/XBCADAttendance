@@ -54,6 +54,96 @@ namespace XBCADAttendance.Models
             return module.ModuleName;
         }
 
+        public int GetDaysAttended()
+        {
+            int totalDays = 0;
+            var lectures = DataAccess.GetAllLecturesByStudentNo(StudentNo);
+            var staffLectures = DataAccess.GetStaffLectures();
+
+            var attendedLectures = lectures.Where(x => x.ScanOut != null ).ToList();
+            var daysAttended = attendedLectures.DistinctBy(x => x.LectureDate);
+
+            return daysAttended.Count();
+        }
+
+        public int GetLateLectures()
+        {
+            int total = 0;
+            var lectures = DataAccess.GetAllLecturesByStudentNo(StudentNo);
+            var attendedLectures = lectures.Where(x => x.ScanOut != null).ToList();
+
+            var staffLectures = DataAccess.GetStaffLectures();
+
+            foreach( var lecture in staffLectures)
+            {
+                var actualLecture = attendedLectures.Where(x => x.LectureId == lecture.LectureId).FirstOrDefault();
+
+                if(lecture.Start < actualLecture.ScanIn && actualLecture.ScanIn < lecture.Finish)
+                {
+                    total++;
+                }
+            }
+
+            return total;
+        }
+
+        public int GetMissedLectures()
+        {
+            int total = 0;
+            var staffLectures = DataAccess.GetStaffLectures();
+
+            total += lstLectures.Where(x => x.ScanOut == null).Count();
+
+            foreach(var lecture in staffLectures)
+            {
+                var actualLecture = lstLectures.Where(x => x.LectureId == lecture.LectureId).FirstOrDefault();
+
+                if (actualLecture.ScanIn > lecture.Finish)
+                {
+                    total++;
+                }
+            }
+
+            return total;
+        }
+
+        public float GetTotalAttendance()
+        {
+            var staffLectures = DataAccess.GetStaffLectures();
+            List<TblStaffLecture> actualLectures = new List<TblStaffLecture>();
+
+            foreach (var module in lstModules)
+            {
+                actualLectures.AddRange(staffLectures.Where(x => x.ModuleCode == module.ModuleCode).ToList());
+            }
+
+            var total = ((float)GetAttendedLectures() / actualLectures.Count()) * 100;
+
+            return total;
+        }
+
+        public int GetAttendedLectures()
+        {
+            int total = 0;
+            var prelimAttended = lstLectures.Where(x => x.ScanOut != null).ToList();
+
+            var allLectures = DataAccess.GetStaffLectures();
+
+            foreach (var lecture in prelimAttended)
+            {
+                var attendedLecture = allLectures.Where(x => x.LectureId == lecture.LectureId).FirstOrDefault();
+
+                if (attendedLecture.Finish > lecture.ScanIn)
+                {
+                    total++;
+                }
+            }
+
+            return total;
+        }
+
+
+
         /* public StudentReportViewModel(string userID, string studentNo, DateOnly lectureDate, string classroomCode, TimeOnly scanIn, TimeOnly scanOut, string moduleCode)
          {
              UserID = userID;
