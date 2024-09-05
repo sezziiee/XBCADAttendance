@@ -26,5 +26,10 @@ namespace XBCADAttendance.Controllers
         {
             return View();
         }
-	}
+
+        public IActionResult AddLecture(LectureReportViewModel model)
+        {
+            return View(model);
+        }
+    }
 }
