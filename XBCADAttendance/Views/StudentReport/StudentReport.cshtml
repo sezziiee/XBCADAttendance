@@ -1,4 +1,4 @@
-﻿@model LectureReportViewModel
+﻿@model StudentReportViewModel
 @{
     ViewData["Title"] = "Student Attendance";
 }
@@ -6,29 +6,28 @@
 <div class="custom-container">
     @await Html.PartialAsync("_DashSidebarPartial")
     <div class="custom-content">
-        <h1>LectureReport</h1>
+        <h1>Student Report</h1>
         <table>
             <thead>
                 <tr>
-                    <th>Student Number</th>
-                    <th>Name</th>
-                    <th>Module</th>
+                    <th>Module Code</th>
+                    <th>Module Name</th>
+                    <th>Lecture Date</th>
                     <th>Attendance</th>
 
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.lstStudents)
+                @foreach (var item in Model.lstLectures)
                 {
-                    if (item.TblStudentLectures != null && item.TblStudentLectures.Count > 0)
-                    {
+                    
                         <tr>
-                            <td>@item.studentNo</td>
-                            <td>@item.name</td>
-                            <td></td>
-                            <td>@item.DisplayAttendancePerc()</td>
+                            <td>@item.ModuleCode</td>
+                            <td>Name</td>
+                            <td>@item.LectureDate</td>                         
+                            <td>@Model.GetAttendance(item)</td>
                         </tr>
-                    }
+                    
                 }
             </tbody>
         </table>
