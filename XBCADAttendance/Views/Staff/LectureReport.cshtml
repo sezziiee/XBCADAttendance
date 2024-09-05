@@ -1,4 +1,4 @@
-@model LectureReportViewModel
+﻿@model LectureReportViewModel
 @{
     ViewData["Title"] = "Lecture Report";
 }
@@ -23,17 +23,17 @@
             </thead>
             <tbody>
                 @foreach (var item in Model.lstLectures)
-                {        
-                        <tr>
-                            <td>stud no</td>
-                            <td>@item.LectureDate</td>
-                            <td>@item.ModuleCode</td>
-                            <td>Start Time</td>
-                            <td>End Time</td>
-                            <td>@item.ClassroomCode</td> 
-                            <td>@Model.GetAttendance(item)</td>
-                        </tr>
-                }           
+                {
+                    <tr>
+                        <td>stud no</td>
+                        <td>@item.LectureDate</td>
+                        <td>@item.ModuleCode</td>
+                        <td>Start Time</td>
+                        <td>End Time</td>
+                        <td>@item.ClassroomCode</td>
+                        <td>@Model.GetAttendance(item)</td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>

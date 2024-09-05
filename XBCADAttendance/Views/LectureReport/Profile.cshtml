@@ -4,14 +4,15 @@
 @{
     <div class="profile-container">
         <div class="profile-header">
-            <h1>@Model.FullName's Profile</h1>
+            <h1>name</h1>
         </div>
         <div class="profile-info">
             <img src="@Model.ProfilePictureUrl" alt="Profile Picture" class="profile-pic">
             <div class="profile-details">
-                <p><strong>Email:</strong> @Model.Email</p>
+                
                 <p><strong>Lecturer ID:</strong> @Model.EmployeeId</p>
-                <p><strong>Subjects:</strong></p>
+                <p><strong>Name:</strong> @Model.Name</p>
+
                 <ul>
                     @foreach (var subject in Model.Subjects)
                     {
