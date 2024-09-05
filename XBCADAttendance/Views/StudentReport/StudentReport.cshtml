@@ -16,12 +16,13 @@
             <tbody>
                 @if (Model != null)
                 {
-                    @foreach (var report in Model.lstLectures)
+                    @foreach (var lecture in Model.lstLectures)
                     {
+
                         <tr>
-                            <td>@report.ModuleCode</td>
-                            <td>@report.LectureDate.ToShortDateString()</td>
-                      
+                            <td>@lecture.ModuleCode</td>
+                            <td>@lecture.LectureDate.ToShortDateString()</td>
+                            <td>@Model.GetModuleNameByCode(@lecture.ModuleCode)</td>
                         </tr>
                     }
                 }
