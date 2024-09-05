@@ -1,4 +1,5 @@
-﻿
+﻿using XBCADAttendance;
+
 namespace XBCADAttendance.Models
 {
     public class StudentReportViewModel
@@ -44,6 +45,13 @@ namespace XBCADAttendance.Models
         public string GetAttendance(TblStudentLecture lecture)
         {
             return lecture.ScanOut != null ? "Attended" : "Absent";
+        }
+
+        public string GetModuleNameByCode(string moduleCode)
+        {
+            TblModule module = lstModules.Where(x => x.ModuleCode == moduleCode).FirstOrDefault();
+
+            return module.ModuleName;
         }
 
         /* public StudentReportViewModel(string userID, string studentNo, DateOnly lectureDate, string classroomCode, TimeOnly scanIn, TimeOnly scanOut, string moduleCode)
