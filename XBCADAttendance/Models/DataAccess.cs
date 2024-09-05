@@ -6,17 +6,20 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Security.Claims;
 using XBCADAttendance.Models.ViewModels;
+using XBCADAttendance;
 
 namespace XBCADAttendance.Models
 {
     public class DataAccess
     {
-        public DbWilContext context = new DbWilContext();
+        public static DbWilContext context = new DbWilContext();
         public static DataAccess? instance = null;
 
-        public DataAccess() {}
+        public DataAccess() {
+            GetInstance();
+        }
 
-        public static DataAccess GetContext()
+        public static DataAccess GetInstance()
         {
             if (instance == null)
             {
@@ -27,21 +30,22 @@ namespace XBCADAttendance.Models
         }
 
         [ValidateAntiForgeryToken]
-        public string LoginUser(HttpContext httpContext, LoginViewModel model)
+        public static string LoginUser(HttpContext httpContext, LoginViewModel model)
         {
             if (model.identifier.Length > 5)//Check if id is for user/staff
             {
                 var student = context.TblStudents.Where(x => x.StudentNo == model.identifier).FirstOrDefault();
+                var user = context.TblUsers.Where(x => x.UserId == student.UserId).FirstOrDefault();
 
-                if (student != null)
+                if (user != null)
                 {
-                    Hasher passwordHasher = new Hasher(student.User.Password!);
+                    Hasher passwordHasher = new Hasher(model.password!);
 
                     string userPassword = passwordHasher.GetHash();
 
 
 
-                    if (passwordHasher.CompareHashedPasswords(userPassword, model.password))
+                    if (passwordHasher.CompareHashedPasswords(userPassword, user.Password))
                     {//Login logic
 
                         StoreUserCookies(httpContext, student.StudentNo, "Student");
@@ -81,7 +85,7 @@ namespace XBCADAttendance.Models
 
         //Sign in and authentication
         // Stores user authentication cookies using ASP.NET Core's cookie authentication.
-        public async Task StoreUserCookies(HttpContext httpContext, string studentNo, string identifier)
+        public static async Task StoreUserCookies(HttpContext httpContext, string studentNo, string identifier)
         {
             // Create a list of claims for the user with the student's number as the user's name.
             var claims = new List<Claim>
@@ -107,7 +111,7 @@ namespace XBCADAttendance.Models
             );
         }
 
-        public int CalcDaysAttended(string studentNo)
+        public static int CalcDaysAttended(string studentNo)
         {
             List<TblStudentLecture> studentLectures = GetAllLecturesByStudentNo(studentNo);
             int count = 0;
@@ -123,7 +127,7 @@ namespace XBCADAttendance.Models
             return count;
         }
 
-        public async Task Logout(HttpContext httpContext)
+        public static async Task Logout(HttpContext httpContext)
         {
             // Removing the users cookies
             await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -132,9 +136,10 @@ namespace XBCADAttendance.Models
         //CRUD Operations
 
         //Create
-        public string AddStudent(string userID, string studentNo, string userName, string passWord)
+        //
+        public static string AddStudent(string userID, string studentNo, string userName, string passWord)
         {
-            //userID = "Pleasewo";
+            // userID = "10085210";
             if (userID != null && studentNo != null && userName != null && passWord != null)
             {
                 Hasher hasher = new Hasher(passWord);
@@ -170,12 +175,12 @@ namespace XBCADAttendance.Models
         }
 
         //Read
-        public TblUser? GetUserById(string userID)
+        public static TblUser? GetUserById(string userID)
         {
             return context.TblUsers.Where(x => x.UserId == userID).FirstOrDefault();
         }
 
-        public List<TblStudent> GetAllStudents()
+        public static List<TblStudent> GetAllStudents()
         {
             var data = context.TblStudents.ToList();
 
@@ -186,14 +191,14 @@ namespace XBCADAttendance.Models
             else return null;
         }
 
-        public List<TblStudentLecture>? GetStudentLectures(string userID)
+        public static List<TblStudentLecture>? GetStudentLectures(string userID)
         {
             var lectures = context.TblStudentLectures.Where(x => x.UserId == userID).ToList();
 
             return lectures;
         }
 
-        public float GetStudentAttendance(string studentNo)
+        public static float GetStudentAttendance(string studentNo)
         {
             var student = context.TblStudents.Where(x => x.StudentNo == studentNo).FirstOrDefault();
             var totalLectures = GetStudentLectures(student.UserId);
@@ -208,19 +213,19 @@ namespace XBCADAttendance.Models
             
         }
 
-        public string? GetIdByStudentNo(string studentNo) 
+        public static string? GetIdByStudentNo(string studentNo) 
         { 
             var students = context.TblUsers.Where(x => x.TblStudent != null).Select(x => x.TblStudent);
 
             return students.Where(x => x!.StudentNo == studentNo).Select(x => x!.UserId).FirstOrDefault();
         }
 
-        public string? GetStudentNoById(string userID)
+        public static string? GetStudentNoById(string userID)
         {
             return context.TblUsers.Where(x => x.UserId == userID && x.TblStudent != null).Select(x => x.TblStudent!.StudentNo).FirstOrDefault();
         }
 
-        public List<TblStudentLecture> GetAllLectures()
+        public static List<TblStudentLecture> GetAllLectures()
         {
             var data = context.TblStudentLectures.ToList();
 
@@ -231,7 +236,7 @@ namespace XBCADAttendance.Models
             else return null;
         }
 
-        public List<TblStudentLecture>? GetAllLecturesByStudentNo(string studentNo)
+        public static List<TblStudentLecture>? GetAllLecturesByStudentNo(string studentNo)
         {
             var studentID = context.TblUsers.Where(x => x.TblStudent != null && x.TblStudent.StudentNo == studentNo).Select(x => x.UserId).FirstOrDefault().ToString();
             var data = context.TblStudentLectures.Where(x => x.UserId == studentID).ToList();
@@ -242,7 +247,7 @@ namespace XBCADAttendance.Models
             } else return null;
         }
 
-        public List<TblModule> GetAllModules()
+        public static List<TblModule> GetAllModules()
         {
             var data = context.TblModules.ToList();
 
@@ -253,7 +258,7 @@ namespace XBCADAttendance.Models
             else return null;
         }
 
-        public List<TblModule> GetModulesByStudentNo(string studentNo)
+        public static List<TblModule> GetModulesByStudentNo(string studentNo)
         {
             string userId = GetIdByStudentNo(studentNo)!;
             var lectures = context.TblStudentLectures.Where(x => x.UserId == userId).Select(x => x.ModuleCode).ToList();
@@ -270,7 +275,7 @@ namespace XBCADAttendance.Models
             return lstModules;
         }
 
-        public List<TblUser> GetAllUsers()
+        public static List<TblUser> GetAllUsers()
         {
             var data = context.TblUsers.ToList();
 
@@ -281,7 +286,7 @@ namespace XBCADAttendance.Models
             else return null;
         }
 
-        public List<TblStaff> GetAllStaff()
+        public static List<TblStaff> GetAllStaff()
         {
             var data = context.TblStaffs.ToList();
 
@@ -292,7 +297,7 @@ namespace XBCADAttendance.Models
             else return null;
         }
 
-        public List<TblRole> GetAllRoles()
+        public static List<TblRole> GetAllRoles()
         {
             var data = context.TblRoles.ToList();
 
@@ -304,7 +309,7 @@ namespace XBCADAttendance.Models
         }
 
         //Update
-        public string UpdateUser(string userID, string? userName, string? passWord)
+        public static string UpdateUser(string userID, string? userName, string? passWord)
         {
             bool updateName = false;
             bool updatePassword = false;
@@ -365,7 +370,7 @@ namespace XBCADAttendance.Models
         }
 
         //Delete
-        public string DeleteUser(string userID)
+        public static string DeleteUser(string userID)
         {
             try
             {
@@ -401,7 +406,7 @@ namespace XBCADAttendance.Models
 
         }
 
-        public string DeleteLecture(string lectureID)
+        public static string DeleteLecture(string lectureID)
         {
             try
             {
@@ -416,7 +421,7 @@ namespace XBCADAttendance.Models
             }
         }
 
-        public string DeleteModule(string moduleCode)
+        public static string DeleteModule(string moduleCode)
         {
             try
             {
@@ -431,9 +436,20 @@ namespace XBCADAttendance.Models
             }
         }
 
-        internal TblStudent GetStudentByNo(string studentNo)
+        public static void AddLecture(TblStaffLecture lecture)
         {
-            throw new NotImplementedException();
+            //Add error handling
+            if (lecture != null)
+            {
+                context.TblStaffLectures.Add(lecture);
+            }
+
+            context.SaveChanges();
+        }
+
+        public static List<TblStaffLecture> GetStaffLectures()
+        {
+            return context.TblStaffLectures.ToList();
         }
     }
 }

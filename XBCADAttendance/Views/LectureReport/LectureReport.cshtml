@@ -4,27 +4,35 @@
     Layout = "_LecturerLayout";
 }
 
+
         <h1>LectureReport</h1>
+
 
         <table>
             <thead>
                 <tr>
-                    <th>Student Number</th>
-                    <th>Name</th>
+                    <th>Student No</th>
+                    <th>Lecture Date</th>
+                    <th>Module</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Classroom</th>
                     <th>Attendance</th>
+
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.lstStudents)
-                {
-                    if (item.TblStudentLectures != null && item.TblStudentLectures.Count > 0)
-                    {
+                @foreach (var item in Model.lstLectures)
+                {        
                         <tr>
-                            <td>@item.studentNo</td>
-                            <td>@item.name</td>
-                            <td>@item.DisplayAttendancePerc()</td>
+                            <td>stud no</td>
+                            <td>@item.LectureDate</td>
+                            <td>@item.ModuleCode</td>
+                            <td>Start Time</td>
+                            <td>End Time</td>
+                            <td>@item.ClassroomCode</td> 
+                            <td>@Model.GetAttendance(item)</td>
                         </tr>
-                    }
-                }
+                }           
             </tbody>
         </table>

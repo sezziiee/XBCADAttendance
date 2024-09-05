@@ -103,6 +103,7 @@ public partial class DbWilContext : DbContext
                 .HasMaxLength(10)
                 .IsFixedLength()
                 .HasColumnName("LectureID");
+            entity.Property(e => e.ClassroomCode).HasMaxLength(5);
             entity.Property(e => e.Finish).HasColumnName("finish");
             entity.Property(e => e.ModuleCode)
                 .HasMaxLength(8)
@@ -112,6 +113,11 @@ public partial class DbWilContext : DbContext
                 .HasMaxLength(8)
                 .IsFixedLength()
                 .HasColumnName("UserID");
+
+            entity.HasOne(d => d.Lecture).WithOne(p => p.TblStaffLecture)
+                .HasForeignKey<TblStaffLecture>(d => d.LectureId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_TblStaffLecture_tblStudentLecture");
 
             entity.HasOne(d => d.ModuleCodeNavigation).WithMany(p => p.TblStaffLectures)
                 .HasForeignKey(d => d.ModuleCode)
@@ -154,9 +160,7 @@ public partial class DbWilContext : DbContext
                 .HasMaxLength(10)
                 .IsFixedLength()
                 .HasColumnName("LectureID");
-            entity.Property(e => e.ClassroomCode)
-                .HasMaxLength(5)
-                .IsFixedLength();
+            entity.Property(e => e.ClassroomCode).HasMaxLength(5);
             entity.Property(e => e.ModuleCode)
                 .HasMaxLength(8)
                 .IsFixedLength();

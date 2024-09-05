@@ -11,21 +11,26 @@
                     <th>Module Code</th>
                     <th>Date</th>
                     <th>Duration</th>
+                    <th>Scan In</th>
+                    <th>Scan Out</th>
                     <th>Classroom</th>
-                    <th>Attendance</th>
                 </tr>
                 <tbody>
                     @if (Model != null)
                     {
-
                         @foreach (var lecture in Model.lstLectures)
                         {
                             <tr>
                                 <td>@lecture.ModuleCode</td>
                                 <td>@lecture.LectureDate</td>
                                 <td>@Model.CalcDuration(lecture)</td>
+                                <td>@lecture.ScanIn.ToShortTimeString()</td>
+                                @if (@lecture.ScanOut != null)
+                                {
+                                    TimeOnly scanout = (TimeOnly)@lecture.ScanOut;
+                                    <td>@scanout.ToShortTimeString()</td>
+                                }
                                 <td>@lecture.ClassroomCode</td>
-                                <td>@Model.GetAttendance(lecture)</td>
                             </tr>
                         }
                     }

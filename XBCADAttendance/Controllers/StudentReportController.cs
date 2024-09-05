@@ -6,7 +6,7 @@ using XBCADAttendance.Models.ViewModels;
 
 namespace XBCADAttendance.Controllers
 {
-    //[Authorize(Policy ="UserOnly")]
+    [Authorize(Policy ="StudentOnly")]
     public class StudentReportController : Controller
     {
         StudentReportViewModel? model;
@@ -48,7 +48,8 @@ namespace XBCADAttendance.Controllers
                 } else
                 {
                     //TODO Add error and redirect to homepage or login
-                    return RedirectToAction();
+                    //return View(model);
+                     return RedirectToAction();
                 }
 
                 return View(model);

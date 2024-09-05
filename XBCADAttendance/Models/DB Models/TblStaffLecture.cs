@@ -11,11 +11,15 @@ public partial class TblStaffLecture
 
     public string ModuleCode { get; set; } = null!;
 
+    public string? ClassroomCode { get; set; }
+
     public DateOnly Date { get; set; }
 
     public TimeOnly? Start { get; set; }
 
     public TimeOnly? Finish { get; set; }
+
+    public virtual TblStudentLecture Lecture { get; set; } = null!;
 
     public virtual TblModule ModuleCodeNavigation { get; set; } = null!;
 

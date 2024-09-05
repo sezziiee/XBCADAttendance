@@ -16,9 +16,36 @@ namespace XBCADAttendance.Controllers
 		{
             return View(model);
 		}
+
+        public IActionResult StudentReport(LectureReportViewModel model)
+        {
+            return View(model);
+        }
+
         public IActionResult Profile()
         {
             return View();
         }
-	}
+
+
+        public IActionResult AddLecture(LectureReportViewModel model)
+        {
+            return View(model);
+        }
+        
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Create(TblStaffLecture lecture)
+        {
+            DataAccess.AddLecture(lecture);
+
+            return View();
+
+        }
+    }
 }
