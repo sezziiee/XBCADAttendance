@@ -8,11 +8,9 @@
         <table>
             <thead>
                 <tr>
-                    <th>Lecture Date</th>
-                    <th>Classroom Code</th>
-                    <th>Scan In</th>
-                    <th>Scan Out</th>
                     <th>Module</th>
+                    <th>Lecture Date</th> 
+                    <th>Module Name</th>
                 </tr>
             </thead>
             <tbody>
@@ -21,15 +19,9 @@
                     @foreach (var report in Model.lstLectures)
                     {
                         <tr>
-                            <td>@report.LectureDate.ToShortDateString()</td>
-                            <td>@report.ClassroomCode</td>
-                            <td>@report.ScanIn.ToShortTimeString()</td>
-                            @if (@report.ScanOut != null)
-                            {
-                                TimeOnly scanout = (TimeOnly)@report.ScanOut;
-                                <td>@scanout.ToShortTimeString()</td>
-                            }
                             <td>@report.ModuleCode</td>
+                            <td>@report.LectureDate.ToShortDateString()</td>
+                      
                         </tr>
                     }
                 }
