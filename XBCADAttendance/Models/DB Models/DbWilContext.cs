@@ -7,7 +7,28 @@ namespace XBCADAttendance
 {
     public partial class DbWilContext : DbContext
     {
-        public DbWilContext()
+
+    public virtual DbSet<TblModule> TblModules { get; set; }
+
+    public virtual DbSet<TblRole> TblRoles { get; set; }
+
+    public virtual DbSet<TblStaff> TblStaffs { get; set; }
+
+    public virtual DbSet<TblStaffLecture> TblStaffLectures { get; set; }
+
+    public virtual DbSet<TblStudent> TblStudents { get; set; }
+
+    public virtual DbSet<TblStudentLecture> TblStudentLectures { get; set; }
+
+    public virtual DbSet<TblUser> TblUsers { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer(Environment.GetEnvironmentVariable("CONNECTION_STRING"));
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<TblModule>(entity =>
         {
         }
 
@@ -15,24 +36,6 @@ namespace XBCADAttendance
             : base(options)
         {
         }
-
-        public virtual DbSet<TblModule> TblModules { get; set; }
-
-        public virtual DbSet<TblRole> TblRoles { get; set; }
-
-        public virtual DbSet<TblStaff> TblStaffs { get; set; }
-
-        public virtual DbSet<TblStaffLecture> TblStaffLectures { get; set; }
-
-        public virtual DbSet<TblStudent> TblStudents { get; set; }
-
-        public virtual DbSet<TblStudentLecture> TblStudentLectures { get; set; }
-
-        public virtual DbSet<TblUser> TblUsers { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-            => optionsBuilder.UseSqlServer("Server=localhost;Database=dbWIL;Trusted_Connection=True;TrustServerCertificate=true;");
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

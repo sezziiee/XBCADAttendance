@@ -16,6 +16,12 @@ namespace XBCADAttendance.Controllers
 		{
             return View(model);
 		}
+
+        public IActionResult StudentReport(LectureReportViewModel model)
+        {
+            return View(model);
+        }
+
         public IActionResult Profile()
         {
             return View();

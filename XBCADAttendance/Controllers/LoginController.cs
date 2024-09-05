@@ -25,7 +25,6 @@ namespace XBCADAttendance.Controllers
 
             return RedirectToAction("StudentReport", "StudentReport");
         }
-
         public IActionResult StaffLogin()
         {
             return View();
