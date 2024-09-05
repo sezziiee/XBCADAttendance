@@ -1,0 +1,41 @@
+﻿@model LectureReportViewModel
+@{
+    ViewData["Title"] = "Lecture Report";
+}
+@await Html.PartialAsync("_TopbarPartial")
+<div class="custom-container">
+    @await Html.PartialAsync("_DashSidebarPartial")
+    <div class="custom-content">
+        <h1>LectureReport</h1>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Student No</th>
+                    <th>Lecture Date</th>
+                    <th>Module</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Classroom</th>
+                    <th>Attendance</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.lstLectures)
+                {
+                    <tr>
+                        <td>stud no</td>
+                        <td>@item.LectureDate</td>
+                        <td>@item.ModuleCode</td>
+                        <td>Start Time</td>
+                        <td>End Time</td>
+                        <td>@item.ClassroomCode</td>
+                        <td>@Model.GetAttendance(item)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

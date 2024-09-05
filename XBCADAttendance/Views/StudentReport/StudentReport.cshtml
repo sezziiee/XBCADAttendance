@@ -1,32 +1,38 @@
-﻿@model StudentReportViewModel
-
-@await Html.PartialAsync("_StudTopbarPartial")
+﻿@model LectureReportViewModel
+@{
+    ViewData["Title"] = "Student Attendance";
+}
+@await Html.PartialAsync("_TopbarPartial")
 <div class="custom-container">
-    @await Html.PartialAsync("_StudSidebarPartial")
+    @await Html.PartialAsync("_DashSidebarPartial")
     <div class="custom-content">
-        
+        <h1>LectureReport</h1>
+
         <table>
             <thead>
                 <tr>
+                    <th>Student Number</th>
+                    <th>Name</th>
                     <th>Module</th>
-                    <th>Lecture Date</th> 
-                    <th>Module Name</th>
+                    <th>Attendance</th>
+
                 </tr>
             </thead>
             <tbody>
-                @if (Model != null)
+                @foreach (var item in Model.lstStudents)
                 {
-                    @foreach (var report in Model.lstLectures)
+                    if (item.TblStudentLectures != null && item.TblStudentLectures.Count > 0)
                     {
                         <tr>
-                            <td>@report.ModuleCode</td>
-                            <td>@report.LectureDate.ToShortDateString()</td>
-                      
+                            <td>@item.studentNo</td>
+                            <td>@item.name</td>
+                            <td></td>
+                            <td>@item.DisplayAttendancePerc()</td>
                         </tr>
                     }
                 }
-
             </tbody>
         </table>
     </div>
 </div>
+
