@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Security.Claims;
 using XBCADAttendance.Models.ViewModels;
+using XBCADAttendance;
 
 namespace XBCADAttendance.Models
 {
@@ -433,6 +434,17 @@ namespace XBCADAttendance.Models
             {
                 return $"Error: {e}";
             }
+        }
+
+        public static void AddLecture(TblStaffLecture lecture)
+        {
+            //Add error handling
+            if (lecture != null)
+            {
+                context.TblStaffLectures.Add(lecture);
+            }
+
+            context.SaveChanges();
         }
     }
 }

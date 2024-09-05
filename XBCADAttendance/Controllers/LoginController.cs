@@ -34,7 +34,6 @@ namespace XBCADAttendance.Controllers
         {
             string message = DataAccess.LoginUser(HttpContext, model);
 
-
             ViewBag.Message = message;
 
             return RedirectToAction("LectureReport", "LectureReport");

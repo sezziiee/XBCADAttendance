@@ -27,9 +27,25 @@ namespace XBCADAttendance.Controllers
             return View();
         }
 
+
         public IActionResult AddLecture(LectureReportViewModel model)
         {
             return View(model);
+        }
+        
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Create(TblStaffLecture lecture)
+        {
+            DataAccess.AddLecture(lecture);
+
+            return View();
+
         }
     }
 }
