@@ -13,7 +13,7 @@ namespace XBCADAttendance.Controllers
 
         public IActionResult Update(OverrideModel model)
         {
-            DataAccess.GetContext();
+            
             return View();
         }
 

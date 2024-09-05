@@ -19,11 +19,13 @@ namespace XBCADAttendance.Controllers
         [HttpPost]
         public IActionResult StudentLogin(LoginViewModel model) 
         {
-            string message = DataAccess.GetContext().LoginUser(HttpContext, model);
+            string message = DataAccess.LoginUser(HttpContext, model);
 
             ViewBag.Message = message;
 
-            return RedirectToAction("StudentReport", "StudentReport");
+            //return View(model);
+            return RedirectToAction("StudentReport");
+            //return RedirectToAction("StudentReport", new { userID = model. });
         }
     }
 }

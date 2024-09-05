@@ -20,7 +20,7 @@ namespace XBCADAttendance.Controllers
         [HttpPost]
         public IActionResult AddStudent(AddStudentViewModel model)
         {
-            string message = DataAccess.GetContext().AddStudent(model.UserID, model.StudentNo, model.Username, model.Password);
+            string message = DataAccess.AddStudent(model.UserID, model.StudentNo, model.Username, model.Password);
 
             ViewBag.Message = message;
 

@@ -5,7 +5,7 @@
 <div class="both">
     @await Html.PartialAsync("_SidebarPartial")
     <div class="main-content">
-        <form asp-action="StudentReport" asp-controller="StudentReport" method="post">
+        <form asp-action="StudentLogin" asp-controller="Login"  method="post">
             Student Number: <br /><input type="text" asp-for=@Model.identifier class="form-text" /><br />
             Password: <br /><input type="password" asp-for=@Model.password class="form-text" /><br /><br />
             <button type="submit">Login</button>
