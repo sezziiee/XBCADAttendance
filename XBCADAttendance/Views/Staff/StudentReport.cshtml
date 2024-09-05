@@ -1,0 +1,30 @@
+﻿@model LectureReportViewModel
+
+<div class="custom-container">
+    <div class="custom-content">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Module</th>
+                    <th>Lecture Date</th>
+                    <th>Module Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null)
+                {
+                    @foreach (var report in Model.lstLectures)
+                    {
+                        <tr>
+                            <td>@report.ModuleCode</td>
+                            <td>@report.LectureDate.ToShortDateString()</td>
+
+                        </tr>
+                    }
+                }
+
+            </tbody>
+        </table>
+    </div>
+</div>
