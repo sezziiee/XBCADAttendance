@@ -1,26 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace XBCADAttendance
+namespace XBCADAttendance.Models;
+
+public partial class TblStaffLecture
 {
-    public partial class TblStaffLecture
-    {
-        public string LectureId { get; set; } = null!;
+    public string LectureId { get; set; } = null!;
 
-        public string UserId { get; set; } = null!;
+    public string UserId { get; set; } = null!;
 
-        public string ModuleCode { get; set; } = null!;
+    public string ModuleCode { get; set; } = null!;
 
-        public DateOnly Date { get; set; }
+    public string? ClassroomCode { get; set; }
 
-        public TimeOnly? Start { get; set; }
+    public DateOnly Date { get; set; }
 
-        public TimeOnly? Finish { get; set; }
+    public TimeOnly? Start { get; set; }
 
-        public virtual TblModule ModuleCodeNavigation { get; set; } = null!;
+    public TimeOnly? Finish { get; set; }
 
-        public virtual TblStaff User { get; set; } = null!;
-    }
+    public virtual TblStudentLecture Lecture { get; set; } = null!;
+
+    public virtual TblModule ModuleCodeNavigation { get; set; } = null!;
+
+    public virtual TblStaff User { get; set; } = null!;
 }
-
-

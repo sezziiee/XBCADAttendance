@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using XBCADAttendance;
 
-namespace XBCADAttendance{
-    public partial class TblStudent
-    {
-        public string StudentNo { get; set; } = null!;
+namespace XBCADAttendance.Models;
 
-        public string UserId { get; set; } = null!;
+public partial class TblStudent
+{
+    public string StudentNo { get; set; } = null!;
 
-        public virtual ICollection<TblStudentLecture> TblStudentLectures { get; set; } = new List<TblStudentLecture>();
+    public string UserId { get; set; } = null!;
 
-        public virtual TblUser User { get; set; } = null!;
-    }
+    public virtual ICollection<TblStudentLecture> TblStudentLectures { get; set; } = new List<TblStudentLecture>();
+
+    public virtual TblUser User { get; set; } = null!;
 }
-
-
