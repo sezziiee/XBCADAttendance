@@ -1,6 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using XBCADAttendance.Models;
 using XBCADAttendance.Models.ViewModels;
+using Newtonsoft.Json;
 
 namespace XBCADAttendance.Controllers
 {
@@ -18,7 +22,7 @@ namespace XBCADAttendance.Controllers
         }
 
         [HttpPost]
-        public IActionResult StudentLogin(LoginViewModel model) 
+        public async Task<IActionResult> StudentLogin(LoginViewModel model) 
         {
             if (model.identifier.Length < 10)
             {

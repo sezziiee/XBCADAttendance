@@ -1,4 +1,7 @@
-﻿<section id="sidebar">
+﻿@using XBCADAttendance.Models.ViewModels
+@model StudentViewModel
+
+<section id="sidebar">
     <a href="#" class="brand">
         <i class='bx bxs-graduation'></i>
         <span class="text">Student Hub</span>
@@ -62,8 +65,8 @@
             <label for="switch-mode" class="switch-mode"></label>
                 <a asp-controller="StudentReport" asp-action="Profile" asp-route-userID="3" class="profile">
                 <div class="p-0 m-0">
-                    <h6>Piet Pompies</h6>
-                    <h6>St10239487</h6>
+                    <h6>@Model.Name</h6>
+                    <h6>@Model.StudentNo</h6>
                 </div>
             </a>
         </div>
