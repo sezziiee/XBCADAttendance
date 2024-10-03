@@ -78,10 +78,14 @@ namespace XBCADAttendance.Models
             {
                 var actualLecture = attendedLectures.Where(x => x.LectureId == lecture.LectureId).FirstOrDefault();
 
-                if(lecture.Start < actualLecture.ScanIn && actualLecture.ScanIn < lecture.Finish)
+                if (actualLecture != null)
                 {
-                    total++;
+                    if (lecture.Start < actualLecture.ScanIn && actualLecture.ScanIn < lecture.Finish)
+                    {
+                        total++;
+                    }
                 }
+                
             }
 
             return total;
@@ -98,9 +102,12 @@ namespace XBCADAttendance.Models
             {
                 var actualLecture = lstLectures.Where(x => x.LectureId == lecture.LectureId).FirstOrDefault();
 
-                if (actualLecture.ScanIn > lecture.Finish)
+                if (actualLecture != null)
                 {
-                    total++;
+                    if (actualLecture.ScanIn > lecture.Finish)
+                    {
+                        total++;
+                    }
                 }
             }
 

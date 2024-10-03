@@ -11,6 +11,7 @@ namespace XBCADAttendance.Controllers
             return View();
         }
 
+        [HttpGet]
         public IActionResult StudentLogin()
         {
             return View();
@@ -24,8 +25,8 @@ namespace XBCADAttendance.Controllers
             ViewBag.Message = message;
 
             //return View(model);
-            return RedirectToAction("StudentReport");
-            //return RedirectToAction("StudentReport", new { userID = model. });
+            //return RedirectToAction("StudentReport");
+            return RedirectToAction("Index", "StudentReport", new { userID = model.identifier });
         }
         public IActionResult StaffLogin()
         {
