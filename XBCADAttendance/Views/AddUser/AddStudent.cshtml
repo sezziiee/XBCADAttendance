@@ -4,8 +4,6 @@
     ViewBag.Title = "Add Student";
 }
 
-@await Html.PartialAsync("_TopbarPartial")
-
 <div class="custom-container">
     @await Html.PartialAsync("_DashSidebarPartial")
     <div class="custom-content">
@@ -13,7 +11,7 @@
             Student Number: <br /><input type="text" asp-for=@Model.StudentNo class="form-text" /><br />
             Username: <br /><input type="text" asp-for=@Model.Username class="form-text" /><br />
             Password: <br /><input type="password" asp-for=@Model.Password class="form-text" /><br />
-           Student Card: <br /><input type="text" asp-for=@Model.UserID id="userIDInput" class="form-text" readonly /><br />
+           Student Card: <br /><input type="text" asp-for=@Model.UserID id="userIDInput" class="form-text"/><br />
             <br /><input type="button" id="btnScan" onclick="ScanUserID()"/><br /><br />
             <button type="submit">Add</button>
         </form>

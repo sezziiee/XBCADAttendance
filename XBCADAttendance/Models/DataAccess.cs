@@ -35,32 +35,31 @@ namespace XBCADAttendance.Models
             if (model.identifier.Length > 5)//Check if id is for user/staff
             {
                 var student = context.TblStudents.Where(x => x.StudentNo == model.identifier).FirstOrDefault();
-                var user = context.TblUsers.Where(x => x.UserId == student.UserId).FirstOrDefault();
-
-                if (user != null)
+                
+                if (student != null)
                 {
-                    Hasher passwordHasher = new Hasher(model.password!);
+                    var user = context.TblUsers.Where(x => x.UserId == student.UserId).FirstOrDefault();
 
-                    string userPassword = passwordHasher.GetHash();
+                    if (user != null)
+                    {
+                        Hasher passwordHasher = new Hasher(model.password!);
 
-
-
-                    if (passwordHasher.CompareHashedPasswords(userPassword, user.Password))
-                    {//Login logic
-
-                        StoreUserCookies(httpContext, student.StudentNo, "Student");
+                        string userPassword = passwordHasher.GetHash();
 
 
-                        return "Successful login";
-                    }
-                    else return "Incorrect password";
 
-                }
-                else
-                {
-                    return "Student not found";
+                        if (passwordHasher.CompareHashedPasswords(userPassword, user.Password))
+                        {//Login logic
+
+                            StoreUserCookies(httpContext, student.StudentNo, "Student");
+
+                            return "Success";
+                        } else return "Incorrect password";
+
+                    } else return "Student not found";
                 }
 
+                return "Student not found";
             }
             else
             {
@@ -118,7 +117,7 @@ namespace XBCADAttendance.Models
 
         public static int CalcDaysAttended(string studentNo)
         {
-            List<TblStudentLecture> studentLectures = GetAllLecturesByStudentNo(studentNo);
+            List<TblStudentLecture>? studentLectures = GetAllLecturesByStudentNo(studentNo);
             int count = 0;
 
             foreach(TblStudentLecture lecture in studentLectures)
