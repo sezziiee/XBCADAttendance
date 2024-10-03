@@ -1,10 +1,8 @@
-﻿@model AddStudentViewModel
-
+﻿@model XBCADAttendance.Models.ViewModels.AddStaffViewModel
 @{
     ViewBag.Title = "Add Lecturer";
 }
 
-@await Html.PartialAsync("_TopbarPartial")
 
 <div class="custom-container">
     @await Html.PartialAsync("_DashSidebarPartial")
@@ -12,14 +10,14 @@
         <form asp-action="AddStudent" method="post">
             Lecture Number: <br /><input type="text" asp-for=@Model.LectureID class="form-text" /><br />
             UserID: <br /><input type="text" asp-for=@Model.UserID id="userIDInput" class="form-text" /><br />
-            Module Code: <br /><input type="password" asp-for=@Model.ModuleCode class="form-text" /><br />
-            Date: <br /><input type="text" asp-for=@Model.Date class="form-text" readonly /><br />
-            Start: <br /><input type="text" asp-for=@Model.Start class="form-text" readonly /><br />
-            Finish: <br /><input type="text" asp-for=@Model.Finish  class="form-text" readonly /><br />
+            Module Code: <br /><input type="text" asp-for=@Model.ModuleCode class="form-text" /><br />
+            Date: <br /><input type="date" asp-for=@Model.Date class="form-text" readonly /><br />
+            Start: <br /><input type="time" asp-for=@Model.Start class="form-text" readonly /><br />
+            Finish: <br /><input type="time" asp-for=@Model.Finish class="form-text" readonly /><br />
 
 
 
-            <br/><input type="button" id="btnScan" onclick="ScanUserID()"/><br /><br />
+            <br /><input type="button" id="btnScan" onclick="ScanUserID()" /><br /><br />
             <button type="submit">Add</button>
         </form>
 
