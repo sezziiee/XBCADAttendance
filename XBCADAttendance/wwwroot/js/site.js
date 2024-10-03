@@ -3,28 +3,49 @@
 
 // Write your JavaScript code.
 
-function ScanUserID() {
-    fetch("https://localhost:7037/api/Attendance/Scan")
-        .then((response) => response.text())
-        .then((userID) => {
-            console.log(userID);
-            document.getElementById("userIDInput").value = userID; // Update the button's value to the scanned user ID
-        })
-        .catch((error) => console.error("Error:", error));            
-}
+document.addEventListener('DOMContentLoaded', function () {
+	const allSideMenu = document.querySelectorAll('#sidebar .side-menu.top li a');
 
-const allSideMenu = document.querySelectorAll('#sidebar .side-menu.top li a');
+	// Function to set the active menu item based on the current URL
+	function setActiveMenu() {
+		const currentUrl = window.location.href;
 
-allSideMenu.forEach(item => {
-	const li = item.parentElement;
+		allSideMenu.forEach(item => {
+			const li = item.parentElement;
+			if (item.href === currentUrl) {
+				li.classList.add('active');
+			} else {
+				li.classList.remove('active');
+			}
+		});
+	}
 
-	item.addEventListener('click', function () {
-		allSideMenu.forEach(i => {
-			i.parentElement.classList.remove('active');
-		})
-		li.classList.add('active');
-	})
+	// Set the active menu item on page load
+	setActiveMenu();
+
+	// Add click event listener to update active menu item
+	allSideMenu.forEach(item => {
+		const li = item.parentElement;
+
+		item.addEventListener('click', function (event) {
+			// Prevent default link behavior
+			event.preventDefault();
+
+			// Remove 'active' class from all menu items
+			document.querySelectorAll('#sidebar .side-menu.top li').forEach(i => {
+				i.classList.remove('active');
+			});
+
+			// Add 'active' class to the clicked menu item
+			li.classList.add('active');
+
+			// Optionally, navigate to the new page manually if needed
+			window.location.href = this.href;
+		});
+	});
 });
+
+
 
 
 

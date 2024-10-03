@@ -1,13 +1,22 @@
 ﻿<div class="sidebar">
-    <a asp-controller="Home" asp-action="Index"><img src="~/img/logo.png" alt="Logo" class="im"></a>
-    <button><a asp-controller="Login" asp-action="StaffLogin"><i class='bx bx-book-bookmark'></i> Staff</a></button>
-    <button><a asp-controller="Login" asp-action="StudentLogin"><i class='bx bxs-graduation'></i> Student</a></button>
+    <a asp-controller="Home" asp-action="Index" class="logoimg"><img src="~/img/logo.png" alt="Logo" class="im" /></a>
+    <a asp-controller="Login" asp-action="StaffLogin"><button><i class='bx bx-book-bookmark'></i> Staff</button></a>
+    <a asp-controller="Login" asp-action="StudentLogin"><button><i class='bx bxs-graduation'></i> Student</button></a>
     <img src="~/img/left_slice.png" class="bottom-image">
 </div>
+
+
 <style>
     .bottom-image {
         position: absolute;
         bottom: 0;
         left: 0;
         width: 100%; 
-    }</style>
+    }
+
+    .logoimg{
+        display: flex;
+        align-content: center;
+        justify-content: center;
+    }
+    </style>
