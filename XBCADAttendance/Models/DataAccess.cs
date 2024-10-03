@@ -7,6 +7,8 @@ using System.Linq;
 using System.Security.Claims;
 using XBCADAttendance.Models.ViewModels;
 using XBCADAttendance;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace XBCADAttendance.Models
 {
@@ -51,7 +53,7 @@ namespace XBCADAttendance.Models
                         if (passwordHasher.CompareHashedPasswords(userPassword, user.Password))
                         {//Login logic
 
-                            StoreUserCookies(httpContext, student.StudentNo, "Student");
+                            StoreUserCookies(httpContext, student.UserId, "Student");
 
                             return "Success";
                         } else return "Incorrect password";
@@ -75,7 +77,7 @@ namespace XBCADAttendance.Models
                     if (passwordHasher.CompareHashedPasswords(userPassword, user.Password))
                     {//Add Login logic later
                         var role = GetAllRoles().Where(x => x.RoleId == staff.RoleId).Select(x => x.RoleName).ToString();
-                        StoreUserCookies(httpContext, staff.StaffId, role);
+                        StoreUserCookies(httpContext, staff.UserId, role);
                         return "Successful login";
                     }
                     else return "Incorrect password";
@@ -89,13 +91,13 @@ namespace XBCADAttendance.Models
 
         //Sign in and authentication
         // Stores user authentication cookies using ASP.NET Core's cookie authentication.
-        public static async Task StoreUserCookies(HttpContext httpContext, string studentNo, string identifier)
+        public static async Task StoreUserCookies(HttpContext httpContext, string id, string role)
         {
             // Create a list of claims for the user with the student's number as the user's name.
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, studentNo),
-                new Claim(ClaimTypes.Role, identifier)
+                new Claim(ClaimTypes.Name, id),
+                new Claim(ClaimTypes.Role, role)
             };
 
             // Create a ClaimsIdentity using the claims list and the default authentication scheme for cookies.
@@ -182,6 +184,11 @@ namespace XBCADAttendance.Models
         public static TblUser? GetUserById(string userID)
         {
             return context.TblUsers.Where(x => x.UserId == userID).FirstOrDefault();
+        }
+
+        public static TblUser? GetUserByStudentNo(string studentNo)
+        {
+            return context.TblUsers.Where(x => x.TblStudent.StudentNo == studentNo).FirstOrDefault();
         }
 
         public static List<TblStudent> GetAllStudents()

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Storage.Json;
+using Microsoft.IdentityModel.Tokens;
 using XBCADAttendance.Models;
 using XBCADAttendance.Models.ViewModels;
 
@@ -9,117 +10,116 @@ namespace XBCADAttendance.Controllers
     [Authorize(Policy ="StudentOnly")]
     public class StudentReportController : Controller
     {
-        StudentReportViewModel? model;
 
-        public IActionResult Index(string? userID = null)
+        public IActionResult Index()
         {
-            if (model != null)
+            string? userID = null;
+
+            if (User.Identity.IsAuthenticated)
             {
-                return View(model);
-            } else
+                userID = User.Identity.Name;
+
+                if (userID.IsNullOrEmpty())
+                {
+                    StudentReportViewModel model = new StudentReportViewModel(userID);
+
+                    return View(model);
+                } else
+                {
+                    //TODO Add error and redirect to homepage or login
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+            
+            return RedirectToAction("Index", "Home"); ;    
+        }
+
+        public IActionResult StudentReport()
+        {
+            string? userID = null;
+
+            if (User.Identity.IsAuthenticated)
             {
-                if (userID != null)
+                userID = User.Identity.Name;
+
+                if (!userID.IsNullOrEmpty())
+                {
+                    StudentReportViewModel model = new StudentReportViewModel(userID);
+                    return View(model);
+                } else
+                {
+                     return RedirectToAction("Index", "Home");
+                }
+            }
+
+            return RedirectToAction("Index", "Home");
+        }
+
+
+        public IActionResult Profile()
+        {
+            string? userID = null;
+
+            if (User.Identity.IsAuthenticated)
+            {
+                userID = User.Identity.Name;
+
+                if (!userID.IsNullOrEmpty())
                 {
                     StudentReportViewModel newModel = new StudentReportViewModel(userID);
-
-                    model = newModel;
-                    return View(newModel);
-                } else
-                {
-                    //TODO Add error and redirect to homepage or login
-                    return RedirectToAction();
-                }
-            }
-        }
-        public IActionResult StudentReport(string? userID = null, string? studentNo = null)
-        {
-            if (model != null)
-            {
-                return View(model);
-            } else
-            {
-                if (userID != null)
-                {
-                    model = new StudentReportViewModel(userID);
-                } else if (studentNo != null)
-                {
-                    model = new StudentReportViewModel(null, studentNo);
-
-                } else
-                {
-                    //TODO Add error and redirect to homepage or login
-                    //return View(model);
-                     return RedirectToAction();
-                }
-
-                return View(model);
-            }
-        }
-
-
-        public IActionResult Profile(string? userId = null)
-        {
-            if (model != null)
-            {
-                return View(model);
-            }
-            else
-            {
-                if (userId != null)
-                {
-                    StudentReportViewModel newModel = new StudentReportViewModel(userId);
-
-                    model = newModel;
                     return View(newModel);
                 }
                 else
                 {
-                    //TODO Add error and redirect to homepage or login
-                    return RedirectToAction();
+                    return RedirectToAction("Index", "Home");
                 }
             }
+
+            return RedirectToAction("Index", "Home");
+
         }
 
 
-        public IActionResult Modules(string? userID = null)
+        public IActionResult Modules()
         {
-            if (model != null)
+            string? userID = null;
+
+            if (User.Identity.IsAuthenticated)
             {
-                return View(model);
-            } else
-            {
-                if (userID != null)
+                userID = User.Identity.Name;
+
+                if (!userID.IsNullOrEmpty())
                 {
                     StudentReportViewModel newModel = new StudentReportViewModel(userID);
-
-                    model = newModel;
                     return View(newModel);
                 } else
                 {
-                    //TODO Add error and redirect to homepage or login
-                    return RedirectToAction();
+                    return RedirectToAction("Index", "Home");
                 }
             }
+
+            return RedirectToAction("Index", "Home");
         }
-        public IActionResult AttendanceHistory(string? userID = null)
+
+        public IActionResult AttendanceHistory()
         {
-            if (model != null)
+            string? userID = null;
+
+            if (User.Identity.IsAuthenticated)
             {
-                return View(model);
-            } else
-            {
-                if (userID != null)
+                userID = User.Identity.Name;
+
+                if (!userID.IsNullOrEmpty())
                 {
                     StudentReportViewModel newModel = new StudentReportViewModel(userID);
-
-                    model = newModel;
                     return View(newModel);
                 } else
                 {
-                    //TODO Add error and redirect to homepage or login
-                    return RedirectToAction();
+                    return RedirectToAction("Index", "Home");
                 }
             }
+
+            return RedirectToAction("Index", "Home");
         }
 
     }

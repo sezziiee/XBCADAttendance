@@ -2,7 +2,11 @@
 {
     public class StudentViewModel
     {
-        //public string 
+        public string Name { get; set; }
+
+        public string StudentNo { get; set; }
+
+        public string UserID { get; set; }
 
         public StudentViewModel() { }
     }
