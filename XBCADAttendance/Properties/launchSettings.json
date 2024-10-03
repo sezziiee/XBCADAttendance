@@ -14,7 +14,7 @@
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "DEV_CONN_STRING": "Server=labVMH8OX\\SQLEXPRESS;Database=WILLDB;Trusted_Connection=True;TrustServerCertificate=true;"
+        "DEV_CONN_STRING": "Server=tcp:wilapidbserver.database.windows.net,1433;Initial Catalog=dbAttendance;Persist Security Info=False;User ID=ST10085210;Password=Treepair521;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
 
       },
       "dotnetRunMessages": true,
