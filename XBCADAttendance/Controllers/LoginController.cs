@@ -20,22 +20,43 @@ namespace XBCADAttendance.Controllers
         [HttpPost]
         public IActionResult StudentLogin(LoginViewModel model) 
         {
-            string message = DataAccess.LoginUser(HttpContext, model);
+            if (model.identifier.Length < 10)
+            {
+                if (!model.identifier.ToLower().StartsWith("st"))
+                {
+                    model.identifier = "ST" + model.identifier;
+                } else
+                {
+                    ViewBag.Message = "Please enter valid student number";
+
+                    return View();
+                }
+            }
+
+            string? message = DataAccess.LoginUser(HttpContext, model).ToString();
 
             ViewBag.Message = message;
 
-            //return View(model);
+            if(message == "Success")
+            {
+                return RedirectToAction("Index", "StudentReport", new { userID = model.identifier });
+            }else
+            {
+                return View(model);
+            }
+            //
             //return RedirectToAction("StudentReport");
-            return RedirectToAction("Index", "StudentReport", new { userID = model.identifier });
         }
+
         public IActionResult StaffLogin()
         {
             return View();
         }
+
         [HttpPost]
         public IActionResult StaffLogin(LoginViewModel model)
         {
-            string message = DataAccess.LoginUser(HttpContext, model);
+            string? message = DataAccess.LoginUser(HttpContext, model).ToString();
 
             ViewBag.Message = message;
 
