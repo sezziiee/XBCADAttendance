@@ -14,7 +14,7 @@
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "DEV_CONN_STRING": "Server=labVMH8OX\\SQLEXPRESS;Database=WIL_DB_Backup;Trusted_Connection=True;TrustServerCertificate=true;"
+        "DEV_CONN_STRING": "Server=labVMH8OX\\SQLEXPRESS;Database=WILLDB;Trusted_Connection=True;TrustServerCertificate=true;"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "https://localhost:7110;http://localhost:5053"
