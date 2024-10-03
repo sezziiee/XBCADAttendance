@@ -65,10 +65,15 @@ namespace XBCADAttendance.Models
             else
             {
                 var staff = context.TblStaffs.Where(x => x.StaffId == model.identifier).FirstOrDefault();
+                var user = context.TblUsers.Where(x => x.UserId == staff.UserId).FirstOrDefault();
 
-                if (staff != null)
+                if (user != null)
                 {
-                    if (staff.User.Password == model.password)
+                    Hasher passwordHasher = new Hasher(model.password!);
+
+                    string userPassword = passwordHasher.GetHash();
+
+                    if (passwordHasher.CompareHashedPasswords(userPassword, user.Password))
                     {//Add Login logic later
                         var role = GetAllRoles().Where(x => x.RoleId == staff.RoleId).Select(x => x.RoleName).ToString();
                         StoreUserCookies(httpContext, staff.StaffId, role);
@@ -238,7 +243,7 @@ namespace XBCADAttendance.Models
 
         public static List<TblStudentLecture>? GetAllLecturesByStudentNo(string studentNo)
         {
-            var studentID = context.TblUsers.Where(x => x.TblStudent != null && x.TblStudent.StudentNo == studentNo).Select(x => x.UserId).FirstOrDefault().ToString();
+            var studentID = context.TblUsers.Where(x => x.TblStudent != null && x.TblStudent.StudentNo == studentNo).Select(x => x.UserId).FirstOrDefault();
             var data = context.TblStudentLectures.Where(x => x.UserId == studentID).ToList();
 
             if (data != null)
@@ -247,7 +252,7 @@ namespace XBCADAttendance.Models
             } else return null;
         }
 
-        public static List<TblModule> GetAllModules()
+        public static List<TblModule>? GetAllModules()
         {
             var data = context.TblModules.ToList();
 
