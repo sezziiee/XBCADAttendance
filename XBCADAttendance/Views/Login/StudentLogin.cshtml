@@ -28,7 +28,7 @@
                 </p>
             </div>
             <div class="login-section">
-                <form asp-action="StudentReport" asp-controller="StudentReport" method="post">
+                <form asp-action="StudentLogin" asp-controller="Login" method="post">
                     Student Number: <br /><input type="text" asp-for="identifier" class="form-text" /><br />
                     Password: <br /><input type="password" asp-for="password" class="form-text" /><br /><br />
                     <button type="submit" class="butt">Login</button>
@@ -37,7 +37,7 @@
                 <!-- Display the message -->
                 @if (!string.IsNullOrEmpty(ViewBag.Message))
                 {
-                    <div class="alert alert-info">@ViewBag.Message</div>
+                        <div class="alert alert-info">@ViewBag.Message</div>
                 }
             </div>
         </div>
