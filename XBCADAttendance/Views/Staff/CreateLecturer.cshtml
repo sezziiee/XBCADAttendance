@@ -7,7 +7,7 @@
 <div class="custom-container">
     @await Html.PartialAsync("_DashSidebarPartial")
     <div class="custom-content">
-        <form asp-action="AddStudent" method="post">
+        <form asp-action="CreateLecturer" method="post">
             Lecture Number: <br /><input type="text" asp-for=@Model.LectureID class="form-text" /><br />
             UserID: <br /><input type="text" asp-for=@Model.UserID id="userIDInput" class="form-text" /><br />
             Module Code: <br /><input type="text" asp-for=@Model.ModuleCode class="form-text" /><br />
