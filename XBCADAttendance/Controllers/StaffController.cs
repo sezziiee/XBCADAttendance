@@ -19,6 +19,7 @@ namespace XBCADAttendance.Controllers
         {
             return View(model);
         }
+
         [HttpGet]
         public IActionResult CreateLecturer()
         {
@@ -28,7 +29,10 @@ namespace XBCADAttendance.Controllers
         [HttpPost]
         public IActionResult CreateLecturer(AddStaffViewModel model)
         {
-            return View(model);
+            var viewModel = new AddStaffViewModel(model.LectureID, model.UserID, model.ModuleCode, model.Date, model.Start, model.Finish);
+            
+            
+            return View(viewModel);
         }
     }
 }
