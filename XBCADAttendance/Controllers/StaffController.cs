@@ -29,7 +29,7 @@ namespace XBCADAttendance.Controllers
         [HttpPost]
         public IActionResult CreateLecturer(AddStaffViewModel model)
         {
-            var viewModel = new AddStaffViewModel(model.LectureID, model.UserID, model.ModuleCode, model.Date, model.Start, model.Finish);
+            var viewModel = new AddStaffViewModel();
             
             
             return View(viewModel);

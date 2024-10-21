@@ -1,14 +1,12 @@
 ﻿@model LectureReportViewModel
 
 @{
-    <form asp-controller="LectureReport" asp-action="AddLecture" method="post">
+    <form asp-controller="LectureReport" asp-action="Create" method="post">
     <table>
         <thead>
             <tr>
                 <th>Select Module</th>
                 <th>Select Date</th>
-                <th>Start Time</th>
-                <th>End Time</th>
             </tr>
         </thead>
         <tbody>         
@@ -23,12 +21,6 @@
                 </td>            
                 <td>
                     <input type="date" asp-action="AddLecture" asp-controller="LectureReport"/>
-                </td>
-                <td>
-                    <input type="time" asp-action="AddLecture" asp-controller="LectureReport"/>
-                </td>
-                <td>
-                    <input type="time" asp-action="AddLecture" asp-controller="LectureReport"/>
                 </td>
                 <td><input type="button" value="Add"/></td>
             </tr>         
