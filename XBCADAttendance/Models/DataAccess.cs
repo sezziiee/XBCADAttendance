@@ -186,6 +186,24 @@ namespace XBCADAttendance.Models
             return context.TblUsers.Where(x => x.UserId == userID).FirstOrDefault();
         }
 
+        public static List<string>? GetModulesById(string userID)
+        {
+            var user = GetUserById(userID);
+
+            if (user != null)
+            {
+                if (user.TblStaff != null)
+                {
+                    return context.TblStaffLectures.Select(x => x.ModuleCode).Distinct().ToList();
+                } else
+                {
+                    return context.TblStudentLectures.Select(x => x.ModuleCode).Distinct().ToList();
+                }
+            }
+
+            return null;
+        }
+
         public static TblUser? GetUserByStudentNo(string studentNo)
         {
             return context.TblUsers.Where(x => x.TblStudent.StudentNo == studentNo).FirstOrDefault();
@@ -461,6 +479,16 @@ namespace XBCADAttendance.Models
         public static List<TblStaffLecture> GetStaffLectures()
         {
             return context.TblStaffLectures.ToList();
+        }
+
+        public static List<TblStudent?> GetStudentsByModule(string moduleCode)
+        {
+            return context.TblStudentLectures.Where(x => x.ModuleCode == moduleCode).Select(x => GetStudentById(x.UserId)).ToList();
+        }
+
+        public static TblStudent? GetStudentById(string userId)
+        {
+            return context.TblStudents.Where(x => x.UserId == userId).FirstOrDefault();
         }
     }
 }
