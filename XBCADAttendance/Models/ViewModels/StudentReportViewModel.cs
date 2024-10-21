@@ -9,6 +9,7 @@ namespace XBCADAttendance.Models
 
         public string UserID { get; set; }
         public string StudentNo { get; set; }
+        public string Name { get; set; }
 
         public StudentReportViewModel()
         {
@@ -23,12 +24,14 @@ namespace XBCADAttendance.Models
                 StudentNo = DataAccess.GetStudentNoById(UserID)!;
                 lstModules = DataAccess.GetModulesByStudentNo(StudentNo);
                 lstLectures = DataAccess.GetAllLecturesByStudentNo(StudentNo);
-            }else if (studentNo != null)
+                Name = DataAccess.GetUserById(UserID)!.UserName!;
+            } else if (studentNo != null)
             {
                 StudentNo = studentNo;
                 lstModules = DataAccess.GetModulesByStudentNo(StudentNo);
                 lstLectures = DataAccess.GetAllLecturesByStudentNo(StudentNo);
                 UserID = DataAccess.GetIdByStudentNo(StudentNo)!;
+                Name = DataAccess.GetUserById(UserID)!.UserName!;
             }
         }
 
