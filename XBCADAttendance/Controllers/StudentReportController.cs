@@ -13,26 +13,24 @@ namespace XBCADAttendance.Controllers
 
         public IActionResult Index()
         {
-            string? userID = null;
-
-            if (User.Identity.IsAuthenticated)
+            if (!User.Identity.IsAuthenticated)
             {
-                userID = User.Identity.Name;
-
-                if (userID.IsNullOrEmpty())
-                {
-                    StudentReportViewModel model = new StudentReportViewModel(userID);
-
-                    return View(model);
-                } else
-                {
-                    //TODO Add error and redirect to homepage or login
-                    return RedirectToAction("Index", "Home");
-                }
+                return RedirectToAction("Index", "Home");
             }
-            
-            return RedirectToAction("Index", "Home"); ;    
+
+            string? userID = User.Identity.Name;
+
+            if (string.IsNullOrWhiteSpace(userID))
+            {
+                // Optionally add an error message to display on the redirected page
+                TempData["ErrorMessage"] = "User ID is invalid. Please log in again.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            StudentReportViewModel model = new StudentReportViewModel(userID);
+            return View(model);
         }
+
 
         public IActionResult StudentReport()
         {

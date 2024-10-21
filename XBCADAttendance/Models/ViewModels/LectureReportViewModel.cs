@@ -26,7 +26,7 @@ namespace XBCADAttendance.Models
                 }
             }
             
-            lstLectures = DataAccess.GetLecturesByStaffNo();
+            lstLectures = DataAccess.GetStudentLecturesByStaffId(currentStaff.StaffId);
         }
 
         public string GetAttendance(TblStudentLecture lecture)

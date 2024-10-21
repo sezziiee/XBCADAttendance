@@ -490,5 +490,17 @@ namespace XBCADAttendance.Models
         {
             return context.TblStudents.Where(x => x.UserId == userId).FirstOrDefault();
         }
+
+        public static List<TblStudentLecture>? GetStudentLecturesByStaffId(string staffId)
+        {
+            var user = context.TblStaffs.Where(x => x.StaffId == staffId).FirstOrDefault();
+
+            if (user != null)
+            {
+                return context.TblStudentLectures.Where(x => x.UserId == user.UserId).ToList();
+            }
+            
+            return null;
+        }
     }
 }
