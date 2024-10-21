@@ -6,19 +6,27 @@ namespace XBCADAttendance.Models
 {
     public class LectureReportViewModel
     {
+        public TblStaff currentStaff { get; set; }
+        public List<string>? lstModules = new List<string>();
         public List<TblStudentLecture> lstLectures = new List<TblStudentLecture>();
         public List<Student> lstStudents = new List<Student>();
 
-        public LectureReportViewModel()
+        public LectureReportViewModel(TblStaff currentStaff)
         {
-            var students = DataAccess.GetAllStudents();
+            this.currentStaff = currentStaff;
+            lstModules = DataAccess.GetModulesById(currentStaff.UserId);
 
-            foreach (var student in students)
+            foreach (string moduleCode in lstModules)
             {
-                lstStudents.Add(new Student(student.StudentNo));
-            }
+                var students = DataAccess.GetStudentsByModule(moduleCode);
 
-            lstLectures = DataAccess.GetAllLectures();
+                foreach (var student in students)
+                {
+                    lstStudents.Add(new Student(student.StudentNo));
+                }
+            }
+            
+            lstLectures = DataAccess.GetLecturesByStaffNo();
         }
 
         public string GetAttendance(TblStudentLecture lecture)
