@@ -55,5 +55,7 @@ namespace XBCADAttendance.Controllers
             return View();
 
         }
-    }
+
+		
+	}
 }

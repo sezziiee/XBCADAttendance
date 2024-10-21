@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using XBCADAttendance.Models;
+using XBCADAttendance.Models.ViewModels;
 
 namespace XBCADAttendance.Controllers
 {
@@ -17,6 +18,21 @@ namespace XBCADAttendance.Controllers
         public IActionResult StudentReport(LectureReportViewModel model)
         {
             return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult CreateLecturer()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult CreateLecturer(AddStaffViewModel model)
+        {
+            var viewModel = new AddStaffViewModel();
+            
+            
+            return View(viewModel);
         }
     }
 }
