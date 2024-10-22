@@ -11,6 +11,8 @@ namespace XBCADAttendance.Models
         public List<TblStudentLecture> lstLectures = new List<TblStudentLecture>();
         public List<Student> lstStudents = new List<Student>();
 
+        public LectureReportViewModel() { }
+
         public LectureReportViewModel(TblStaff currentStaff)
         {
             this.currentStaff = currentStaff;
