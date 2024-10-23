@@ -19,9 +19,9 @@ public partial class TblStudentLecture
 
     public string ModuleCode { get; set; } = null!;
 
-    public virtual TblModule ModuleCodeNavigation { get; set; } = null!;
+    public virtual TblStaffLecture Lecture { get; set; } = null!;
 
-    public virtual TblStaffLecture? TblStaffLecture { get; set; }
+    public virtual TblModule ModuleCodeNavigation { get; set; } = null!;
 
     public virtual TblStudent User { get; set; } = null!;
 }

@@ -19,8 +19,6 @@ public partial class TblStaffLecture
 
     public TimeOnly? Finish { get; set; }
 
-    public virtual TblStudentLecture Lecture { get; set; } = null!;
-
     public virtual TblModule ModuleCodeNavigation { get; set; } = null!;
 
     public virtual TblStaff User { get; set; } = null!;

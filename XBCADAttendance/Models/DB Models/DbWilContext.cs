@@ -95,7 +95,7 @@ public partial class DbWilContext : DbContext
 
         modelBuilder.Entity<TblStaffLecture>(entity =>
         {
-            entity.HasKey(e => e.LectureId).HasName("PK_TblStaffLecture_1");
+            entity.HasKey(e => e.LectureId);
 
             entity.ToTable("TblStaffLecture");
 
@@ -113,11 +113,6 @@ public partial class DbWilContext : DbContext
                 .HasMaxLength(8)
                 .IsFixedLength()
                 .HasColumnName("UserID");
-
-            entity.HasOne(d => d.Lecture).WithOne(p => p.TblStaffLecture)
-                .HasForeignKey<TblStaffLecture>(d => d.LectureId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_TblStaffLecture_tblStudentLecture");
 
             entity.HasOne(d => d.ModuleCodeNavigation).WithMany(p => p.TblStaffLectures)
                 .HasForeignKey(d => d.ModuleCode)
@@ -152,15 +147,15 @@ public partial class DbWilContext : DbContext
 
         modelBuilder.Entity<TblStudentLecture>(entity =>
         {
-            entity.HasKey(e => e.LectureId).HasName("PK__tblLectu__B739F69FA304CBA1");
+            entity
+                .HasNoKey()
+                .ToTable("tblStudentLecture");
 
-            entity.ToTable("tblStudentLecture");
-
+            entity.Property(e => e.ClassroomCode).HasMaxLength(5);
             entity.Property(e => e.LectureId)
                 .HasMaxLength(10)
                 .IsFixedLength()
                 .HasColumnName("LectureID");
-            entity.Property(e => e.ClassroomCode).HasMaxLength(5);
             entity.Property(e => e.ModuleCode)
                 .HasMaxLength(8)
                 .IsFixedLength();
@@ -169,12 +164,17 @@ public partial class DbWilContext : DbContext
                 .IsFixedLength()
                 .HasColumnName("UserID");
 
-            entity.HasOne(d => d.ModuleCodeNavigation).WithMany(p => p.TblStudentLectures)
+            entity.HasOne(d => d.Lecture).WithMany()
+                .HasForeignKey(d => d.LectureId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_tblStudentLecture_TblStaffLecture1");
+
+            entity.HasOne(d => d.ModuleCodeNavigation).WithMany()
                 .HasForeignKey(d => d.ModuleCode)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__tblLectur__Modul__7A672E12");
 
-            entity.HasOne(d => d.User).WithMany(p => p.TblStudentLectures)
+            entity.HasOne(d => d.User).WithMany()
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_tblStudentLecture_tblStudent");

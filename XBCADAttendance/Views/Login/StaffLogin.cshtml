@@ -28,7 +28,7 @@
                 </p>
             </div>
             <div class="login-section">
-                <form asp-action="LectureReport" asp-controller="LectureReport" method="post">
+                <form asp-action="StaffLogin" asp-controller="Login" method="post">
                     Lecture Number: <br /><input type="text" asp-for=@Model.identifier class="form-text" /><br />
                     Password: <br /><input type="password" asp-for=@Model.password class="form-text" /><br /><br />
                     <button type="submit" class="butt">Login</button>

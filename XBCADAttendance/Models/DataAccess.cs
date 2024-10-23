@@ -9,6 +9,7 @@ using XBCADAttendance.Models.ViewModels;
 using XBCADAttendance;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 
 namespace XBCADAttendance.Models
 {
@@ -32,9 +33,9 @@ namespace XBCADAttendance.Models
         }
 
         [ValidateAntiForgeryToken]
-        public static string LoginUser(HttpContext httpContext, LoginViewModel model)
+        public static string LoginStudent(HttpContext httpContext, LoginViewModel model)
         {
-            if (model.identifier.Length > 5)//Check if id is for user/staff
+            if (model.identifier.Length != 8 || model.identifier.Length != 10)//Check if id is for user/staff
             {
                 var student = context.TblStudents.Where(x => x.StudentNo == model.identifier).FirstOrDefault();
                 
@@ -45,14 +46,10 @@ namespace XBCADAttendance.Models
                     if (user != null)
                     {
                         Hasher passwordHasher = new Hasher(model.password!);
-
                         string userPassword = passwordHasher.GetHash();
-
-
 
                         if (passwordHasher.CompareHashedPasswords(userPassword, user.Password))
                         {//Login logic
-
                             StoreUserCookies(httpContext, student.UserId, "Student");
 
                             return "Success";
@@ -60,10 +57,15 @@ namespace XBCADAttendance.Models
 
                     } else return "Student not found";
                 }
-
                 return "Student not found";
             }
-            else
+            return "Invalid student number";
+        }
+
+        [ValidateAntiForgeryToken]
+        public static string LoginStaff(HttpContext httpContext, LoginViewModel model)
+        {
+            if(model.identifier.Length == 5)
             {
                 var staff = context.TblStaffs.Where(x => x.StaffId == model.identifier).FirstOrDefault();
                 var user = context.TblUsers.Where(x => x.UserId == staff.UserId).FirstOrDefault();
@@ -79,14 +81,14 @@ namespace XBCADAttendance.Models
                         var role = GetAllRoles().Where(x => x.RoleId == staff.RoleId).Select(x => x.RoleName).ToString();
                         StoreUserCookies(httpContext, staff.UserId, role);
                         return "Successful login";
-                    }
-                    else return "Incorrect password";
-                }
-                else
+                    } else return "Incorrect password";
+                } else
                 {
                     return "Staff not found";
                 }
             }
+
+            return "Invalid staff number";
         }
 
         //Sign in and authentication

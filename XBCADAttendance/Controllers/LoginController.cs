@@ -52,7 +52,7 @@ namespace XBCADAttendance.Controllers
                     }
                 }
 
-                string? message = DataAccess.LoginUser(HttpContext, model);
+                string? message = DataAccess.LoginStudent(HttpContext, model);
 
                 ViewBag.Message = message;
 
@@ -67,7 +67,7 @@ namespace XBCADAttendance.Controllers
             }
             catch (Exception ex)
             {
-
+                Console.WriteLine(ex.ToString());
                 ViewBag.Message = "An error occurred while processing your request. Please try again later.";
                 return View(model);
             }
@@ -83,11 +83,18 @@ namespace XBCADAttendance.Controllers
         [HttpPost]
         public IActionResult StaffLogin(LoginViewModel model)
         {
-            string? message = DataAccess.LoginUser(HttpContext, model).ToString();
+            string? message = DataAccess.LoginStaff(HttpContext, model).ToString();
 
             ViewBag.Message = message;
 
-            return RedirectToAction("LectureReport", "LectureReport");
+            if (message == "Success")
+            {
+                return RedirectToAction("LectureReport", "LectureReport");
+            } else
+            {
+                return View(model);
+            }
+
         }
     }
 }
