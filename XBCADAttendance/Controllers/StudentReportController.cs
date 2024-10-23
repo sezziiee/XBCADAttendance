@@ -120,5 +120,12 @@ namespace XBCADAttendance.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        public IActionResult Logout()
+        {
+            Response.Cookies.Delete(".AspNetCore.Cookies");
+
+            return RedirectToAction("Index", "Home");
+        }
+
     }
 }
