@@ -39,6 +39,12 @@ namespace XBCADAttendance.Controllers
                     return View(model);
                 }
 
+                if (string.IsNullOrEmpty(model.password))
+                {
+                    ViewBag.Message = "Please enter a password.";
+                    return View(model);
+                }
+
                 if (model.identifier.Length < 10)
                 {
                     if (!model.identifier.ToLower().StartsWith("st"))
@@ -83,6 +89,18 @@ namespace XBCADAttendance.Controllers
         [HttpPost]
         public IActionResult StaffLogin(LoginViewModel model)
         {
+            if (string.IsNullOrEmpty(model.identifier))
+            {
+                ViewBag.Message = "Please enter your lecturer number.";
+                return View(model);
+            }
+
+            if (string.IsNullOrEmpty(model.password))
+            {
+                ViewBag.Message = "Please enter a password.";
+                return View(model);
+            }
+
             string? message = DataAccess.LoginStaff(HttpContext, model).ToString();
 
             ViewBag.Message = message;
