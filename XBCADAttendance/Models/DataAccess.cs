@@ -65,7 +65,7 @@ namespace XBCADAttendance.Models
         [ValidateAntiForgeryToken]
         public static string LoginStaff(HttpContext httpContext, LoginViewModel model)
         {
-            if(model.identifier.Length == 5)
+            if (model.identifier.Length == 5)
             {
                 var staff = context.TblStaffs.Where(x => x.StaffId == model.identifier).FirstOrDefault();
                 var user = context.TblUsers.Where(x => x.UserId == staff.UserId).FirstOrDefault();
