@@ -1,15 +1,16 @@
-﻿@{
+﻿@model StudentReportViewModel
+@{
     Layout = "_StudentLayout";
 }
         <div class="profile-container">
             <div class="profile-header">
-                <h1>Ben Ten</h1>
+                <h1>@Model.Name</h1>
             </div>
             <div class="profile-info">
                 <img src="" alt="Profile Picture" class="profile-pic">
                 <div class="profile-details">
-                    <p><strong>Email:</strong> Ben@gmail.com</p>
-                    <p><strong>Student Number:</strong> ST10132642</p>
+                    <p><strong>Email:</strong> @($"{Model.StudentNo}@vcconnect.edu.za")</p>
+                    <p><strong>Student Number:</strong> @Model.StudentNo</p>
                 </div>
             </div>
             <div class="profile-actions">
