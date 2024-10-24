@@ -50,10 +50,11 @@ namespace XBCADAttendance.Controllers
         //[Authorize(Policy = "AdminOnly")]
         public IActionResult Create(TblStaffLecture lecture)
         {
+            lecture.LectureId = "L" + DataAccess.GetAllLectures().Count().ToString();
+            lecture.UserId = User.Identity.Name;
             DataAccess.AddLecture(lecture);
 
             return View();
-
         }
 
 		
