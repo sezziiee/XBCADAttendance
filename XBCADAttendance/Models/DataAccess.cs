@@ -80,7 +80,7 @@ namespace XBCADAttendance.Models
                     {//Add Login logic later
                         var role = GetAllRoles().Where(x => x.RoleId == staff.RoleId).Select(x => x.RoleName).ToString();
                         StoreUserCookies(httpContext, staff.UserId, role);
-                        return "Successful login";
+                        return "Success";
                     } else return "Incorrect password";
                 } else
                 {
@@ -139,7 +139,6 @@ namespace XBCADAttendance.Models
         {
             // Removing the users cookies
             await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-
         }
         //CRUD Operations
 
