@@ -34,5 +34,11 @@ namespace XBCADAttendance.Controllers
             
             return View(viewModel);
         }
+
+        [HttpGet]
+        public IActionResult Users(AdminViewModel model) 
+        {
+            return View(model);
+        }
     }
 }
