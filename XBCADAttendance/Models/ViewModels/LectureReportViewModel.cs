@@ -1,5 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration.UserSecrets;
+using QRCoder;
 using System.ComponentModel.DataAnnotations;
+using System.Drawing.Imaging;
+using System.Drawing;
 using XBCADAttendance.Models;
 
 namespace XBCADAttendance.Models
@@ -34,6 +37,25 @@ namespace XBCADAttendance.Models
         public string GetAttendance(TblStudentLecture lecture)
         {
             return lecture.ScanOut != null ? "Attended" : "Absent";
+        }
+
+        public byte[] GenerateQRCode()
+        {
+            using (QRCodeGenerator qrGenerator = new QRCodeGenerator())
+            {
+                QRCodeData qrCodeData = qrGenerator.CreateQrCode("Lecturer", QRCodeGenerator.ECCLevel.Q);
+                using (QRCode qrCode = new QRCode(qrCodeData))
+                {
+                    using (Bitmap qrCodeImage = qrCode.GetGraphic(20))
+                    {
+                        using (MemoryStream ms = new MemoryStream())
+                        {
+                            qrCodeImage.Save(ms, ImageFormat.Png);
+                            return ms.ToArray();
+                        }
+                    }
+                }
+            }
         }
 
         /*public void GetAllLectures()
