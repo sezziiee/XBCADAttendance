@@ -57,6 +57,13 @@ namespace XBCADAttendance.Controllers
             return View();
         }
 
-		
+        public IActionResult LecturerQRCode()
+        {
+            LectureReportViewModel newModel = new LectureReportViewModel();
+            byte[] qrCodeImage = newModel.GenerateQRCode();
+
+            return File(qrCodeImage, "image/png");
+        }
+
 	}
 }
