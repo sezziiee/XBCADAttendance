@@ -8,12 +8,14 @@ namespace XBCADAttendance.Models.ViewModels
         public List<TblUser> Users { get; set; }
         public List<TblStudent> Students { get; set; }
         public List<TblStaff> Staff { get; set; }
+        public List<TblStaffLecture> StaffLectures { get; set; }
 
         public AdminViewModel() 
         {
             Users = DataAccess.GetAllUsers();
             Students = DataAccess.GetAllStudents();
             Staff = DataAccess.GetAllStaff();
+            StaffLectures = DataAccess.GetStaffLectures();
         }
 
         public string GetID(TblUser user)
@@ -52,6 +54,18 @@ namespace XBCADAttendance.Models.ViewModels
             }
 
             return "ERROR";
+        }
+
+        public string GetLecturer(TblStaffLecture lecture)
+        {
+            var lecturer = DataAccess.context.TblStaffs.Where(x => x.UserId == lecture.UserId).Select(x => x.User).FirstOrDefault();
+
+            if (lecturer != null)
+            {
+                return lecturer.UserName;
+            }
+
+            return "Error";
         }
     }
 }
