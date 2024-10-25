@@ -1,4 +1,8 @@
-﻿using XBCADAttendance;
+﻿
+using System.Drawing.Imaging;
+using System.Drawing;
+using XBCADAttendance;
+using QRCoder;
 
 namespace XBCADAttendance.Models
 {
@@ -151,6 +155,24 @@ namespace XBCADAttendance.Models
             return total;
         }
 
+        public byte[] GenerateQRCode()
+        {
+            using (QRCodeGenerator qrGenerator = new QRCodeGenerator())
+            {
+                QRCodeData qrCodeData = qrGenerator.CreateQrCode(UserID, QRCodeGenerator.ECCLevel.Q);
+                using (QRCode qrCode = new QRCode(qrCodeData))
+                {
+                    using (Bitmap qrCodeImage = qrCode.GetGraphic(20))
+                    {
+                        using (MemoryStream ms = new MemoryStream())
+                        {
+                            qrCodeImage.Save(ms, ImageFormat.Png);
+                            return ms.ToArray(); 
+                        }
+                    }
+                }
+            }
+        }
 
 
         /* public StudentReportViewModel(string userID, string studentNo, DateOnly lectureDate, string classroomCode, TimeOnly scanIn, TimeOnly scanOut, string moduleCode)

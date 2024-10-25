@@ -2,8 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Storage.Json;
 using Microsoft.IdentityModel.Tokens;
+using QRCoder;
+using System.Drawing.Imaging;
+using System.Drawing;
 using XBCADAttendance.Models;
 using XBCADAttendance.Models.ViewModels;
+using System.IO;
 
 namespace XBCADAttendance.Controllers
 {
@@ -119,6 +123,30 @@ namespace XBCADAttendance.Controllers
 
             return RedirectToAction("Index", "Home");
         }
+        public IActionResult StudentQRCode()
+        {
+            string? userID = null;
+
+            if (User.Identity.IsAuthenticated)
+            {
+                userID = User.Identity.Name;
+
+                if (!userID.IsNullOrEmpty())
+                {
+                    StudentReportViewModel newModel = new StudentReportViewModel(userID);
+                    byte[] qrCodeImage = newModel.GenerateQRCode(); 
+
+                    return File(qrCodeImage, "image/png");
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+
+            return RedirectToAction("Index", "Home");
+        }
+
 
         public IActionResult Logout()
         {
