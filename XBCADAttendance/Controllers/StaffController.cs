@@ -40,5 +40,11 @@ namespace XBCADAttendance.Controllers
         {
             return View(model);
         }
+
+        [HttpGet]
+        public IActionResult Lectures(AdminViewModel model)
+        {
+            return View(model);
+        }
     }
 }

@@ -92,7 +92,6 @@ namespace XBCADAttendance.Models
                         total++;
                     }
                 }
-                
             }
 
             return total;

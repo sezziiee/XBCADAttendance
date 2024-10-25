@@ -64,6 +64,5 @@ namespace XBCADAttendance.Controllers
 
             return File(qrCodeImage, "image/png");
         }
-
 	}
 }
