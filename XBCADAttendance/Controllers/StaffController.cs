@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using XBCADAttendance.Models;
 using XBCADAttendance.Models.ViewModels;
 
@@ -26,6 +27,30 @@ namespace XBCADAttendance.Controllers
             return View();
         }
 
+        [HttpGet]
+        public IActionResult Profile()
+        {
+            string? userID = null;
+
+            if (User.Identity.IsAuthenticated)
+            {
+                userID = User.Identity.Name;
+
+                if (!userID.IsNullOrEmpty())
+                {
+                    StudentReportViewModel newModel = new StudentReportViewModel(userID);
+                    return View(newModel);
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+
+            return RedirectToAction("Index", "Home");
+
+        }
+
         [HttpPost]
         public IActionResult Create(AddStaffViewModel model)
         {
@@ -50,6 +75,12 @@ namespace XBCADAttendance.Controllers
             byte[] qrCodeImage = newModel.GenerateQRCode();
 
             return File(qrCodeImage, "image/png");
+        }
+        public IActionResult Logout()
+        {
+            Response.Cookies.Delete(".AspNetCore.Cookies");
+
+            return RedirectToAction("Index", "Home");
         }
     }
 }
