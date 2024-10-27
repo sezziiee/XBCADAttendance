@@ -32,17 +32,5 @@ namespace XBCADAttendance.Controllers
             var viewModel = new AddStaffViewModel(); 
             return View(viewModel);
         }
-
-        [HttpGet]
-        public IActionResult Users(AdminViewModel model) 
-        {
-            return View(model);
-        }
-
-        [HttpGet]
-        public IActionResult Lectures(AdminViewModel model)
-        {
-            return View(model);
-        }
     }
 }
