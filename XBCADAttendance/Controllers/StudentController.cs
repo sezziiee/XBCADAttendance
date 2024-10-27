@@ -12,7 +12,7 @@ using System.IO;
 namespace XBCADAttendance.Controllers
 {
     [Authorize(Policy ="StudentOnly")]
-    public class StudentReportController : Controller
+    public class StudentController : Controller
     {
 
         public IActionResult Index()
@@ -36,7 +36,7 @@ namespace XBCADAttendance.Controllers
         }
 
 
-        public IActionResult StudentReport()
+        public IActionResult Report()
         {
             string? userID = null;
 

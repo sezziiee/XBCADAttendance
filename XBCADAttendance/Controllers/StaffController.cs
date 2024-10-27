@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using XBCADAttendance.Models;
 using XBCADAttendance.Models.ViewModels;
 
@@ -28,24 +29,65 @@ namespace XBCADAttendance.Controllers
         }
 
         [HttpGet]
-        public IActionResult CreateLecturer()
+        public IActionResult Create()
         {
             return View();
         }
 
-        [HttpPost]
-        public IActionResult CreateLecturer(AddStaffViewModel model)
+        [HttpGet]
+        public IActionResult Profile()
         {
-            var viewModel = new AddStaffViewModel();
-            
-            
+            string? userID = null;
+
+            if (User.Identity.IsAuthenticated)
+            {
+                userID = User.Identity.Name;
+
+                if (!userID.IsNullOrEmpty())
+                {
+                    StudentReportViewModel newModel = new StudentReportViewModel(userID);
+                    return View(newModel);
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+
+            return RedirectToAction("Index", "Home");
+
+        }
+
+        [HttpPost]
+        public IActionResult Create(AddStaffViewModel model)
+        {
+            var viewModel = new AddStaffViewModel(); 
             return View(viewModel);
         }
 
-        [HttpGet]
-        public IActionResult Users(AdminViewModel model) 
+        [HttpPost]
+        //[Authorize(Policy = "AdminOnly")]
+        public IActionResult Create(TblStaffLecture lecture)
         {
-            return View(model);
+            lecture.LectureId = "L" + DataAccess.GetAllLectures().Count().ToString();
+            lecture.UserId = User.Identity.Name;
+            DataAccess.AddLecture(lecture);
+
+            return View();
+        }
+
+        public IActionResult LecturerQRCode()
+        {
+            LectureReportViewModel newModel = new LectureReportViewModel();
+            byte[] qrCodeImage = newModel.GenerateQRCode();
+
+            return File(qrCodeImage, "image/png");
+        }
+        public IActionResult Logout()
+        {
+            Response.Cookies.Delete(".AspNetCore.Cookies");
+
+            return RedirectToAction("Index", "Home");
         }
 
         /*NICHOLAS'S CODE FOR INLINE EDITING DO NOT TOUCH*/
