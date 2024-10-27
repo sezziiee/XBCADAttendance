@@ -8,48 +8,48 @@
     </a>
     <ul class="side-menu top">
         <li class="active">
-            <a asp-controller="StudentReport" asp-action="Index" asp-route-userID="3">
+            <a asp-controller="Student" asp-action="Index" asp-route-userID="3">
                 <i class='bx bxs-dashboard'></i>
                 <span class="text">Dashboard</span>
             </a>
         </li>
         <li>
-            <a asp-controller="StudentReport" asp-action="Modules" asp-route-userID="3">
+            <a asp-controller="Student" asp-action="Modules" asp-route-userID="3">
                 <i class='bx bxs-graduation'></i>
                 <span class="text">Modules</span>
             </a>
         </li>
         <li>
-            <a asp-controller="StudentReport" asp-action="StudentReport" asp-route-userID="3">
+            <a asp-controller="Student" asp-action="Report" asp-route-userID="3">
                 <i class='bx bxs-doughnut-chart'></i>
                 <span class="text">Student Report</span>
             </a>
         </li>
         <li>
-            <a asp-controller="StudentReport" asp-action="StudentQRCode" asp-route-userID="3">
+            <a asp-controller="Student" asp-action="StudentQRCode" asp-route-userID="3">
                 <i class='bx bx-qr'></i>
                 <span class="text">Student Scan</span>
             </a>
         </li>
         <li>
-            <a asp-controller="StudentReport" asp-action="AttendanceHistory" asp-route-userID="3">
+            <a asp-controller="Student" asp-action="AttendanceHistory" asp-route-userID="3">
                 <i class='bx bxs-group'></i>
                 <span class="text">Attendance List</span>
             </a>
         </li>
         <li>
-            <a asp-controller="StudentReport" asp-action="StudentReport" asp-route-userID="@Model.UserID">Attendance Report</a>
+            <a asp-controller="Student" asp-action="Report" asp-route-userID="@Model.UserID">Attendance Report</a>
         </li>
     </ul>
     <ul class="side-menu">
         <li>
-            <a asp-controller="StudentReport" asp-action="Profile" asp-route-userID="3" class="profile">
+            <a asp-controller="Student" asp-action="Profile" asp-route-userID="3" class="profile">
                 <i class='bx bxs-user'></i>
                 <span class="text">Profile</span>
             </a>
         </li>
         <li>
-            <a asp-controller="StudentReport" asp-action="logout" asp-route-userID="3" class="logout">
+            <a asp-controller="Student" asp-action="logout" asp-route-userID="3" class="logout">
                 <i class='bx bxs-log-out-circle'></i>
                 <span class="text">Logout</span>
             </a>

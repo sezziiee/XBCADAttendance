@@ -21,17 +21,15 @@ namespace XBCADAttendance.Controllers
         }
 
         [HttpGet]
-        public IActionResult CreateLecturer()
+        public IActionResult Create()
         {
             return View();
         }
 
         [HttpPost]
-        public IActionResult CreateLecturer(AddStaffViewModel model)
+        public IActionResult Create(AddStaffViewModel model)
         {
-            var viewModel = new AddStaffViewModel();
-            
-            
+            var viewModel = new AddStaffViewModel(); 
             return View(viewModel);
         }
 
