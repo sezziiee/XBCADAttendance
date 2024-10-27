@@ -1,10 +1,7 @@
-﻿@model XBCADAttendance.Models.ViewModels.AddStaffViewModel
-@{
-    ViewBag.Title = "Add Lecturer";
-}
+﻿@model TblStaffLecture
 
-
-
-
-
-
+<form asp-controller="LectureReport" asp-action="Create">
+    <input type="text" asp-for="@Model.ModuleCode" />
+    <input type="date" asp-for=@Model.Date />
+    <button type="submit"/>
+</form>

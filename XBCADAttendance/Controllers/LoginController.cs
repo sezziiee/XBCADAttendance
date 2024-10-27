@@ -107,7 +107,7 @@ namespace XBCADAttendance.Controllers
 
             if (message == "Success")
             {
-                return RedirectToAction("LectureReport", "LectureReport");
+                return RedirectToAction("LectureReport", "Staff");
             } else
             {
                 return View(model);
