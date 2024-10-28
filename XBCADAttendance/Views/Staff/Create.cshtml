@@ -1,6 +1,12 @@
 ﻿@using XBCADAttendance.Models.ViewModels
 @model CreateLectureViewModel
+@{
+    Layout = "_LecturerLayout";
+}
+                                      
 
+<div class="table-data">
+    <div class="order">
 <form asp-controller="Staff" asp-action="Create">
     <select asp-for="@Model.moduleCode">
         @foreach (var module in Model.lstModules)
@@ -11,3 +17,5 @@
     <input type="date" asp-for=@Model.date />
     <button type="submit">Create Lecture</button>
 </form>
+</div>
+</div>

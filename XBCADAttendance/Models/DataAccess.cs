@@ -10,6 +10,7 @@ using XBCADAttendance;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
+using Azure.Core;
 
 namespace XBCADAttendance.Models
 {
@@ -65,6 +66,7 @@ namespace XBCADAttendance.Models
         [ValidateAntiForgeryToken]
         public static string LoginStaff(HttpContext httpContext, LoginViewModel model)
         {
+            
             if (model.identifier.Length == 5)
             {
                 var staff = context.TblStaffs.Where(x => x.StaffId == model.identifier).FirstOrDefault();

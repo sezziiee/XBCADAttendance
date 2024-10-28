@@ -2,19 +2,32 @@
 @{
     Layout = "_StudentLayout";
 }
+<div class="head-title">
+    <div class="left">
         <h1>Attendance History</h1>
+        <ul class="breadcrumb">
+            <li><a href="#">Home</a></li>
+            <li><i class='bx bx-chevron-right'></i></li>
+            <li><a class="active" href="#">Attendance History</a></li>
+        </ul>
+    </div>
+</div>
 
+<div class="table-data">
+    <div class="order">
         @if (Model.lstLectures.Count > 0)
         {
-            <table>
-                <tr>
-                    <th>Module Code</th>
-                    <th>Date</th>
-                    <th>Duration</th>
-                    <th>Scan In</th>
-                    <th>Scan Out</th>
-                    <th>Classroom</th>
-                </tr>
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>Module Code</th>
+                        <th>Date</th>
+                        <th>Duration</th>
+                        <th>Scan In</th>
+                        <th>Scan Out</th>
+                        <th>Classroom</th>
+                    </tr>
+                </thead>
                 <tbody>
                     @if (Model != null)
                     {
@@ -25,21 +38,65 @@
                                 <td>@lecture.LectureDate</td>
                                 <td>@Model.CalcDuration(lecture)</td>
                                 <td>@lecture.ScanIn.ToShortTimeString()</td>
-                                @if (@lecture.ScanOut != null)
-                                {
-                                    TimeOnly scanout = (TimeOnly)@lecture.ScanOut;
-                                    <td>@scanout.ToShortTimeString()</td>
-                                }
+                                <td>@lecture.ScanOut?.ToShortTimeString() ?? "N/A"</td>
                                 <td>@lecture.ClassroomCode</td>
                             </tr>
                         }
                     }
                 </tbody>
             </table>
-        } else
+        }
+        else
         {
             <h3>
-                You haven't had a lecture yet, check back once you have.
+                You haven't had a lecture yet; check back once you have.
             </h3>
         }
+    </div>
+</div>
+<style>
+    /* Table container */
+.table-data .order {
+    overflow-x: auto;
+    margin-top: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
+/* Styled table */
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 16px;
+    font-family: Arial, sans-serif;
+}
+
+/* Table header */
+.styled-table thead tr {
+    background-color: #3C91E6;
+    color: #ffffff;
+    text-align: left;
+}
+
+.styled-table th,
+.styled-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Table body */
+.styled-table tbody tr {
+    transition: background-color 0.2s;
+}
+
+.styled-table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+
+.styled-table tbody tr:hover {
+    background-color: #dfe9f3;
+}
+
+
+
+</style>

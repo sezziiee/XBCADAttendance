@@ -1,24 +1,197 @@
 ﻿@using XBCADAttendance.Models.ViewModels
 @model AdminViewModel
 @{
+    Layout = "_LecturerLayout";
 }
+<div class="head-title">
+    <div class="left">
+        <h1>Users</h1>
+        <ul class="breadcrumb">
+            <li><a href="#">Home</a></li>
+            <li><i class='bx bx-chevron-right'></i></li>
+            <li><a class="active" href="#">Users</a></li>
+        </ul>
+    </div>
+</div>
 
-<table>
-    <tr>
-        <th>ID:</th>
-        <th>Name:</th>
-        <th>Password:</th>
-        <th>Role:</th>
-    </tr>
-    <form asp-action="" asp-controller="">
-        @foreach (var user in Model.Users)
-        {
-        <tr>
-            <td>@Model.GetID(user) <a asp-controller="" asp-action="">Edit</a></td>
-            <td>@user.UserName <a asp-controller="" asp-action="">Edit</a></td>
-            <td><a asp-controller="" asp-action="">Edit</a></td>
-            <td>@Model.GetRole(user) <a asp-controller="" asp-action="">Edit</a></td>
-        </tr>
+<div class="table-data">
+    <div class="order">
+        <table id="userTable" class="styled-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Password</th>
+                    <th>Role</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model.Users)
+                {
+                    <tr data-id="@Model.GetID(user)">
+                        <td>@Model.GetID(user)</td>
+                        <td contenteditable="true" class="editable" data-field="UserName">@user.UserName</td>
+                        <td contenteditable="true" class="editable" data-field="Password">••••••</td>
+                        <td contenteditable="true" class="editable" data-field="Role">@Model.GetRole(user)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="buttons">
+            <button id="saveChanges">Save</button>
+            <button id="cancelChanges">Cancel</button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const originalData = {};  // Store original data for canceling changes
+        const editedData = {};    // Track only changed data for saving
+
+        // On cell focus, store original value
+        document.querySelectorAll('.editable').forEach(cell => {
+            cell.addEventListener('focus', (e) => {
+                const rowId = e.target.closest('tr').getAttribute('data-id');
+                const field = e.target.getAttribute('data-field');
+
+                // Store the original value in originalData if not already stored
+                if (!originalData[rowId]) originalData[rowId] = {};
+                if (!originalData[rowId][field]) originalData[rowId][field] = e.target.textContent;
+            });
+
+            // On cell blur, check if the content has changed
+            cell.addEventListener('blur', (e) => {
+                const rowId = e.target.closest('tr').getAttribute('data-id');
+                const field = e.target.getAttribute('data-field');
+                const newValue = e.target.textContent.trim();
+
+                // Track the changed data
+                if (!editedData[rowId]) editedData[rowId] = {};
+                if (newValue !== originalData[rowId][field]) {
+                    editedData[rowId][field] = newValue;
+                } else {
+                    delete editedData[rowId][field]; // Remove if reverted to original
+                }
+            });
+        });
+
+        // Save Changes
+        document.getElementById('saveChanges').addEventListener('click', () => {
+            // Send editedData to the server via AJAX
+            fetch('/YourController/SaveChanges', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(editedData)
+            }).then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Changes saved successfully');
+                        // Clear editedData and originalData to reset the state
+                        Object.keys(editedData).forEach(key => delete editedData[key]);
+                        Object.keys(originalData).forEach(key => delete originalData[key]);
+                    } else {
+                        alert('Error saving changes');
+                    }
+                });
+        });
+
+        // Cancel Changes
+        document.getElementById('cancelChanges').addEventListener('click', () => {
+            // Revert cells to original data
+            Object.keys(originalData).forEach(rowId => {
+                const row = document.querySelector(`tr[data-id="${rowId}"]`);
+                Object.keys(originalData[rowId]).forEach(field => {
+                    const cell = row.querySelector(`.editable[data-field="${field}"]`);
+                    cell.textContent = originalData[rowId][field];
+                });
+            });
+
+            // Clear editedData and reset originalData
+            Object.keys(editedData).forEach(key => delete editedData[key]);
+            Object.keys(originalData).forEach(key => delete originalData[key]);
+        });
+    });
+
+</script>
+<style>
+    .styled-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        font-size: 1em;
+        font-family: Arial, sans-serif;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+        /* Table Header */
+        .styled-table thead tr {
+            background-color: #009879;
+            color: #ffffff;
+            text-align: left;
         }
-    </form>
-</table>
+
+        .styled-table th,
+        .styled-table td {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+        }
+
+        /* Row Hover Effect */
+        .styled-table tbody tr:hover {
+            background-color: #f3f3f3;
+        }
+
+        /* Alternate Row Colors */
+        .styled-table tbody tr:nth-of-type(even) {
+            background-color: #f8f8f8;
+        }
+
+    /* Editable cells styling */
+    .editable {
+        cursor: pointer;
+        background-color: #fcfcfc;
+        transition: background-color 0.2s ease;
+    }
+
+        /* Highlight editable cell on focus */
+        .editable:focus {
+            background-color: #e0f7fa;
+            outline: none;
+            border-bottom: 2px solid #009879;
+        }
+
+    /* Table Title and Breadcrumbs */
+    .head-title {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+        .head-title h1 {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .head-title .breadcrumb {
+            margin-left: auto;
+            font-size: 0.9em;
+        }
+
+            .head-title .breadcrumb li {
+                display: inline;
+                color: #666;
+            }
+
+                .head-title .breadcrumb li a {
+                    color: #009879;
+                    text-decoration: none;
+                }
+
+                    .head-title .breadcrumb li a.active {
+                        font-weight: bold;
+                    }
+    
+</style>
