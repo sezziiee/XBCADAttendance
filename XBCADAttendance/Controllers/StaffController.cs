@@ -31,38 +31,8 @@ namespace XBCADAttendance.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            return View();
-        }
-
-        [HttpGet]
-        public IActionResult Profile()
-        {
-            string? userID = null;
-
-            if (User.Identity.IsAuthenticated)
-            {
-                userID = User.Identity.Name;
-
-                if (!userID.IsNullOrEmpty())
-                {
-                    StudentReportViewModel newModel = new StudentReportViewModel(userID);
-                    return View(newModel);
-                }
-                else
-                {
-                    return RedirectToAction("Index", "Home");
-                }
-            }
-
-            return RedirectToAction("Index", "Home");
-
-        }
-
-        [HttpPost]
-        public IActionResult Create(AddStaffViewModel model)
-        {
-            var viewModel = new AddStaffViewModel(); 
-            return View(viewModel);
+            CreateLectureViewModel model = new CreateLectureViewModel(User.Identity.Name);
+            return View(model);
         }
 
         [HttpPost]
