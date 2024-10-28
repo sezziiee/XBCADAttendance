@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using XBCADAttendance.Models;
@@ -13,22 +14,26 @@ namespace XBCADAttendance.Controllers
         //{
         //    _dbContext = dbContext;
         //}
-
+        //[Authorize(Policy = "LecturerOnly")]
         public IActionResult Index()
         {
             return View();
         }
+        // Add Admin/Lecturer Policy?
         public IActionResult LectureReport(LectureReportViewModel model)
         {
             return View(model);
         }
 
+        //[Authorize(Policy = "LecturerOnly")]
         public IActionResult StudentReport(LectureReportViewModel model)
         {
             return View(model);
         }
 
+       
         [HttpGet]
+       // [Authorize(Policy = "LecturerOnly")]
         public IActionResult Create()
         {
             CreateLectureViewModel model = new CreateLectureViewModel(User.Identity.Name);
@@ -36,7 +41,7 @@ namespace XBCADAttendance.Controllers
         }
 
         [HttpPost]
-        //[Authorize(Policy = "AdminOnly")]
+       // [Authorize(Policy = "LecturerOnly")]
         public IActionResult Create(TblStaffLecture lecture)
         {
             lecture.LectureId = "L" + DataAccess.GetAllStaffLectures().Count().ToString();
@@ -46,6 +51,7 @@ namespace XBCADAttendance.Controllers
             return RedirectToAction("Index", "Staff");
         }
 
+       // [Authorize(Policy = "LecturerOnly")]
         public IActionResult LecturerQRCode()
         {
             LectureReportViewModel newModel = new LectureReportViewModel();
@@ -53,6 +59,8 @@ namespace XBCADAttendance.Controllers
 
             return File(qrCodeImage, "image/png");
         }
+
+       // [Authorize(Policy = "LecturerOnly")]
         public IActionResult Logout()
         {
             Response.Cookies.Delete(".AspNetCore.Cookies");

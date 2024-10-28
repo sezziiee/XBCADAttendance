@@ -80,7 +80,7 @@ namespace XBCADAttendance.Models
 
                     if (passwordHasher.CompareHashedPasswords(userPassword, user.Password))
                     {//Add Login logic later
-                        var role = GetAllRoles().Where(x => x.RoleId == staff.RoleId).Select(x => x.RoleName).ToString();
+                        var role = GetAllRoles().Where(x => x.RoleId == staff.RoleId).Select(x => x.RoleName).FirstOrDefault();
                         StoreUserCookies(httpContext, staff.UserId, role);
                         return "Success";
                     } else return "Incorrect password";
