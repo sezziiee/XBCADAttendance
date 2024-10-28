@@ -1,29 +1,109 @@
 ﻿@using XBCADAttendance.Models.ViewModels
 @model AdminViewModel
 @{
+    Layout = "_AdminLayout";
 }
 
-<table>
-    <tr>
-        <th></th>
-        <th>Lecturer</th>
-        <th>Module</th>
-        <th>Classroom</th>
-        <th>Date</th>
-        <th>Start</th>
-        <th>Finish</th>
-    </tr>
+<div class="head-title">
+    <div class="left">
+        <h1>Lecture Report</h1>
+        <ul class="breadcrumb">
+            <li><a href="#">Home</a></li>
+            <li><i class='bx bx-chevron-right'></i></li>
+            <li><a class="active" href="#">Lecture Report</a></li>
+        </ul>
+    </div>
+</div>
 
-    @foreach (var lecture in Model.StaffLectures)
-    {
-        <tr>
-            <td><button>Expand</button></td>
-            <td>@Model.GetLecturer(lecture)</td>
-            <td>@lecture.ModuleCode</td>
-            <td>@lecture.ClassroomCode</td>
-            <td>@lecture.Date</td>
-            <td>@lecture.Start</td>
-            <td>@lecture.Finish</td>
-        </tr>
+<div class="table-data">
+    <div class="order">
+        <table>
+            <thead>
+                <tr>
+                    <th class="ree"></th>
+                    <th class="ree">Lecturer</th>
+                    <th class="ree">Module</th>
+                    <th class="ree">Classroom</th>
+                    <th class="ree">Date</th>
+                    <th class="ree">Start</th>
+                    <th class="ree">Finish</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var lecture in Model.StaffLectures)
+                {
+                    <!-- Main row that toggles the accordion -->
+                    <tr class="accordion-toggle" onclick="toggleAccordion(this)">
+                        <td></td>
+                        <td>@Model.GetLecturer(lecture)</td>
+                        <td>@lecture.ModuleCode</td>
+                        <td>@lecture.ClassroomCode</td>
+                        <td>@lecture.Date</td>
+                        <td>@lecture.Start</td>
+                        <td>@lecture.Finish</td>
+                    </tr>
+
+                    <!-- Hidden header row for user details -->
+                    <tr class="accordion-content">
+                        <th colspan="1"></th>
+                        <th colspan="2" class="ree">User Name</th>
+                        <th colspan="2" class="ree">Role</th>
+                        <th colspan="2" class="ree">ID</th>
+                    </tr>
+
+                    <!-- Hidden rows showing each user’s details -->
+                    @foreach (var user in Model.Users)
+                    {
+                        <tr class="accordion-content">
+                            <td colspan="1"></td>
+                            <td colspan="2">@user.UserName</td>
+                            <td colspan="2">@Model.GetRole(user)</td>
+                            <td colspan="2">@Model.GetID(user)</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .ree{
+        background-color: #CFE8FF;
+        color: #3C91E6;
     }
-</table>
+    /* Hide accordion content by default */
+    .accordion-content {
+        display: none;
+    }
+
+    /* Cursor styling to indicate clickable rows */
+    .accordion-toggle {
+        cursor: pointer;
+    }
+
+    /* Optional: Styling for additional details */
+    .accordion-details {
+        padding: 10px;
+        background-color: #f0f0f0;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+</style>
+
+<script>
+    function toggleAccordion(element) {
+        // Find all sibling rows that are accordion-content rows
+        let contentRows = [];
+        let currentRow = element.nextElementSibling;
+        while (currentRow && currentRow.classList.contains("accordion-content")) {
+            contentRows.push(currentRow);
+            currentRow = currentRow.nextElementSibling;
+        }
+
+        // Toggle visibility of each accordion content row
+        contentRows.forEach(row => {
+            row.style.display = row.style.display === "none" || row.style.display === "" ? "table-row" : "none";
+        });
+    }
+</script>

@@ -1,31 +1,31 @@
 ﻿<section id="sidebar">
     <a href="#" class="brand">
-        <i class='bx bx-book-bookmark'></i>
-        <span class="text">Lecturer Hub</span>
+        <i class='bx bxs-cog'></i>
+        <span class="text">Admin Hub</span>
     </a>
     <ul class="side-menu top">
         <li class="active">
-            <a asp-controller="Staff" asp-action="Index">
+            <a asp-controller="Admin" asp-action="Index">
                 <i class='bx bxs-dashboard'></i>
                 <span class="text">Dashboard</span>
             </a>
         </li>
         <li>
-            <a asp-controller="Staff" asp-action="Index">
+            <a asp-controller="Admin" asp-action="UserReport">
                 <i class='bx bxs-graduation'></i>
-                <span class="text">Students Report</span>
+                <span class="text">User Report</span>
             </a>
         </li>
         <li>
-            <a asp-controller="Staff" asp-action="LectureReport">
+            <a asp-controller="Admin" asp-action="AddStaff">
                 <i class='bx bx-book-bookmark'></i>
-                <span class="text">Lecturer Report</span>
+                <span class="text">Add Staff</span>
             </a>
         </li>
         <li>
-            <a asp-controller="Staff" asp-action="Index">
+            <a asp-controller="Admin" asp-action="LectureReport">
                 <i class='bx bx-qr'></i>
-                <span class="text">Lecturer Scan</span>
+                <span class="text">Lecturer Report</span>
             </a>
         </li>
     </ul>
@@ -37,7 +37,7 @@
             </a>
         </li>
         <li>
-            <a asp-controller="Student" asp-action="logout"  class="logout">
+            <a asp-controller="Student" asp-action="logout" class="logout">
                 <i class='bx bxs-log-out-circle'></i>
                 <span class="text">Logout</span>
             </a>
@@ -51,10 +51,10 @@
             <div class="send-right-box">
                 <input type="checkbox" id="switch-mode" hidden>
                 <label for="switch-mode" class="switch-mode"></label>
-                <a asp-controller="Staff" asp-action="Profile"  class="profile">
+                <a asp-controller="Staff" asp-action="Profile" class="profile">
                     <div class="p-0 m-0">
-                        <h6>Christoffel Johannes Petrus Dricus Kurt Darren Steffanus Du Plesis Kruger</h6>
-                        <h6>lr12345</h6>
+                        <h6>Admin</h6>
+                        
                     </div>
                 </a>
             </div>
