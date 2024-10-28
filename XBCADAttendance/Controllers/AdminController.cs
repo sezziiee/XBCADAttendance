@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Google.Apis.Admin.Directory.directory_v1.Data;
+using Microsoft.AspNetCore.Mvc;
 using System.Security.Permissions;
 using XBCADAttendance.Models;
 using XBCADAttendance.Models.ViewModels;
@@ -65,56 +66,203 @@ namespace XBCADAttendance.Controllers
         [HttpGet]
         public IActionResult Edit_Name()
         {
-            return View();
+            if (User.Identity.IsAuthenticated)
+            {
+                return View(new UserInfo(User.Identity.Name));
+            }
+
+            return RedirectToAction();
         }
 
         [HttpGet]
         public IActionResult Edit_Number()
         {
-            return View();
+            if (User.Identity.IsAuthenticated)
+            {
+                return View(new UserInfo(User.Identity.Name));
+            }
+
+            return RedirectToAction();
         }
 
         [HttpGet]
         public IActionResult Edit_Password()
         {
-            return View();
+            if (User.Identity.IsAuthenticated)
+            {
+                return View(new UserInfo(User.Identity.Name));
+            }
+
+            return RedirectToAction();
         }
 
         [HttpGet]
         public IActionResult Edit_Role()
         {
-            return View();
+            if (User.Identity.IsAuthenticated)
+            {
+                return View(new UserInfo(User.Identity.Name));
+            }
+
+            return RedirectToAction();
         }
 
         [HttpPost]
         public IActionResult Edit_Name(UserInfo userInfo)
         {
-            return View(userInfo);
+            try
+            {
+                var user = DataAccess.GetUserById(userInfo.userId);
+
+                if (user != null)
+                {
+                    user.UserName = userInfo.name;
+                    DataAccess.context.TblUsers.Update(user);
+
+                    DataAccess.context.SaveChanges();
+
+                    RedirectToAction("UserReport","Admin");
+                } else throw new Exception("No User");
+            
+                return View(userInfo);
+            } catch (Exception ex)
+            {
+                return View(userInfo);
+            }
         }
 
         [HttpPost]
         public IActionResult Edit_Number(UserInfo userInfo)
         {
-            return View(userInfo);
+            try
+            {
+                var user = DataAccess.GetUserById(userInfo.userId);
+
+                if (user != null)
+                {
+                    if (user.TblStudent != null)
+                    {
+                        var student = user.TblStudent;
+
+                        student.StudentNo = userInfo.identifier;
+                        DataAccess.context.TblStudents.Update(student);
+
+                        DataAccess.context.SaveChanges();
+
+                        RedirectToAction("UserReport", "Admin");
+                    }else
+                    {
+                        var staff = user.TblStaff;
+
+                        staff.StaffId = userInfo.identifier;
+                        DataAccess.context.TblStaffs.Update(staff);
+
+                        DataAccess.context.SaveChanges();
+
+                        RedirectToAction("UserReport", "Admin");
+                    }
+                    
+                } else throw new Exception("No User");
+
+                return View(userInfo);
+            } catch (Exception ex)
+            {
+                return View(userInfo);
+            }
         }
 
         [HttpPost]
         public IActionResult Edit_Password(UserInfo userInfo)
         {
-            return View(userInfo);
+            try
+            {
+                var user = DataAccess.GetUserById(userInfo.userId);
+
+                if (user != null)
+                {
+                    Hasher hasher = new Hasher(userInfo.password);
+                    user.Password = hasher.GetHash();
+                    DataAccess.context.TblUsers.Update(user);
+
+                    DataAccess.context.SaveChanges();
+
+                    RedirectToAction("UserReport", "Admin");
+                } else throw new Exception("No User");
+
+                return View(userInfo);
+            } catch (Exception ex)
+            {
+                return View(userInfo);
+            }
         }
 
         [HttpPost]
         public IActionResult Edit_Role(UserInfo userInfo)
         {
-            return View(userInfo);
+            try
+            {
+                var user = DataAccess.GetUserById(userInfo.userId);
+
+                if (user != null)
+                {
+                    if (user.TblStaff != null)
+                    {
+                        var staff = user.TblStaff;
+
+                        userInfo.UpdateRoleId();
+
+                        staff.RoleId = userInfo.roleId;
+                        DataAccess.context.TblStaffs.Update(staff);
+
+                        DataAccess.context.SaveChanges();
+
+                        RedirectToAction("UserReport", "Admin");
+                    }
+                } else throw new Exception("No User");
+
+                return View(userInfo);
+            } catch (Exception ex)
+            {
+                return View(userInfo);
+            }
         }
     }
 
-    public struct UserInfo 
-    {   
-        TblUser user { get; set; }
+    public struct UserInfo
+    {
+        public string userId { get; set; }
         public string identifier { get; set; }
-        public int roleId { get; set; }
-    }   
+        public string name { get; set; }
+        public string password { get; set; }
+        public List<string> roles = DataAccess.GetAllRoles().Select(x => x.RoleName).ToList();
+        public string roleId { get; set; }
+        public string role { get; set; }
+
+        public UserInfo(string userId)
+        {
+            this.userId = userId;
+
+            var user = DataAccess.context.TblUsers.Where(x => x.UserId == userId).FirstOrDefault();
+
+            if (user != null)
+            {
+                if (user.TblStudent != null)
+                {
+                    identifier = user.TblStudent.StudentNo.ToString();
+                    role = "Student";
+                }else 
+                { 
+                    identifier = user.TblStaff.StaffId.ToString();
+                }
+
+                name = user.UserName;
+
+            }
+        }
+
+        public void UpdateRoleId()
+        {
+            roleId = roles.IndexOf(role).ToString();
+        }
+    }
 }

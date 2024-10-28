@@ -23,14 +23,8 @@ namespace XBCADAttendance.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            return View();
-        }
-
-        [HttpPost]
-        public IActionResult Create(AddStaffViewModel model)
-        {
-            var viewModel = new AddStaffViewModel(); 
-            return View(viewModel);
+            CreateLectureViewModel model = new CreateLectureViewModel(User.Identity.Name);
+            return View(model);
         }
 
         [HttpPost]

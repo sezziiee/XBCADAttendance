@@ -1,4 +1,13 @@
 ﻿@using XBCADAttendance.Controllers
 @model UserInfo
-@{
-}
+<div>
+    <form asp-action="Edit_Role" asp-controller="Admin" method="post">
+        <select asp-for="@Model.roleId">
+            @foreach (var role in Model.roles)
+            {
+                <option>@role</option>
+            }
+        </select>
+        <button>Save</button>
+    </form>
+</div>
