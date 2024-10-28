@@ -26,8 +26,8 @@ namespace XBCADAttendance
             builder.Services.AddAuthorization(options =>
             {
                 options.AddPolicy("StudentOnly", policy => policy.RequireRole("Student"));
-                options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
-                //options.AddPolicy("UserOnly", policy => policy.RequireRole("Student, Admin"));
+                options.AddPolicy("LecturerOnly", policy => policy.RequireRole("Lecturer"));
+                options.AddPolicy("AdminOnly", policy => policy.RequireRole("Administrator"));
             });
 
             var cookiePolicyOptions = new CookiePolicyOptions

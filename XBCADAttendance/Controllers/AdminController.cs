@@ -1,4 +1,5 @@
 ﻿using Google.Apis.Admin.Directory.directory_v1.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Permissions;
 using XBCADAttendance.Models;
@@ -6,6 +7,7 @@ using XBCADAttendance.Models.ViewModels;
 
 namespace XBCADAttendance.Controllers
 {
+    [Authorize(Policy = "AdminOnly")]
     public class AdminController : Controller
     {
         public IActionResult Index()
@@ -20,6 +22,7 @@ namespace XBCADAttendance.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "AdminOnly")]
         public IActionResult AddStaff(AddStaffViewModel model)
         {
             try
@@ -52,18 +55,21 @@ namespace XBCADAttendance.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "AdminOnly")]
         public IActionResult UserReport(AdminViewModel model)
         {
             return View(model);
         }
 
         [HttpGet]
+        [Authorize(Policy = "AdminOnly")]
         public IActionResult LectureReport(AdminViewModel model)
         {
             return View(model);
         }
 
         [HttpGet]
+        [Authorize(Policy = "AdminOnly")]
         public IActionResult Edit_Name()
         {
             if (User.Identity.IsAuthenticated)
@@ -75,6 +81,7 @@ namespace XBCADAttendance.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "AdminOnly")]
         public IActionResult Edit_Number()
         {
             if (User.Identity.IsAuthenticated)
@@ -86,6 +93,7 @@ namespace XBCADAttendance.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "AdminOnly")]
         public IActionResult Edit_Password()
         {
             if (User.Identity.IsAuthenticated)
@@ -97,6 +105,7 @@ namespace XBCADAttendance.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "AdminOnly")]
         public IActionResult Edit_Role()
         {
             if (User.Identity.IsAuthenticated)
@@ -108,6 +117,7 @@ namespace XBCADAttendance.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "AdminOnly")]
         public IActionResult Edit_Name(UserInfo userInfo)
         {
             try
@@ -132,6 +142,7 @@ namespace XBCADAttendance.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "AdminOnly")]
         public IActionResult Edit_Number(UserInfo userInfo)
         {
             try
@@ -172,6 +183,7 @@ namespace XBCADAttendance.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "AdminOnly")]
         public IActionResult Edit_Password(UserInfo userInfo)
         {
             try
@@ -197,6 +209,7 @@ namespace XBCADAttendance.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "AdminOnly")]
         public IActionResult Edit_Role(UserInfo userInfo)
         {
             try
@@ -259,7 +272,7 @@ namespace XBCADAttendance.Controllers
 
             }
         }
-
+        [Authorize(Policy = "AdminOnly")]
         public void UpdateRoleId()
         {
             roleId = roles.IndexOf(role).ToString();
