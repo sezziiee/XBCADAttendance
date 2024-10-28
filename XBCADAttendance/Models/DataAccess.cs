@@ -266,6 +266,16 @@ namespace XBCADAttendance.Models
             else return null;
         }
 
+        public static List<TblStaffLecture> GetAllStaffLectures()
+        {
+            var data = context.TblStaffLectures.ToList();
+
+            if (data != null)
+            {
+                return data;
+            } else return null;
+        }
+
         public static List<TblStudentLecture>? GetAllLecturesByStudentNo(string studentNo)
         {
             var studentID = context.TblUsers.Where(x => x.TblStudent != null && x.TblStudent.StudentNo == studentNo).Select(x => x.UserId).FirstOrDefault();
