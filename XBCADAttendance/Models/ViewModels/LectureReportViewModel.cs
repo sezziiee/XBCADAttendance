@@ -48,8 +48,13 @@ namespace XBCADAttendance.Models
             foreach (var lecturer in lecturers)
             {
                 headings.Add(lecturer.UserName);
-                chartData.Add(new DataPoint(lecturer.UserName, GetAttendanceByLecturer(lecturer.TblStaff.StaffId)));
+
+                string staffId = DataAccess.Context.TblStaffs.Where(x => x.UserId == lecturer.UserId).Select(x => x.StaffId).FirstOrDefault();
+
+                chartData.Add(new DataPoint(lecturer.UserName, GetAttendanceByLecturer(staffId)));
             }
+
+            chart = new AttendanceByLecturerChart(chartData, headings);
 
             lstLectures = DataAccess.GetStudentLecturesByStaffId(staff.StaffId).Result;
         }
