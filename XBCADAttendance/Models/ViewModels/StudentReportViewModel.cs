@@ -33,7 +33,8 @@ namespace XBCADAttendance.Models
                 lstModules = DataAccess.GetModulesByStudentNo(StudentNo).Result;
                 lstLectures = DataAccess.GetAllLecturesByStudentNo(StudentNo).Result;
                 Name = DataAccess.GetUserById(UserID)!.Result.UserName!;
-            } else if (studentNo != null)
+            }
+            else if (studentNo != null)
             {
                 StudentNo = studentNo;
                 lstModules = DataAccess.GetModulesByStudentNo(StudentNo).Result;
@@ -56,7 +57,7 @@ namespace XBCADAttendance.Models
                 lstLectures = lstLectures.Where(x => x.ModuleCode == moduleCode).ToList();
             }
 
-            if(start != null)
+            if (start != null)
             {
                 lstLectures = lstLectures.Where(x => x.LectureDate > start).ToList();
             }
@@ -92,7 +93,8 @@ namespace XBCADAttendance.Models
 
         public IEnumerable<SelectListItem> GetModuleCodesForFilter()
         {
-            return GetStudentModules().Select(x => new SelectListItem { 
+            return GetStudentModules().Select(x => new SelectListItem
+            {
                 Value = x,
                 Text = x
             }).ToList();
@@ -232,14 +234,28 @@ namespace XBCADAttendance.Models
                 }
             }
         }
-    }
 
-    public class AttendancePieData
-    {
-        public List<DataPoint> attendanceValues { get; set; }
-        public AttendancePieData(List<DataPoint> attendanceValues)
+        public async Task UpdateUserCredentialsAsync(string userId, string newUserName, string newPassword)
         {
-            this.attendanceValues = attendanceValues;
+            if (userId != null)
+            {
+                await DataAccess.UpdateUser(userId, newUserName, newPassword);
+            }
+            else
+            {
+                throw new ArgumentException("User not found");
+            }
         }
     }
+
+
+        public class AttendancePieData
+        {
+            public List<DataPoint> attendanceValues { get; set; }
+            public AttendancePieData(List<DataPoint> attendanceValues)
+            {
+                this.attendanceValues = attendanceValues;
+            }
+        }
+    
 }

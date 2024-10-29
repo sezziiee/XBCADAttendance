@@ -148,3 +148,97 @@
         </div>
     </div>
     </div>
+
+<div class="modalbox">
+    <div class="modal-content">
+        <h2>Change Details</h2>
+        <form method="post" asp-action="Update">
+         
+            <input type="text" name="username" placeholder="New Username" required />      
+            <input type="text" name="password" placeholder="New Password" required />
+
+            <div class="modal-actions">
+                <button type="submit">Update</button>
+                <button type="button" class="close-btn">Close</button>
+            </div>
+
+
+        </form>
+    </div>
+</div>
+
+<script>
+    window.addEventListener('load', function () {
+        var userPassword = '@ViewData["UserPassword"]';
+        var hased = '@ViewData["hased"]';
+
+        if (userPassword === hased) { 
+            document.querySelector('.modalbox').style.display = 'block'; 
+        }
+
+        setTimeout(function () { 
+            document.querySelector('.modalbox').style.display = 'block'; 
+        }, 2000);
+
+        document.querySelector('.close-btn').addEventListener('click', function () {
+            document.querySelector('.modalbox').style.display = 'none';
+        });
+
+        // document.querySelector('.go-to-events-btn').addEventListener('click', function () {
+        //     window.location.href = 'LocalEvents/Index'; // Change this URL to link to the page you want
+        // });
+
+        function closeModal() { document.querySelector('.modalbox').style.display = 'none'; }
+    });
+</script>
+
+<style>
+    .modalbox {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+        background-color: white;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 30%;
+        text-align: center;
+        border-radius: 16px;
+    }
+
+    .modal-actions {
+        margin-top: 20px;
+    }
+
+    button {
+        padding: 10px 20px;
+        margin: 5px;
+        cursor: pointer;
+    }
+
+    .close-btn {
+        background-color: red;
+        color: white;
+    }
+
+    .go-to-events-btn {
+        background-color: green;
+        color: white;
+    }
+</style>
+
+@if (ViewData["Success"]?.ToString() == "True")
+{
+    <script>
+        closeModal();
+    </script>
+}
+

@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Google.Apis.Admin.Directory.directory_v1.Data;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Metadata;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using System.Diagnostics;
 using XBCADAttendance.Models;
 
 namespace XBCADAttendance.Controllers
@@ -11,12 +14,15 @@ namespace XBCADAttendance.Controllers
         [Authorize(Policy = "StudentOnly")]
         public IActionResult Index()
         {
+            
             if (!User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Index", "Home");
             }
 
             string? userID = User.Identity.Name;
+            var user = DataAccess.GetUserById(userID);
+            string userPassword = user.Result.Password;
 
             if (string.IsNullOrWhiteSpace(userID))
             {
@@ -24,6 +30,11 @@ namespace XBCADAttendance.Controllers
                 TempData["ErrorMessage"] = "User ID is invalid. Please log in again.";
                 return RedirectToAction("Index", "Home");
             }
+            
+            Hasher passwordHasher = new Hasher("0000"); 
+            string hashed = passwordHasher.GetHash();
+            ViewData["UserPassword"] = user.Result.Password; 
+            ViewData["hashed"] = hashed;
 
             StudentReportViewModel model = new StudentReportViewModel(userID);
             return View(model);
@@ -98,6 +109,7 @@ namespace XBCADAttendance.Controllers
 
             return RedirectToAction("Index", "Home");
         }
+
         [Authorize(Policy = "StudentOnly")]
         public IActionResult AttendanceHistory()
         {
@@ -119,6 +131,7 @@ namespace XBCADAttendance.Controllers
 
             return RedirectToAction("Index", "Home");
         }
+
         [Authorize(Policy = "StudentOnly")]
         public IActionResult StudentQRCode()
         {
@@ -135,12 +148,44 @@ namespace XBCADAttendance.Controllers
             
         }
 
+        [Authorize(Policy = "StudentOnly")]
+        [HttpPost]
+        public async Task<IActionResult> Update(string username, string password)
+        {
+            string? userID = null;
+            Hasher passwordHasher = new Hasher(password!);
+            string userPassword = passwordHasher.GetHash();
+
+            if (User.Identity.IsAuthenticated)
+            {
+                userID = User.Identity.Name;
+
+                if (!string.IsNullOrEmpty(userID))
+                {
+                    StudentReportViewModel newModel = new StudentReportViewModel(userID);                  
+                  await newModel.UpdateUserCredentialsAsync(userID, username, userPassword);
+                    ViewData["Success"] = "True";
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+
+            return View();
+        }
+
+
         public IActionResult Logout()
         {
             Response.Cookies.Delete(".AspNetCore.Cookies");
 
             return RedirectToAction("Index", "Home");
         }
+
+
+
 
     }
 }
