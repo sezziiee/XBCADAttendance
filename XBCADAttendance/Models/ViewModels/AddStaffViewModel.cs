@@ -1,4 +1,6 @@
-﻿namespace XBCADAttendance.Models.ViewModels
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace XBCADAttendance.Models.ViewModels
 {
     public class AddStaffViewModel
     {
@@ -27,8 +29,11 @@
 
             StaffNumber = staffNumber;
         }
-        
-    }
 
-    
+        public IEnumerable<SelectListItem> GetRoles()
+        {
+            return lstRoles.Select(x => new SelectListItem { Value = x.RoleId, Text = x.RoleName }).ToList();
+
+        }
+    }
 }
