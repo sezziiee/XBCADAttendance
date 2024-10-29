@@ -27,6 +27,9 @@
                     <h2 class="module-code">@module.ModuleCode</h2>
                     <p class="module-name">@module.ModuleName</p>
                 </div>
+                <div class="module-details">
+                    Attendance: @Model.CalcAttendencePerModule(module.ModuleCode)%
+                </div>
             </div>
         }
     }

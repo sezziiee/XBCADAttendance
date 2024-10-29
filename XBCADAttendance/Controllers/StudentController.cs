@@ -30,7 +30,7 @@ namespace XBCADAttendance.Controllers
         }
 
         [Authorize(Policy = "StudentOnly")]
-        public IActionResult Report()
+        public IActionResult Report(string? moduleCode, DateOnly? start, DateOnly? end, string? status)
         {
             string? userID = null;
 
@@ -41,6 +41,7 @@ namespace XBCADAttendance.Controllers
                 if (!userID.IsNullOrEmpty())
                 {
                     StudentReportViewModel model = new StudentReportViewModel(userID);
+                    model.ApplyFilters(moduleCode, start, end, status);
                     return View(model);
                 } else
                 {
