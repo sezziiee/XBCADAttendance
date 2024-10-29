@@ -1,11 +1,5 @@
 @using Highsoft.Web.Mvc.Charts
 @model StudentReportViewModel
-
-@{
-    // Declare and initialize the array in C#
-    int[] myArray = { 1, 2 };
-    string[] headings = { "poes", "kak" };
-}
 <script src="https://code.highcharts.com/highcharts.js"></script>
 <style>
     .dashboard {
@@ -118,7 +112,7 @@
                             series: [{
                                 name: "Value",
                                 data: @Html.Raw(Json.Serialize(Model.AttendancePieData.attendanceValues))
-                                }]
+                                                                        }]
                         });
                     });
                 </script>
@@ -132,15 +126,23 @@
                                 type: "column"
                             },
                             title: {
-                                text: "Employee Attendance"
+                                text: "Attendance per Module"
                             },
                             xAxis: {
-                                categories: @Html.Raw(Json.Serialize("Hello"))
-                                                },
-                            series: [{
-                                name: "Lectures",
-                                data: @Html.Raw(Json.Serialize(Model.AttendancePieData.attendanceValues))
-                                                    }]
+                                labels: {
+                                    enabled: false // Hides the x-axis labels
+                                }
+                            },
+                            yAxis: {
+                                title: {
+                                    text: "Lectures"
+                                }
+                            },
+                            series: @Html.Raw(Json.Serialize(Model.AttendanceChartData.attendanceValues.Select(dp => new
+                            {
+                                name = dp.Name,  // Each data point's "Name" becomes the series name
+                                data = new[] { dp.Y } // Each data point's "Y" value becomes the series data
+                            })))
                         });
                     });
                 </script>
@@ -241,4 +243,5 @@
         closeModal();
     </script>
 }
+
 

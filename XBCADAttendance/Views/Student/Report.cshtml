@@ -13,27 +13,40 @@
         </ul>
     </div>
 </div>
-<div class="table-data">
-<div>
-    Filter By:
-        <form method="get" asp-action="Report">
-            <div id="Filters">
-                <select name="moduleCode" asp-items="@Model.GetModuleCodesForFilter()">
+
+<div class="container1">
+    <!-- Filter Section -->
+    <div class="filter-section">
+        <h3>Filter By:</h3>
+        <form method="get" asp-action="Report" class="filter-form">
+            <div class="filter-group">
+                <label for="moduleCode">Module:</label>
+                <select id="moduleCode" name="moduleCode" asp-items="@Model.GetModuleCodesForFilter()">
                     <option value="">Select Module</option>
-                </select><br />
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="status">Status:</label>
+                <select id="status" name="status" asp-items="@Model.GetStatii()">
+                    <option value="">Select Status</option>
+                </select>
+            </div>
+            <div class="filter-group">
                 <label for="start">Start Date:</label>
                 <input type="date" id="start" name="start" class="form-control" />
+            </div>
+            <div class="filter-group">
                 <label for="end">End Date:</label>
                 <input type="date" id="end" name="end" class="form-control" />
-                <select name="status" asp-items="@Model.GetStatii()">
-                    <option value="">Select Status</option>
-                </select><br />
-                <button type="submit">Apply Filters</button>
             </div>
+           
+            <button type="submit" class="filter-button">Apply Filters</button>
         </form>
-</div>
-<div class="order">
-          <table class="styled-table">
+    </div>
+
+    <!-- Table Section -->
+    <div class="table-container">
+        <table class="styled-table">
             <thead>
                 <tr>
                     <th>Module Code</th>
@@ -58,16 +71,88 @@
         </table>
     </div>
 </div>
+
 <style>
-    /* Table container */
-    .table-data .order {
+    /* Overall container styling */
+    .container1 {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        padding: 1.5rem;
+        background-color: #f8f9fc;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Filter Section */
+    .filter-section {
+        background-color: #ffffff;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        display: grid;
+        gap: 1rem;
+    }
+
+        .filter-section h3 {
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+            color: #333;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 0.5rem;
+        }
+
+    .filter-form {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+        align-items: end;
+    }
+
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+        .filter-group label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+    .filter-form select,
+    .filter-form input[type="date"],
+    .filter-button {
+        padding: 0.5rem;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        font-size: 1rem;
+        transition: box-shadow 0.3s;
+    }
+
+    .filter-button {
+        grid-column: span 2;
+        padding: 0.75rem 1.25rem;
+        background-color: #007bff;
+        color: #ffffff;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+        .filter-button:hover {
+            background-color: #0056b3;
+        }
+
+    /* Table styling */
+    .table-container {
         overflow-x: auto;
-        margin-top: 20px;
+        background-color: #ffffff;
+        padding: 1.5rem;
         border-radius: 8px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
-    /* Styled table */
     .styled-table {
         width: 100%;
         border-collapse: collapse;
@@ -75,9 +160,8 @@
         font-family: Arial, sans-serif;
     }
 
-        /* Table header */
         .styled-table thead tr {
-            background-color: #3C91E6;
+            background-color: #007bff;
             color: #ffffff;
             text-align: left;
         }
@@ -88,7 +172,6 @@
             border-bottom: 1px solid #ddd;
         }
 
-        /* Table body */
         .styled-table tbody tr {
             transition: background-color 0.2s;
         }
@@ -101,5 +184,4 @@
                 background-color: #dfe9f3;
             }
 
-</style>
-
+   </style>

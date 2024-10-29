@@ -14,13 +14,13 @@ namespace XBCADAttendance.Controllers
         {
             return View();
         }
-        // Add Admin/Lecturer Policy?
+        [Authorize(Policy = "LecturerOnly")]
         public IActionResult LectureReport(LectureReportViewModel model)
         {
             return View(model);
         }
 
-        //[Authorize(Policy = "LecturerOnly")]
+        [Authorize(Policy = "LecturerOnly")]
         public IActionResult StudentReport(LectureReportViewModel model)
         {
             return View(model);
@@ -28,7 +28,7 @@ namespace XBCADAttendance.Controllers
 
        
         [HttpGet]
-       // [Authorize(Policy = "LecturerOnly")]
+        [Authorize(Policy = "LecturerOnly")]
         public IActionResult Create()
         {
             CreateLectureViewModel model = new CreateLectureViewModel(User.Identity.Name);
@@ -36,7 +36,7 @@ namespace XBCADAttendance.Controllers
         }
 
         [HttpPost]
-       // [Authorize(Policy = "LecturerOnly")]
+        [Authorize(Policy = "LecturerOnly")]
         public IActionResult Create(TblStaffLecture lecture)
         {
             lecture.LectureId = "L" + DataAccess.GetAllStaffLectures().Result.Count().ToString();
@@ -46,7 +46,7 @@ namespace XBCADAttendance.Controllers
             return RedirectToAction("Index", "Staff");
         }
 
-       // [Authorize(Policy = "LecturerOnly")]
+        [Authorize(Policy = "LecturerOnly")]
         public IActionResult LecturerQRCode()
         {
             LectureReportViewModel newModel = new LectureReportViewModel();
@@ -55,7 +55,7 @@ namespace XBCADAttendance.Controllers
             return File(qrCodeImage, "image/png");
         }
 
-       // [Authorize(Policy = "LecturerOnly")]
+        [Authorize(Policy = "LecturerOnly")]
         public IActionResult Logout()
         {
             Response.Cookies.Delete(".AspNetCore.Cookies");
@@ -63,6 +63,25 @@ namespace XBCADAttendance.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        [HttpGet]
+        public IActionResult AddModule()
+        {
+            return View();
+        }
 
+        [HttpPost]
+        public IActionResult AddModule(TblModule module)
+        {
+            try
+            {
+                DataAccess.Context.TblModules.Add(module);
+                DataAccess.Context.SaveChanges();
+                return RedirectToAction("Index", "Admin");
+            } catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = ex.Message;
+                return View(module);
+            }
+        }
     }
 }

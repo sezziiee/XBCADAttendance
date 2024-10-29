@@ -254,6 +254,7 @@ namespace XBCADAttendance.Controllers
                 return View(userInfo);
             }
         }
+
         [HttpPost]
         public JsonResult SaveChanges([FromBody] Dictionary<string, Dictionary<string, string>> editedData)
         {
@@ -337,8 +338,6 @@ namespace XBCADAttendance.Controllers
                 return Json(new { success = false, message = $"Error saving changes: {ex.Message}" });
             }
         }
-
-
     }
 
 

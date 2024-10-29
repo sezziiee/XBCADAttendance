@@ -1,0 +1,9 @@
+﻿@model TblModule
+
+<form asp-action="CreateModule" asp-controller="Admin" >
+    <label>Module Name:</label>
+    <input asp-for="@Model.ModuleName"/>
+    <label>Module Code:</label>
+    <input asp-for="@Model.ModuleCode" />
+    <button>Submit</button>
+</form>
