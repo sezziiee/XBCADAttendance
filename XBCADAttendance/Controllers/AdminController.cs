@@ -287,7 +287,7 @@ namespace XBCADAttendance.Controllers
                     }
                     
 
-                    var user = DataAccess.context.TblUsers.Where(x => x.UserName == userInfo.userId).FirstOrDefault();
+                    var user = DataAccess.Context.TblUsers.Where(x => x.UserName == userInfo.userId).FirstOrDefault();
                     if (user != null)
                     {
                         user.UserName = userInfo.name;
@@ -309,7 +309,7 @@ namespace XBCADAttendance.Controllers
                                 staff.StaffId = userInfo.identifier;
                             }
 
-                            DataAccess.context.TblStaffs.Update(staff);
+                            DataAccess.Context.TblStaffs.Update(staff);
                         }
 
                         else if (user.TblStudent != null)
@@ -320,14 +320,14 @@ namespace XBCADAttendance.Controllers
                                 student.StudentNo = userInfo.identifier;
                             }
 
-                            DataAccess.context.TblStudents.Update(student);
+                            DataAccess.Context.TblStudents.Update(student);
                         }
 
-                        DataAccess.context.TblUsers.Update(user);
+                        DataAccess.Context.TblUsers.Update(user);
                     }
                 }
 
-                DataAccess.context.SaveChanges();
+                DataAccess.Context.SaveChanges();
                 return Json(new { success = true, message = "Changes saved successfully." });
             }
             catch (Exception ex)
