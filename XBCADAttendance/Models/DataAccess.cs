@@ -554,12 +554,12 @@ namespace XBCADAttendance.Models
         {
             var uids = await context.TblStudentLectures.Where(x => x.ModuleCode == moduleCode).Select(x => x.UserId).ToListAsync();
             List<TblStudent> output = new List<TblStudent>();
-            
+
             foreach (var id in uids)
             {
                 output.Add(GetStudentById(id).Result);
             }
-            
+
             return output;
         }
 
@@ -579,33 +579,10 @@ namespace XBCADAttendance.Models
 
             return null;
         }
-        /*public static async Task UpdateUser(TblUser user)
+
+        public static async Task<List<TblUser>> GetAllLecturers()
         {
-            using (var context = new YourDbContext())
-            {
-                var existingUser = await context.TblUsers.FirstOrDefaultAsync(u => u.UserId == user.UserId);
-
-                if (existingUser != null)
-                {
-                    // Update user properties
-                    existingUser.UserName = user.UserName;
-
-                    // Only update password if it's been changed
-                    if (!string.IsNullOrEmpty(user.Password))
-                    {
-                        existingUser.Password = HashPassword(user.Password); // Implement your password hashing
-                    }
-
-                    // Update role if the RoleId has changed
-                    if (user.RoleId != existingUser.RoleId)
-                    {
-                        existingUser.RoleId = user.RoleId;
-                    }
-
-                    // Save changes
-                    await context.SaveChangesAsync();
-                }
-            }
-        }*/
+            return await context.TblUsers.Where(x => x.TblStaff.RoleId == 1.ToString()).ToListAsync();
+        }
     }
 }

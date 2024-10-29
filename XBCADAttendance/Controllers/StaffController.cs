@@ -15,6 +15,7 @@ namespace XBCADAttendance.Controllers
             LectureReportViewModel model = new LectureReportViewModel(User.Identity.Name);
             return View(model);
         }
+
         [Authorize(Policy = "LecturerOnly")]
         public IActionResult LectureReport(LectureReportViewModel model)
         {
