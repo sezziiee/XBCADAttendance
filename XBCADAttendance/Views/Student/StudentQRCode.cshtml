@@ -1,4 +1,17 @@
 ﻿@{
     Layout = "_StudentLayout";
 }
-<img src="@Url.Action("StudentQRCode", "QRCode")" alt="QR Code" style="width: 200px; height: 200px;" />
+<div class="head-title">
+    <div class="left">
+        <h1>QR Code</h1>
+        <ul class="breadcrumb">
+            <li><a href="#">Home</a></li>
+            <li><i class='bx bx-chevron-right'></i></li>
+            <li><a class="active" href="#">QR Code</a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="table-data">
+    <img src="@Url.Action("StudentQRCode", "Student")" alt="QR Code" style="width: 200px; height: 200px;" />
+</div>

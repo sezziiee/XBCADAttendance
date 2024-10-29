@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Permissions;
 using XBCADAttendance.Models;
 using XBCADAttendance.Models.ViewModels;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 
 namespace XBCADAttendance.Controllers
 {
@@ -256,10 +257,15 @@ namespace XBCADAttendance.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateUsers(string Username, string Password)
+        public async Task<IActionResult> UpdateUsers(string Id, string Username, string Password)
         {
-            return null;
+            Hasher passwordHasher = new Hasher(Password!);
+            string userPassword = passwordHasher.GetHash();
+            await DataAccess.UpdateUser(Id, Username, userPassword);
+            return RedirectToAction("UserReport", "Admin");
+            
         }
+
     }
 
 

@@ -141,11 +141,10 @@ namespace XBCADAttendance.Controllers
                 StudentReportViewModel newModel = new StudentReportViewModel(userID);
                 byte[] qrCodeImage = newModel.GenerateQRCode();
 
-                return File(qrCodeImage, "image/png");
+                return File(qrCodeImage, "image/png"); // Returns the QR code image directly
             }
 
-            return RedirectToAction("Index", "Home");
-            
+            return RedirectToAction("Index", "Student");
         }
 
         [Authorize(Policy = "StudentOnly")]
