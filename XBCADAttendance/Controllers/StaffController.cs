@@ -39,7 +39,7 @@ namespace XBCADAttendance.Controllers
        // [Authorize(Policy = "LecturerOnly")]
         public IActionResult Create(TblStaffLecture lecture)
         {
-            lecture.LectureId = "L" + DataAccess.GetAllStaffLectures().Count().ToString();
+            lecture.LectureId = "L" + DataAccess.GetAllStaffLectures().Result.Count().ToString();
             lecture.UserId = User.Identity.Name;
             DataAccess.AddLecture(lecture);
 

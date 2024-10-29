@@ -1,5 +1,12 @@
+@using Highsoft.Web.Mvc.Charts
 @model StudentReportViewModel
 
+@{
+    // Declare and initialize the array in C#
+    int[] myArray = { 1, 2 };
+    string[] headings = { "poes", "kak" };
+}
+<script src="https://code.highcharts.com/highcharts.js"></script>
 <style>
     .dashboard {
         font-family: Arial, sans-serif;
@@ -61,7 +68,9 @@
 </style>
 @{
     Layout = "_StudentLayout";
-}<div class="head-title">
+}
+
+<div class="head-title">
     <div class="left">
         <h1>Student Overview</h1>
         <ul class="breadcrumb">
@@ -96,12 +105,45 @@
 
         <div class="chart-container">
             <div class="chart">
-                <h2>I Identify as a Pie Chart</h2>
-
+                <div id="PieChart" style="width: 400px; height: 400px;"></div>
+                <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                        Highcharts.chart("PieChart", {
+                            chart: {
+                                type: "pie"
+                            },
+                            title: {
+                                text: "Attendance"
+                            },
+                            series: [{
+                                name: "Value",
+                                data: @Html.Raw(Json.Serialize(Model.AttendancePieData.attendanceValues))
+                                }]
+                        });
+                    });
+                </script>
             </div>
             <div class="chart">
-            <h2>I Identify as a Bar Graph</h2>
-
+                <div id="BarChart" style="width: 400px; height: 400px;"></div>
+                <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                        Highcharts.chart("BarChart", {
+                            chart: {
+                                type: "column"
+                            },
+                            title: {
+                                text: "Employee Attendance"
+                            },
+                            xAxis: {
+                                categories: @Html.Raw(Json.Serialize("Hello"))
+                                                },
+                            series: [{
+                                name: "Lectures",
+                                data: @Html.Raw(Json.Serialize(Model.AttendancePieData.attendanceValues))
+                                                    }]
+                        });
+                    });
+                </script>
             </div>
         </div>
     </div>

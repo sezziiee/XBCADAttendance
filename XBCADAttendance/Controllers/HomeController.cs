@@ -15,6 +15,7 @@ namespace XBCADAttendance.Controllers
 
         public IActionResult Index()
         {
+            DataAccess.GetInstance();
             return View();
             
         }

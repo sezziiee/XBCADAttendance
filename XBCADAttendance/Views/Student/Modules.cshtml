@@ -20,6 +20,7 @@
                 <!--<tr>Semester </tr>-->
                 <th>Module Code </th>
                 <th>Module Name </th>
+                <th>Attendance</th>
             </tr>
             <tbody>
                 @if (Model != null)
@@ -30,6 +31,7 @@
                             <!--<td></td>-->
                             <td>@module.ModuleCode</td>
                             <td>@module.ModuleName</td>
+                            <td>@Model.CalcAttendencePerModule(module.ModuleCode)%</td>
                         </tr>
                     }
                 }

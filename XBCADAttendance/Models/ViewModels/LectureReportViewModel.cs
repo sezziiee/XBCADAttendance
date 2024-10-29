@@ -19,11 +19,11 @@ namespace XBCADAttendance.Models
         public LectureReportViewModel(TblStaff currentStaff)
         {
             this.currentStaff = currentStaff;
-            lstModules = DataAccess.GetModulesById(currentStaff.UserId);
+            lstModules = DataAccess.GetModulesById(currentStaff.UserId).Result;
 
             foreach (string moduleCode in lstModules)
             {
-                var students = DataAccess.GetStudentsByModule(moduleCode);
+                var students = DataAccess.GetStudentsByModule(moduleCode).Result;
 
                 foreach (var student in students)
                 {
@@ -31,7 +31,7 @@ namespace XBCADAttendance.Models
                 }
             }
             
-            lstLectures = DataAccess.GetStudentLecturesByStaffId(currentStaff.StaffId);
+            lstLectures = DataAccess.GetStudentLecturesByStaffId(currentStaff.StaffId).Result;
         }
 
         public string GetAttendance(TblStudentLecture lecture)
@@ -98,9 +98,9 @@ namespace XBCADAttendance.Models
         public Student(string studentNo)
         {
             this.studentNo = studentNo;
-            name = DataAccess.GetUserById(DataAccess.GetIdByStudentNo(studentNo)).UserName;
-            TblStudentLectures = DataAccess.GetAllLecturesByStudentNo(studentNo);
-            attendancePerc = DataAccess.GetStudentAttendance(studentNo);
+            name = DataAccess.GetUserById(DataAccess.GetIdByStudentNo(studentNo).Result).Result.UserName;
+            TblStudentLectures = DataAccess.GetAllLecturesByStudentNo(studentNo).Result;
+            attendancePerc = DataAccess.GetStudentAttendance(studentNo).Result;
         }
 
         public string DisplayAttendancePerc()

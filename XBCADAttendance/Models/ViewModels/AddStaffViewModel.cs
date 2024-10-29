@@ -13,12 +13,12 @@
 
         public AddStaffViewModel()
         {
-            lstRoles = DataAccess.GetAllRoles();
+            lstRoles = DataAccess.GetAllRoles().Result;
         }
 
         public AddStaffViewModel(string role, string name, string staffNumber)
         {
-            lstRoles = DataAccess.GetAllRoles();
+            lstRoles = DataAccess.GetAllRoles().Result;
 
             Name = name;
             Role = role;
