@@ -29,11 +29,13 @@ namespace XBCADAttendance.Controllers
         {
             try
             {
+                Hasher hasher = new Hasher(model.Password);
+
                 TblUser user = new TblUser
                 {
                     UserName = model.Name,
                     UserId = model.UserId,
-                    Password = model.Password
+                    Password = hasher.GetHash()
                 };
 
                 TblStaff staff = new TblStaff
@@ -53,7 +55,7 @@ namespace XBCADAttendance.Controllers
                 return View(model);
             }
 
-            return RedirectToAction("Index", "LectureReport");
+            return RedirectToAction("Index", "Admin");
         }
 
         [HttpGet]
