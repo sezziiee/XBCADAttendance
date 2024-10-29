@@ -254,21 +254,12 @@ namespace XBCADAttendance.Controllers
                 return View(userInfo);
             }
         }
+
         [HttpPost]
         public async Task<IActionResult> UpdateUsers(string Username, string Password)
         {
             return null;
         }
-
-
-
-    }
-    public class UpdateUserModel
-    {
-        public string UserId { get; set; }
-        public string UserName { get; set; }
-        public string Password { get; set; }
-        public string Role { get; set; }
     }
 
 
