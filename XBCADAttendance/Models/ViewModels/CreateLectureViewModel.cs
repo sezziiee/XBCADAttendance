@@ -4,7 +4,7 @@
     {
         public List<string> lstModules; 
 
-        public DateOnly date { get; set; }
+        public DateOnly date { get; set; } = DateOnly.FromDateTime(DateTime.Today);
 
         public string moduleCode { get; set; }
 
