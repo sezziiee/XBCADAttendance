@@ -348,7 +348,7 @@ namespace XBCADAttendance.Models
         public static async Task<List<TblModule>> GetModulesByStudentNo(string studentNo)
         {
             string userId = await GetIdByStudentNo(studentNo)!;
-            var lectures = await context.TblStudentLectures.Where(x => x.UserId == userId).Select(x => x.ModuleCode).ToListAsync();
+            var lectures = await context.TblStudentLectures.Where(x => x.UserId == userId).Select(x => x.ModuleCode).Distinct().ToListAsync();
             var modules = await context.TblModules.ToListAsync();
             
             List<TblModule> lstModules = new List<TblModule>();
