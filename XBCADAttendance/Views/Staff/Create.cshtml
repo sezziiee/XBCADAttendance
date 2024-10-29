@@ -3,19 +3,110 @@
 @{
     Layout = "_LecturerLayout";
 }
-                                      
 
-<div class="table-data">
-    <div class="order">
-<form asp-controller="Staff" asp-action="Create">
-    <select asp-for="@Model.moduleCode">
-        @foreach (var module in Model.lstModules)
-        {
-            <option>@module</option>
+<style>
+    /* Overall container styling */
+    .form-container {
+        max-width: 100%;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        background-color: #fff;
+    }
+
+    /* Title styling */
+    .head-title h1 {
+        font-size: 24px;
+        margin-bottom: 10px;
+    }
+
+    /* Breadcrumb styling */
+    .breadcrumb {
+        list-style: none;
+        padding: 0;
+        font-size: 14px;
+        color: #555;
+    }
+
+        .breadcrumb li {
+            display: inline;
         }
-    </select>
-    <input type="date" asp-for=@Model.date />
-    <button type="submit">Create Lecture</button>
-</form>
+
+            .breadcrumb li i {
+                color: #aaa;
+            }
+
+    /* Form field styling */
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+        .form-group label {
+            display: block;
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .form-group select,
+        .form-group input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+
+    /* Button styling */
+    button[type="submit"] {
+        width: 100%;
+        padding: 10px;
+        font-size: 18px;
+        font-weight: bold;
+        color: #fff;
+        background-color: #007bff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+</style>
+
+<div class="head-title">
+    <div class="left">
+        <h1>Create Lecture</h1>
+        <ul class="breadcrumb">
+            <li><a href="#">Home</a></li>
+            <li><i class='bx bx-chevron-right'></i></li>
+            <li><a class="active" href="#">Create</a></li>
+        </ul>
+    </div>
 </div>
+
+<div class="table-data form-container">
+    <form asp-controller="Staff" asp-action="Create">
+        <div class="form-group">
+            <label for="moduleCode">Module Code</label>
+            <select asp-for="moduleCode">
+                @foreach (var module in Model.lstModules)
+                {
+                    <option>@module</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="date">Lecture Date</label>
+            <input type="date" asp-for="date" />
+        </div>
+
+        <button type="submit">Create Lecture</button>
+    </form>
 </div>

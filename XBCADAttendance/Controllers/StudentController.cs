@@ -121,28 +121,18 @@ namespace XBCADAttendance.Controllers
         [Authorize(Policy = "StudentOnly")]
         public IActionResult StudentQRCode()
         {
-            string? userID = null;
-
-            if (User.Identity.IsAuthenticated)
+            if (User.Identity.IsAuthenticated && !string.IsNullOrEmpty(User.Identity.Name))
             {
-                userID = User.Identity.Name;
+                var userID = User.Identity.Name;
+                StudentReportViewModel newModel = new StudentReportViewModel(userID);
+                byte[] qrCodeImage = newModel.GenerateQRCode();
 
-                if (!userID.IsNullOrEmpty())
-                {
-                    StudentReportViewModel newModel = new StudentReportViewModel(userID);
-                    byte[] qrCodeImage = newModel.GenerateQRCode(); 
-
-                    return File(qrCodeImage, "image/png");
-                }
-                else
-                {
-                    return RedirectToAction("Index", "Home");
-                }
+                return File(qrCodeImage, "image/png");
             }
 
             return RedirectToAction("Index", "Home");
+            
         }
-
 
         public IActionResult Logout()
         {

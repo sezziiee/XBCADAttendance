@@ -252,7 +252,7 @@ namespace XBCADAttendance.Controllers
                 return View(userInfo);
             }
         }
-        /*[HttpPost]
+        [HttpPost]
         public JsonResult SaveChanges([FromBody] Dictionary<string, Dictionary<string, string>> editedData)
         {
             if (editedData == null || !editedData.Any())
@@ -285,8 +285,8 @@ namespace XBCADAttendance.Controllers
                                 break;
                         }
                     }
-*//*                    var userId
-*//*
+                    
+
                     var user = DataAccess.context.TblUsers.Where(x => x.UserName == userInfo.userId).FirstOrDefault();
                     if (user != null)
                     {
@@ -311,7 +311,7 @@ namespace XBCADAttendance.Controllers
 
                             DataAccess.context.TblStaffs.Update(staff);
                         }
-                       
+
                         else if (user.TblStudent != null)
                         {
                             var student = user.TblStudent;
@@ -334,7 +334,7 @@ namespace XBCADAttendance.Controllers
             {
                 return Json(new { success = false, message = $"Error saving changes: {ex.Message}" });
             }
-        }*/
+        }
 
 
     }
@@ -362,15 +362,16 @@ namespace XBCADAttendance.Controllers
                 {
                     identifier = user.TblStudent.StudentNo.ToString();
                     role = "Student";
-                }else 
-                { 
+                }
+                else
+                {
                     identifier = user.TblStaff.StaffId.ToString();
                 }
 
                 name = user.UserName;
-
             }
         }
+
         [Authorize(Policy = "AdminOnly")]
         public void UpdateRoleId()
         {
