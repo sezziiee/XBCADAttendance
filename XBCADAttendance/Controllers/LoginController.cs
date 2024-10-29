@@ -51,8 +51,7 @@ namespace XBCADAttendance.Controllers
                     if (!model.identifier.ToLower().StartsWith("st"))
                     {
                         model.identifier = "ST" + model.identifier;
-                    }
-                    else
+                    } else
                     {
                         ViewBag.Message = "Please enter a valid student number.";
                         return View(model);
@@ -66,13 +65,11 @@ namespace XBCADAttendance.Controllers
                 if (message == "Success")
                 {
                     return RedirectToAction("Index", "Student", new { userID = model.identifier });
-                }
-                else
+                } else
                 {
                     return View(model);
                 }
-            }
-            catch (Exception ex)
+            } catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
                 ViewBag.Message = "An error occurred while processing your request. Please try again later.";
@@ -106,9 +103,13 @@ namespace XBCADAttendance.Controllers
 
             ViewBag.Message = message;
 
-            if (message == "Success")
+            if (message == "Administrator")
             {
-                return RedirectToAction("LectureReport", "Staff");
+                return RedirectToAction("Index", "Admin");
+            }
+            if (message == "Lecturer")
+            {
+                return RedirectToAction("Index", "Staff");
             } else
             {
                 return View(model);

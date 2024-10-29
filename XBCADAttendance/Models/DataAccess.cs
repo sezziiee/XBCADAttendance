@@ -105,7 +105,7 @@ namespace XBCADAttendance.Models
                                 .FirstOrDefault();
 
                             await StoreUserCookies(httpContext, staff.UserId, role ?? "Unknown");
-                            return "Success";
+                            return role;
                         } else
                         {
                             return "Incorrect password";

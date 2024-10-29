@@ -14,24 +14,44 @@
     </div>
 </div>
 <div class="table-data">
+<div>
+    Filter By:
+        <form method="get" asp-action="Report">
+            <div id="Filters">
+                <select name="moduleCode" asp-items="@Model.GetModuleCodesForFilter()">
+                    <option value="">Select Module</option>
+                </select><br />
+                <label for="start">Start Date:</label>
+                <input type="date" id="start" name="start" class="form-control" />
+                <label for="end">End Date:</label>
+                <input type="date" id="end" name="end" class="form-control" />
+                <select name="status" asp-items="@Model.GetStatii()">
+                    <option value="">Select Status</option>
+                </select><br />
+                <button type="submit">Apply Filters</button>
+            </div>
+        </form>
+</div>
 <div class="order">
           <table class="styled-table">
             <thead>
                 <tr>
                     <th>Module Code</th>
-                    <th>Module Name</th>
+                    <th>Class</th>
                     <th>Lecture Date</th>
+                    <th>Time</th>
                     <th>Attendance</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.lstLectures)
+                @foreach (var lecture in Model.lstLectures)
                 {
                     <tr>
-                        <td>@item.ModuleCode</td>
-                        <td>@Model.GetModuleNameByCode(item.ModuleCode)</td>
-                        <td>@item.LectureDate</td>
-                        <td>@Model.GetAttendance(item)</td>
+                        <td>@lecture.ModuleCode</td>
+                        <td>@lecture.ClassroomCode</td>
+                        <td>@lecture.LectureDate</td>
+                        <td>@lecture.ScanIn - @lecture.ScanOut</td>
+                        <td>@Model.GetAttendance(lecture)</td>
                     </tr>
                 }
             </tbody>
