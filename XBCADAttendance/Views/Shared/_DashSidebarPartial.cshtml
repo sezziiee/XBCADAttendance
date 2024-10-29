@@ -1,4 +1,6 @@
-﻿<section id="sidebar">
+﻿@using XBCADAttendance.Models.ViewModels
+@model LectureReportViewModel
+<section id="sidebar">
     <a href="#" class="brand">
         <i class='bx bx-book-bookmark'></i>
         <span class="text">Lecturer Hub</span>
@@ -44,6 +46,7 @@
         </li>
     </ul>
 </section>
+
 <section id="content">
     <nav>
         <i class='bx bx-menu'></i>
@@ -53,10 +56,13 @@
                 <label for="switch-mode" class="switch-mode"></label>
                 <a asp-controller="Staff" asp-action="Profile"  class="profile">
                     <div class="p-0 m-0">
-                        <h6>Christoffel Johannes Petrus Dricus Kurt Darren Steffanus Du Plesis Kruger</h6>
-                        <h6>lr12345</h6>
+                     
+                            <h6>@(Model?.Name ?? "Name not available")</h6>
+                            <h6>@(Model?.staffId ?? "ID not available")</h6>
+                                                
                     </div>
                 </a>
             </div>
         </div>
     </nav>
+    

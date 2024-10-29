@@ -63,6 +63,27 @@ namespace XBCADAttendance.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        [Authorize(Policy = "LecturerOnly")]
+        public IActionResult Profile()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                string userID = User.Identity.Name;
+
+                if (!userID.IsNullOrEmpty())
+                {
+                    LectureReportViewModel newModel = new LectureReportViewModel(userID);
+                    return View(newModel);
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+
+            return RedirectToAction("Index", "Home");
+
+        }
 
     }
 }
