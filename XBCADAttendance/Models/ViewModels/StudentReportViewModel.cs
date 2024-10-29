@@ -96,6 +96,18 @@ namespace XBCADAttendance.Models
             return statii.Select(x => new SelectListItem { Value = x, Text = x }).ToList();
         }
 
+        public string GetNextLecture()
+        {
+            var lectures = DataAccess.GetStaffLectures().Result;
+            var codes = lstModules.Select(x => x.ModuleCode).ToList();
+
+            lectures = lectures.Where(x => codes.Contains(x.ModuleCode)).ToList();
+
+            var nextLecture = lectures.Where(x => x.Date >= DateOnly.FromDateTime(DateTime.Now)).OrderBy(x => x.Date).FirstOrDefault();
+
+            return nextLecture != null ? $"{nextLecture.ModuleCode}: {nextLecture.Date}" : "No upcoming lectures found.";
+        }
+
         public float CalcAttendencePerModule(string moduleCode)
         {
             var attendedLectures = DataAccess.Context.TblStudentLectures.Where(x => x.ScanOut != null && x.UserId == UserID).ToList();
