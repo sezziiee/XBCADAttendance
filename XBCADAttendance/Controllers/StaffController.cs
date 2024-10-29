@@ -82,8 +82,27 @@ namespace XBCADAttendance.Controllers
             }
 
             return RedirectToAction("Index", "Home");
-
         }
 
+        [HttpGet]
+        public IActionResult AddModule()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult AddModule(TblModule module)
+        {
+            try
+            {
+                DataAccess.Context.TblModules.Add(module);
+                DataAccess.Context.SaveChanges();
+                return RedirectToAction("Index", "Admin");
+            } catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = ex.Message;
+                return View(module);
+            }
+        }
     }
 }
