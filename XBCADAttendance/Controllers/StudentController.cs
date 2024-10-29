@@ -1,13 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Storage.Json;
 using Microsoft.IdentityModel.Tokens;
-using QRCoder;
-using System.Drawing.Imaging;
-using System.Drawing;
 using XBCADAttendance.Models;
-using XBCADAttendance.Models.ViewModels;
-using System.IO;
 
 namespace XBCADAttendance.Controllers
 {
@@ -56,7 +50,6 @@ namespace XBCADAttendance.Controllers
 
             return RedirectToAction("Index", "Home");
         }
-
 
         public IActionResult Profile()
         {

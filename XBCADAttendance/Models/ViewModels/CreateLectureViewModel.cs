@@ -10,7 +10,7 @@
 
         public CreateLectureViewModel(string userId) 
         {
-            lstModules = DataAccess.GetModulesById(userId);
+            lstModules = DataAccess.GetModulesById(userId).Result;
         }
     }
 }

@@ -10,6 +10,7 @@ namespace XBCADAttendance.Models
     {
         public List<TblStudentLecture> lstLectures = new List<TblStudentLecture>();
         public List<TblModule> lstModules = new List<TblModule>();
+        public AttendancePieData AttendancePieData { get; set; }
 
         public string UserID { get; set; }
         public string StudentNo { get; set; }
@@ -25,18 +26,24 @@ namespace XBCADAttendance.Models
             if (userID != null)
             {
                 UserID = userID;
-                StudentNo = DataAccess.GetStudentNoById(UserID)!;
-                lstModules = DataAccess.GetModulesByStudentNo(StudentNo);
-                lstLectures = DataAccess.GetAllLecturesByStudentNo(StudentNo);
-                Name = DataAccess.GetUserById(UserID)!.UserName!;
+                StudentNo = DataAccess.GetStudentNoById(UserID)!.Result;
+                lstModules = DataAccess.GetModulesByStudentNo(StudentNo).Result;
+                lstLectures = DataAccess.GetAllLecturesByStudentNo(StudentNo).Result;
+                Name = DataAccess.GetUserById(UserID)!.Result.UserName!;
             } else if (studentNo != null)
             {
                 StudentNo = studentNo;
-                lstModules = DataAccess.GetModulesByStudentNo(StudentNo);
-                lstLectures = DataAccess.GetAllLecturesByStudentNo(StudentNo);
-                UserID = DataAccess.GetIdByStudentNo(StudentNo)!;
-                Name = DataAccess.GetUserById(UserID)!.UserName!;
+                lstModules = DataAccess.GetModulesByStudentNo(StudentNo).Result;
+                lstLectures = DataAccess.GetAllLecturesByStudentNo(StudentNo).Result;
+                UserID = DataAccess.GetIdByStudentNo(StudentNo).Result!;
+                Name = DataAccess.GetUserById(UserID)!.Result.UserName!;
             }
+
+            List<DataPoint> attendanceVals = new List<DataPoint>();
+            attendanceVals.Add(new DataPoint("Absent", GetMissedLectures()));
+            attendanceVals.Add(new DataPoint("Late", GetLateLectures()));
+            attendanceVals.Add(new DataPoint("Present", GetAttendedLectures()));
+            AttendancePieData = new AttendancePieData(attendanceVals);
         }
 
         public float CalcAttendencePerModule(string moduleCode)
@@ -64,10 +71,10 @@ namespace XBCADAttendance.Models
         public int GetDaysAttended()
         {
             int totalDays = 0;
-            var lectures = DataAccess.GetAllLecturesByStudentNo(StudentNo);
-            var staffLectures = DataAccess.GetStaffLectures();
+            var lectures = DataAccess.GetAllLecturesByStudentNo(StudentNo).Result;
+            var staffLectures = DataAccess.GetStaffLectures().Result;
 
-            var attendedLectures = lectures.Where(x => x.ScanOut != null ).ToList();
+            var attendedLectures = lectures.Where(x => x.ScanOut != null).ToList();
             var daysAttended = attendedLectures.DistinctBy(x => x.LectureDate);
 
             return daysAttended.Count();
@@ -76,12 +83,12 @@ namespace XBCADAttendance.Models
         public int GetLateLectures()
         {
             int total = 0;
-            var lectures = DataAccess.GetAllLecturesByStudentNo(StudentNo);
+            var lectures = DataAccess.GetAllLecturesByStudentNo(StudentNo).Result;
             var attendedLectures = lectures.Where(x => x.ScanOut != null).ToList();
 
-            var staffLectures = DataAccess.GetStaffLectures();
+            var staffLectures = DataAccess.GetStaffLectures().Result;
 
-            foreach( var lecture in staffLectures)
+            foreach (var lecture in staffLectures)
             {
                 var actualLecture = attendedLectures.Where(x => x.LectureId == lecture.LectureId).FirstOrDefault();
 
@@ -100,20 +107,17 @@ namespace XBCADAttendance.Models
         public int GetMissedLectures()
         {
             int total = 0;
-            var staffLectures = DataAccess.GetStaffLectures();
+            var staffLectures = DataAccess.GetStaffLectures().Result;
+            var modules = lstLectures.Select(x => x.ModuleCode).Distinct().ToList();
+            var attended = lstLectures.Where(x => x.ScanOut != null).ToList();
 
             total += lstLectures.Where(x => x.ScanOut == null).Count();
 
-            foreach(var lecture in staffLectures)
+            foreach (var lecture in staffLectures)
             {
-                var actualLecture = lstLectures.Where(x => x.LectureId == lecture.LectureId).FirstOrDefault();
-
-                if (actualLecture != null)
+                if (modules.Contains(lecture.ModuleCode))
                 {
-                    if (actualLecture.ScanIn > lecture.Finish)
-                    {
-                        total++;
-                    }
+                    total++;
                 }
             }
 
@@ -122,7 +126,7 @@ namespace XBCADAttendance.Models
 
         public float GetTotalAttendance()
         {
-            var staffLectures = DataAccess.GetStaffLectures();
+            var staffLectures = DataAccess.GetStaffLectures().Result;
             List<TblStaffLecture> actualLectures = new List<TblStaffLecture>();
 
             foreach (var module in lstModules)
@@ -138,9 +142,10 @@ namespace XBCADAttendance.Models
         public int GetAttendedLectures()
         {
             int total = 0;
-            var prelimAttended = lstLectures.Where(x => x.ScanOut != null).ToList();
 
-            var allLectures = DataAccess.GetStaffLectures();
+            var prelimAttended = lstLectures.Where(x => x.UserId == UserID && x.ScanOut != null).ToList();
+
+            var allLectures = DataAccess.GetStaffLectures().Result;
 
             foreach (var lecture in prelimAttended)
             {
@@ -167,57 +172,20 @@ namespace XBCADAttendance.Models
                         using (MemoryStream ms = new MemoryStream())
                         {
                             qrCodeImage.Save(ms, ImageFormat.Png);
-                            return ms.ToArray(); 
+                            return ms.ToArray();
                         }
                     }
                 }
             }
         }
+    }
 
-
-        /* public StudentReportViewModel(string userID, string studentNo, DateOnly lectureDate, string classroomCode, TimeOnly scanIn, TimeOnly scanOut, string moduleCode)
-         {
-             UserID = userID;
-             StudentNo = studentNo;
-             LectureDate = lectureDate;
-             ClassroomCode = classroomCode;
-             ScanIn = scanIn;
-             ScanOut = scanOut;
-             ModuleCode = moduleCode;
-         }
-
-
-         public DateOnly LectureDate { get; set; }
-         public string ClassroomCode { get; set; }
-         public TimeOnly ScanIn { get; set; }
-         public TimeOnly ScanOut { get; set; }
-         public string ModuleCode { get; set; }
-
-         //Read
-         public List<StudentReportViewModel> GetIndividualStudents(DataAccess context)
-         {
-             var data = context.GetAllLectures().Join(context.GetAllStudents(),
-                lecture => lecture.UserId,
-                student => student.UserId,
-                (lecture, student) => new StudentReportViewModel(
-                    lecture.UserId,
-                    student.StudentNo,
-                    lecture.LectureDate,
-                    lecture.ClassroomCode,
-                    lecture.ScanIn,
-                    (TimeOnly)lecture.ScanOut!,
-                    lecture.ModuleCode)).ToList();
-             //Join TblStudentLecture and tblStudents and convert to a list.
-
-             //Null check for data
-             if (data != null)
-             {
-                 return data;
-             }
-             else return null;
-         }
-     }*/
-
-
+    public class AttendancePieData
+    {
+        public List<DataPoint> attendanceValues {  get; set; }
+        public AttendancePieData(List<DataPoint> attendanceValues) 
+        {
+            this.attendanceValues = attendanceValues;
+        }
     }
 }

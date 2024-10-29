@@ -38,9 +38,9 @@ namespace XBCADAttendance.Controllers
                     StaffId = model.StaffNumber,
                 };
 
-                DataAccess.context.TblUsers.Add(user);
-                DataAccess.context.TblStaffs.Add(staff);
-                DataAccess.context.SaveChanges();
+                DataAccess.Context.TblUsers.Add(user);
+                DataAccess.Context.TblStaffs.Add(staff);
+                DataAccess.Context.SaveChanges();
 
             } catch (Exception ex)
             {
@@ -108,18 +108,18 @@ namespace XBCADAttendance.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit_Name(UserInfo userInfo)
+        public async Task<IActionResult> Edit_Name(UserInfo userInfo)
         {
             try
             {
-                var user = DataAccess.GetUserById(userInfo.userId);
+                var user = await DataAccess.GetUserById(userInfo.userId);
 
                 if (user != null)
                 {
                     user.UserName = userInfo.name;
-                    DataAccess.context.TblUsers.Update(user);
+                    DataAccess.Context.TblUsers.Update(user);
 
-                    DataAccess.context.SaveChanges();
+                    DataAccess.Context.SaveChanges();
 
                     RedirectToAction("UserReport","Admin");
                 } else throw new Exception("No User");
@@ -136,7 +136,7 @@ namespace XBCADAttendance.Controllers
         {
             try
             {
-                var user = DataAccess.GetUserById(userInfo.userId);
+                var user = DataAccess.GetUserById(userInfo.userId).Result;
 
                 if (user != null)
                 {
@@ -145,9 +145,9 @@ namespace XBCADAttendance.Controllers
                         var student = user.TblStudent;
 
                         student.StudentNo = userInfo.identifier;
-                        DataAccess.context.TblStudents.Update(student);
+                        DataAccess.Context.TblStudents.Update(student);
 
-                        DataAccess.context.SaveChanges();
+                        DataAccess.Context.SaveChanges();
 
                         RedirectToAction("UserReport", "Admin");
                     }else
@@ -155,9 +155,9 @@ namespace XBCADAttendance.Controllers
                         var staff = user.TblStaff;
 
                         staff.StaffId = userInfo.identifier;
-                        DataAccess.context.TblStaffs.Update(staff);
+                        DataAccess.Context.TblStaffs.Update(staff);
 
-                        DataAccess.context.SaveChanges();
+                        DataAccess.Context.SaveChanges();
 
                         RedirectToAction("UserReport", "Admin");
                     }
@@ -176,15 +176,15 @@ namespace XBCADAttendance.Controllers
         {
             try
             {
-                var user = DataAccess.GetUserById(userInfo.userId);
+                var user = DataAccess.GetUserById(userInfo.userId).Result;
 
                 if (user != null)
                 {
                     Hasher hasher = new Hasher(userInfo.password);
                     user.Password = hasher.GetHash();
-                    DataAccess.context.TblUsers.Update(user);
+                    DataAccess.Context.TblUsers.Update(user);
 
-                    DataAccess.context.SaveChanges();
+                    DataAccess.Context.SaveChanges();
 
                     RedirectToAction("UserReport", "Admin");
                 } else throw new Exception("No User");
@@ -201,7 +201,7 @@ namespace XBCADAttendance.Controllers
         {
             try
             {
-                var user = DataAccess.GetUserById(userInfo.userId);
+                var user = DataAccess.GetUserById(userInfo.userId).Result;
 
                 if (user != null)
                 {
@@ -212,9 +212,9 @@ namespace XBCADAttendance.Controllers
                         userInfo.UpdateRoleId();
 
                         staff.RoleId = userInfo.roleId;
-                        DataAccess.context.TblStaffs.Update(staff);
+                        DataAccess.Context.TblStaffs.Update(staff);
 
-                        DataAccess.context.SaveChanges();
+                        DataAccess.Context.SaveChanges();
 
                         RedirectToAction("UserReport", "Admin");
                     }
@@ -234,7 +234,7 @@ namespace XBCADAttendance.Controllers
         public string identifier { get; set; }
         public string name { get; set; }
         public string password { get; set; }
-        public List<string> roles = DataAccess.GetAllRoles().Select(x => x.RoleName).ToList();
+        public List<string> roles = DataAccess.GetAllRoles().Result.Select(x => x.RoleName).ToList();
         public string roleId { get; set; }
         public string role { get; set; }
 
@@ -242,7 +242,7 @@ namespace XBCADAttendance.Controllers
         {
             this.userId = userId;
 
-            var user = DataAccess.context.TblUsers.Where(x => x.UserId == userId).FirstOrDefault();
+            var user = DataAccess.Context.TblUsers.Where(x => x.UserId == userId).FirstOrDefault();
 
             if (user != null)
             {
