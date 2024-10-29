@@ -63,11 +63,11 @@ namespace XBCADAttendance.Controllers
         {
             var model = new AdminViewModel
             {
-                Users = DataAccess.context.TblUsers.ToList(),
-                Students = DataAccess.context.TblStudents.ToList(),
-                Staff = DataAccess.context.TblStaffs.ToList(),
-                StaffLectures = DataAccess.context.TblStaffLectures.ToList(),
-                lstRoles = DataAccess.context.TblRoles.ToList()
+                Users = DataAccess.Context.TblUsers.ToList(),
+                Students = DataAccess.Context.TblStudents.ToList(),
+                Staff = DataAccess.Context.TblStaffs.ToList(),
+                StaffLectures = DataAccess.Context.TblStaffLectures.ToList(),
+                lstRoles = DataAccess.Context.TblRoles.ToList()
             };
 
            return View(model);
