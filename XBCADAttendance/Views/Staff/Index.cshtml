@@ -1,4 +1,6 @@
+@using Highsoft.Web.Mvc.Charts
 @model LectureReportViewModel
+<script src="https://code.highcharts.com/highcharts.js"></script>
 <style>
     .dashboard {
         font-family: Arial, sans-serif;
@@ -85,12 +87,53 @@
 
     <div class="chart-container">
         <div class="chart">
-            <h2>Pie Chart</h2>
-
+            <div id="PieChart" style="width: 400px; height: 400px;"></div>
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    Highcharts.chart("PieChart", {
+                        chart: {
+                            type: "pie"
+                        },
+                        title: {
+                            text: "Attendance"
+                        },
+                        series: [{
+                            name: "Value",
+                            data: @Html.Raw(Json.Serialize(Model.chart.attendanceValues))
+                                                                    }]
+                    });
+                });
+            </script>
         </div>
         <div class="chart">
-            <h2>Bar Graph</h2>
-
+            <div id="BarChart" style="width: 400px; height: 400px;"></div>
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    Highcharts.chart("BarChart", {
+                        chart: {
+                            type: "column"
+                        },
+                        title: {
+                            text: "Attendance per Module"
+                        },
+                        xAxis: {
+                            labels: {
+                                enabled: false // Hides the x-axis labels
+                            }
+                        },
+                        yAxis: {
+                            title: {
+                                text: "Lectures"
+                            }
+                        },
+                        series: @Html.Raw(Json.Serialize(Model.chart.attendanceValues.Select(dp => new
+                    {
+                        name = dp.Name,  // Each data point's "Name" becomes the series name
+                        data = new[] { dp.Y } // Each data point's "Y" value becomes the series data
+                    })))
+                    });
+                });
+            </script>
         </div>
     </div>
 </div>

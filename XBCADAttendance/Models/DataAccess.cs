@@ -541,7 +541,15 @@ namespace XBCADAttendance.Models
 
         public static async Task<List<TblStudent?>> GetStudentsByModule(string moduleCode)
         {
-            return await context.TblStudentLectures.Where(x => x.ModuleCode == moduleCode).Select(x => GetStudentById(x.UserId).Result).ToListAsync();
+            var uids = await context.TblStudentLectures.Where(x => x.ModuleCode == moduleCode).Select(x => x.UserId).ToListAsync();
+            List<TblStudent> output = new List<TblStudent>();
+
+            foreach (var id in uids)
+            {
+                output.Add(GetStudentById(id).Result);
+            }
+
+            return output;
         }
 
         public static async Task<TblStudent?> GetStudentById(string userId)
@@ -559,6 +567,11 @@ namespace XBCADAttendance.Models
             }
             
             return null;
+        }
+
+        public static async Task<List<TblUser>> GetAllLecturers()
+        {
+            return await context.TblUsers.Where(x => x.TblStaff.RoleId == 1.ToString()).ToListAsync();
         }
     }
 }

@@ -12,8 +12,10 @@ namespace XBCADAttendance.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            LectureReportViewModel model = new LectureReportViewModel(User.Identity.Name);
+            return View(model);
         }
+
         [Authorize(Policy = "LecturerOnly")]
         public IActionResult LectureReport(LectureReportViewModel model)
         {

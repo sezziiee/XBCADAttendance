@@ -9,17 +9,26 @@ namespace XBCADAttendance.Models
 {
     public class LectureReportViewModel
     {
-        public TblStaff currentStaff { get; set; }
+        public TblStaff staff { get; set; }
+        public TblUser user { get; set; }
         public List<string>? lstModules = new List<string>();
         public List<TblStudentLecture> lstLectures = new List<TblStudentLecture>();
         public List<Student> lstStudents = new List<Student>();
 
+        public string userId { get; set; }
+        public string name { get; set; }
+        public string staffId { get; set; }
+
+        public AttendanceByLecturerChart chart { get; set; }
+
         public LectureReportViewModel() { }
 
-        public LectureReportViewModel(TblStaff currentStaff)
+        public LectureReportViewModel(string userId)
         {
-            this.currentStaff = currentStaff;
-            lstModules = DataAccess.GetModulesById(currentStaff.UserId).Result;
+            this.userId = userId;
+            user = DataAccess.GetUserById(userId).Result;
+            staff = user.TblStaff;
+            lstModules = DataAccess.GetModulesById(staff.UserId).Result;
 
             foreach (string moduleCode in lstModules)
             {
@@ -30,8 +39,25 @@ namespace XBCADAttendance.Models
                     lstStudents.Add(new Student(student.StudentNo));
                 }
             }
-            
-            lstLectures = DataAccess.GetStudentLecturesByStaffId(currentStaff.StaffId).Result;
+
+            var lecturers = DataAccess.GetAllLecturers().Result;
+
+            List<DataPoint> chartData = new List<DataPoint>();
+            List<string> headings = new List<string>();
+
+            foreach (var lecturer in lecturers)
+            {
+                headings.Add(lecturer.UserName);
+                chartData.Add(new DataPoint(lecturer.UserName, GetAttendanceByLecturer(lecturer.TblStaff.StaffId)));
+            }
+
+            lstLectures = DataAccess.GetStudentLecturesByStaffId(staff.StaffId).Result;
+        }
+
+        private int GetAttendanceByLecturer(string staffId)
+        {
+            var lectures = DataAccess.GetStudentLecturesByStaffId(staffId).Result.Where(x => x.LectureDate > DateOnly.FromDateTime(DateTime.Now.AddDays(-7))).ToList();
+            return lectures.Count();
         }
 
         public string GetAttendance(TblStudentLecture lecture)
@@ -108,5 +134,18 @@ namespace XBCADAttendance.Models
             return $"{attendancePerc}%";
         }
     }
+
+    public class AttendanceByLecturerChart 
+    {
+        public List<DataPoint> attendanceValues { get; set; }
+        public List<string> headings { get; set; }
+
+        public AttendanceByLecturerChart(List<DataPoint> attendanceValues, List<string> headings)
+        {
+            this.attendanceValues = attendanceValues;
+            this.headings = headings;
+        }
+    }
+
 }
 
