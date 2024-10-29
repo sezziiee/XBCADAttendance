@@ -65,8 +65,8 @@ namespace XBCADAttendance.Models
 
         private int GetAttendanceByLecturer(string staffId)
         {
-            var lectures = DataAccess.GetStudentLecturesByStaffId(staffId).Result.Where(x => x.LectureDate > DateOnly.FromDateTime(DateTime.Now.AddDays(-7))).ToList();
-            return lectures.Count();
+            var lectures = DataAccess.GetStudentLecturesByStaffId(staffId).Result;
+            return lectures.Where(x => x.LectureDate > DateOnly.FromDateTime(DateTime.Now.AddDays(-7))).ToList().Count();
         }
 
         public string GetAttendance(TblStudentLecture lecture)

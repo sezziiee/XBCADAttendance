@@ -568,13 +568,26 @@ namespace XBCADAttendance.Models
             return await context.TblStudents.Where(x => x.UserId == userId).FirstOrDefaultAsync();
         }
 
-        public static async Task<List<TblStudentLecture>?> GetStudentLecturesByStaffId(string staffId)
+        public static async Task<List<TblStudentLecture>> GetStudentLecturesByStaffId(string staffId)
         {
             var user = await context.TblStaffs.Where(x => x.StaffId == staffId).FirstOrDefaultAsync();
 
             if (user != null)
             {
-                return await context.TblStudentLectures.Where(x => x.UserId == user.UserId).ToListAsync();
+                var lectures = await context.TblStaffLectures.Where(x => x.UserId == user.UserId).ToListAsync();
+                List<TblStudentLecture> output = new List<TblStudentLecture>();
+
+                foreach(var lecture in lectures)
+                {
+                    var item = await context.TblStudentLectures.Where(x => x.LectureId == lecture.LectureId).FirstOrDefaultAsync();
+                    
+                    if (item != null)
+                    {
+                        output.Add(item);
+                    }
+                }
+
+                return output;
             }
 
             return null;
