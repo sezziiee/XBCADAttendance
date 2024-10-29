@@ -23,7 +23,7 @@ namespace XBCADAttendance.Controllers
         }
 
         [HttpPost]
-        public IActionResult StudentLogin(LoginViewModel model)
+        public async Task<IActionResult> StudentLogin(LoginViewModel model)
         {
             try
             {
@@ -59,7 +59,7 @@ namespace XBCADAttendance.Controllers
                     }
                 }
 
-                string? message = DataAccess.LoginStudent(HttpContext, model);
+                string? message = await DataAccess.LoginStudent(HttpContext, model);
 
                 ViewBag.Message = message;
 
@@ -88,7 +88,7 @@ namespace XBCADAttendance.Controllers
         }
 
         [HttpPost]
-        public IActionResult StaffLogin(LoginViewModel model)
+        public async Task<IActionResult> StaffLogin(LoginViewModel model)
         {
             if (string.IsNullOrEmpty(model.identifier))
             {
@@ -102,7 +102,7 @@ namespace XBCADAttendance.Controllers
                 return View(model);
             }
 
-            string? message = DataAccess.LoginStaff(HttpContext, model).ToString();
+            string? message = await DataAccess.LoginStaff(HttpContext, model);
 
             ViewBag.Message = message;
 

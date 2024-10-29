@@ -13,11 +13,10 @@ namespace XBCADAttendance.Models.ViewModels
 
         public AdminViewModel() 
         {
-            Users = DataAccess.GetAllUsers();
-            Students = DataAccess.GetAllStudents();
-            Staff = DataAccess.GetAllStaff();
-            StaffLectures = DataAccess.GetStaffLectures();
-            lstRoles = DataAccess.GetAllRoles();
+            Users = DataAccess.GetAllUsers().Result;
+            Students = DataAccess.GetAllStudents().Result;
+            Staff = DataAccess.GetAllStaff().Result;
+            StaffLectures = DataAccess.GetStaffLectures().Result;//TODO Figure out a more efficient way of doing this
         }
 
         public string GetID(TblUser user)
@@ -49,7 +48,7 @@ namespace XBCADAttendance.Models.ViewModels
                 var staff = Staff.Where(x => x.UserId == user.UserId).FirstOrDefault();
                 if (staff != null)
                 {
-                    var roles = DataAccess.GetAllRoles();
+                    var roles = DataAccess.GetAllRoles().Result;
 
                     return roles.Where(x => x.RoleId == staff.RoleId).Select(x => x.RoleName).FirstOrDefault();
                 }
@@ -60,7 +59,7 @@ namespace XBCADAttendance.Models.ViewModels
 
         public string GetLecturer(TblStaffLecture lecture)
         {
-            var lecturer = DataAccess.context.TblStaffs.Where(x => x.UserId == lecture.UserId).Select(x => x.User).FirstOrDefault();
+            var lecturer = DataAccess.Context.TblStaffs.Where(x => x.UserId == lecture.UserId).Select(x => x.User).FirstOrDefault();
 
             if (lecturer != null)
             {

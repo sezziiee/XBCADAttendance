@@ -22,7 +22,6 @@ namespace XBCADAttendance
 
             builder.Services.AddControllersWithViews();
 
-
             builder.Services.AddAuthorization(options =>
             {
                 options.AddPolicy("StudentOnly", policy => policy.RequireRole("Student"));
@@ -34,8 +33,6 @@ namespace XBCADAttendance
             {
                 MinimumSameSitePolicy = SameSiteMode.Strict,
             };
-
-            
 
             var app = builder.Build();
 

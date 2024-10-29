@@ -26,14 +26,13 @@
             </thead>
             <tbody>
                 @foreach (var item in Model.lstLectures)
-                { 
-                        <tr>
-                            <td>@item.ModuleCode</td>
-                            <td>Module Name</td>
-                            <td>@item.LectureDate</td>                         
-                            <td>@Model.GetAttendance(item)</td>
-                        </tr>
-                    
+                {
+                    <tr>
+                        <td>@item.ModuleCode</td>
+                        <td>@Model.GetModuleNameByCode(item.ModuleCode)</td>
+                        <td>@item.LectureDate</td>
+                        <td>@Model.GetAttendance(item)</td>
+                    </tr>
                 }
             </tbody>
         </table>

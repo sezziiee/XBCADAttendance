@@ -11,38 +11,52 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using Azure.Core;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 
 namespace XBCADAttendance.Models
 {
     public class DataAccess
     {
-        public static DbWilContext context = new DbWilContext();
-        public static DataAccess? instance = null;
+        private static DbWilContext? context = null;
+        private static DataAccess? instance = null;
+        private static readonly object lockObj = new object();
 
-        public DataAccess() {
-            GetInstance();
+        private DataAccess() {
         }
 
         public static DataAccess GetInstance()
         {
+            // Double-checked locking for thread safety
             if (instance == null)
             {
-                instance = new DataAccess();
+                lock (lockObj)
+                {
+                    if (instance == null)
+                    {
+                        instance = new DataAccess();
+                        context = new DbWilContext();
+                    }
+                }
             }
-
             return instance;
         }
 
+        public static DbWilContext Context => context;
+
         [ValidateAntiForgeryToken]
-        public static string LoginStudent(HttpContext httpContext, LoginViewModel model)
+        public static async Task<string> LoginStudent(HttpContext httpContext, LoginViewModel model)
         {
-            if (model.identifier.Length != 8 || model.identifier.Length != 10)//Check if id is for user/staff
+            if (model.identifier.Length == 10) // Check if ID length is valid
             {
-                var student = context.TblStudents.Where(x => x.StudentNo == model.identifier).FirstOrDefault();
-                
+                var student = await context.TblStudents
+                    .Where(x => x.StudentNo == model.identifier)
+                    .FirstOrDefaultAsync();
+
                 if (student != null)
                 {
-                    var user = context.TblUsers.Where(x => x.UserId == student.UserId).FirstOrDefault();
+                    var user = await context.TblUsers
+                        .Where(x => x.UserId == student.UserId)
+                        .FirstOrDefaultAsync();
 
                     if (user != null)
                     {
@@ -50,12 +64,11 @@ namespace XBCADAttendance.Models
                         string userPassword = passwordHasher.GetHash();
 
                         if (passwordHasher.CompareHashedPasswords(userPassword, user.Password))
-                        {//Login logic
-                            StoreUserCookies(httpContext, student.UserId, "Student");
-
+                        {
+                            // Login logic
+                            await StoreUserCookies(httpContext, student.UserId, "Student");
                             return "Success";
                         } else return "Incorrect password";
-
                     } else return "Student not found";
                 }
                 return "Student not found";
@@ -64,32 +77,45 @@ namespace XBCADAttendance.Models
         }
 
         [ValidateAntiForgeryToken]
-        public static string LoginStaff(HttpContext httpContext, LoginViewModel model)
+        public static async Task<string> LoginStaff(HttpContext httpContext, LoginViewModel model)
         {
-            
             if (model.identifier.Length == 5)
             {
-                var staff = context.TblStaffs.Where(x => x.StaffId == model.identifier).FirstOrDefault();
-                var user = context.TblUsers.Where(x => x.UserId == staff.UserId).FirstOrDefault();
+                var staff = await context.TblStaffs
+                    .Where(x => x.StaffId == model.identifier)
+                    .FirstOrDefaultAsync();
 
-                if (user != null)
+                if (staff != null)
                 {
-                    Hasher passwordHasher = new Hasher(model.password!);
+                    var user = await context.TblUsers
+                        .Where(x => x.UserId == staff.UserId)
+                        .FirstOrDefaultAsync();
 
-                    string userPassword = passwordHasher.GetHash();
+                    if (user != null)
+                    {
+                        Hasher passwordHasher = new Hasher(model.password!);
+                        string userPassword = passwordHasher.GetHash();
 
-                    if (passwordHasher.CompareHashedPasswords(userPassword, user.Password))
-                    {//Add Login logic later
-                        var role = GetAllRoles().Where(x => x.RoleId == staff.RoleId).Select(x => x.RoleName).FirstOrDefault();
-                        StoreUserCookies(httpContext, staff.UserId, role);
-                        return "Success";
-                    } else return "Incorrect password";
-                } else
-                {
-                    return "Staff not found";
+                        if (passwordHasher.CompareHashedPasswords(userPassword, user.Password))
+                        {
+                            // Fetch role asynchronously
+                            var role = GetAllRoles().Result
+                                .Where(x => x.RoleId == staff.RoleId)
+                                .Select(x => x.RoleName)
+                                .FirstOrDefault();
+
+                            await StoreUserCookies(httpContext, staff.UserId, role ?? "Unknown");
+                            return "Success";
+                        } else
+                        {
+                            return "Incorrect password";
+                        }
+                    } else
+                    {
+                        return "Staff not found";
+                    }
                 }
             }
-
             return "Invalid staff number";
         }
 
@@ -121,19 +147,20 @@ namespace XBCADAttendance.Models
             );
         }
 
-        public static int CalcDaysAttended(string studentNo)
+        public static async Task<int> CalcDaysAttended(string studentNo)
         {
-            List<TblStudentLecture>? studentLectures = GetAllLecturesByStudentNo(studentNo);
+            // Assuming GetAllLecturesByStudentNo is an async method
+            List<TblStudentLecture> studentLectures = await GetAllLecturesByStudentNo(studentNo);
             int count = 0;
 
-            foreach(TblStudentLecture lecture in studentLectures)
+            foreach (TblStudentLecture lecture in studentLectures)
             {
-                if(lecture.ScanOut != null)
+                if (lecture.ScanOut != null)
                 {
                     count++;
                 }
             }
-            
+
             return count;
         }
 
@@ -146,10 +173,9 @@ namespace XBCADAttendance.Models
 
         //Create
         //
-        public static string AddStudent(string userID, string studentNo, string userName, string passWord)
+        public static async Task<string> AddStudent(string userID, string studentNo, string userName, string passWord)
         {
-            // userID = "10085210";
-            if (userID != null && studentNo != null && userName != null && passWord != null)
+            if (!string.IsNullOrEmpty(userID) && !string.IsNullOrEmpty(studentNo) && !string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(passWord))
             {
                 Hasher hasher = new Hasher(passWord);
 
@@ -168,53 +194,53 @@ namespace XBCADAttendance.Models
                         UserId = userID,
                     };
 
-                    context.TblUsers.Add(newUser);
-                    context.TblStudents.Add(newStudent);
-                    context.SaveChanges();
+                    await context.TblUsers.AddAsync(newUser); // Use AddAsync for adding the new user
+                    await context.TblStudents.AddAsync(newStudent); // Use AddAsync for adding the new student
+                    await context.SaveChangesAsync(); // Use SaveChangesAsync for saving changes
 
                     return "Success";
-
-                }
-                catch (Exception e)
+                } catch (Exception e)
                 {
                     return e.ToString();
                 }
+            } else
+            {
+                return "Please fill in all fields";
             }
-            else return "Please fill in all fields";
         }
 
         //Read
-        public static TblUser? GetUserById(string userID)
+        public static async Task<TblUser?> GetUserById(string userID)
         {
-            return context.TblUsers.Where(x => x.UserId == userID).FirstOrDefault();
+            return await context.TblUsers.Where(x => x.UserId == userID).FirstOrDefaultAsync();
         }
 
-        public static List<string>? GetModulesById(string userID)
+        public static async Task<List<string>?> GetModulesById(string userID)
         {
-            var user = GetUserById(userID);
+            var user = await GetUserById(userID);
 
             if (user != null)
             {
                 if (user.TblStaff != null)
                 {
-                    return context.TblStaffLectures.Select(x => x.ModuleCode).Distinct().ToList();
+                    return await context.TblStaffLectures.Select(x => x.ModuleCode).Distinct().ToListAsync();
                 } else
                 {
-                    return context.TblStudentLectures.Select(x => x.ModuleCode).Distinct().ToList();
+                    return await context.TblStudentLectures.Select(x => x.ModuleCode).Distinct().ToListAsync();
                 }
             }
 
             return null;
         }
 
-        public static TblUser? GetUserByStudentNo(string studentNo)
+        public static async Task<TblUser?> GetUserByStudentNo(string studentNo)
         {
-            return context.TblUsers.Where(x => x.TblStudent.StudentNo == studentNo).FirstOrDefault();
+            return await context.TblUsers.Where(x => x.TblStudent.StudentNo == studentNo).FirstOrDefaultAsync();
         }
 
-        public static List<TblStudent> GetAllStudents()
+        public static async Task<List<TblStudent>> GetAllStudents()
         {
-            var data = context.TblStudents.ToList();
+            var data = await context.TblStudents.ToListAsync();
 
             if (data != null)
             {
@@ -223,43 +249,42 @@ namespace XBCADAttendance.Models
             else return null;
         }
 
-        public static List<TblStudentLecture>? GetStudentLectures(string userID)
+        public static async Task<List<TblStudentLecture>?> GetStudentLectures(string userID)
         {
-            var lectures = context.TblStudentLectures.Where(x => x.UserId == userID).ToList();
+            var lectures = await context.TblStudentLectures.Where(x => x.UserId == userID).ToListAsync();
 
             return lectures;
         }
 
-        public static float GetStudentAttendance(string studentNo)
+        public static async Task<float> GetStudentAttendance(string studentNo)
         {
-            var student = context.TblStudents.Where(x => x.StudentNo == studentNo).FirstOrDefault();
-            var totalLectures = GetStudentLectures(student.UserId);
-            var attendance = context.TblStudentLectures.Where(x => x.UserId == student.UserId && x.ScanOut != null).ToList();
+            var student = await context.TblStudents.Where(x => x.StudentNo == studentNo).FirstOrDefaultAsync();
+            var totalLectures = await GetStudentLectures(student.UserId);
+            var attendance = await context.TblStudentLectures.Where(x => x.UserId == student.UserId && x.ScanOut != null).ToListAsync();
 
             if (totalLectures.Count > 0)
             {
                 return ((float)attendance.Count / totalLectures.Count) * 100;
             }
 
-            return 0;
-            
+            return 0; 
         }
 
-        public static string? GetIdByStudentNo(string studentNo) 
+        public static async Task<string?> GetIdByStudentNo(string studentNo) 
         { 
-            var students = context.TblUsers.Where(x => x.TblStudent != null).Select(x => x.TblStudent);
+            var students = await context.TblUsers.Where(x => x.TblStudent != null).Select(x => x.TblStudent).ToListAsync();
 
             return students.Where(x => x!.StudentNo == studentNo).Select(x => x!.UserId).FirstOrDefault();
         }
 
-        public static string? GetStudentNoById(string userID)
+        public static async Task<string?> GetStudentNoById(string userID)
         {
-            return context.TblUsers.Where(x => x.UserId == userID && x.TblStudent != null).Select(x => x.TblStudent!.StudentNo).FirstOrDefault();
+            return await context.TblUsers.Where(x => x.UserId == userID && x.TblStudent != null).Select(x => x.TblStudent!.StudentNo).FirstOrDefaultAsync();
         }
 
-        public static List<TblStudentLecture> GetAllLectures()
+        public static async Task<List<TblStudentLecture>> GetAllLectures()
         {
-            var data = context.TblStudentLectures.ToList();
+            var data = await context.TblStudentLectures.ToListAsync();
 
             if (data != null)
             {
@@ -268,9 +293,9 @@ namespace XBCADAttendance.Models
             else return null;
         }
 
-        public static List<TblStaffLecture> GetAllStaffLectures()
+        public static async Task<List<TblStaffLecture>> GetAllStaffLectures()
         {
-            var data = context.TblStaffLectures.ToList();
+            var data = await context.TblStaffLectures.ToListAsync();
 
             if (data != null)
             {
@@ -278,10 +303,30 @@ namespace XBCADAttendance.Models
             } else return null;
         }
 
-        public static List<TblStudentLecture>? GetAllLecturesByStudentNo(string studentNo)
+        public static async Task<List<TblStudent>> GetStudentsFromLecture(string lectureId)
         {
-            var studentID = context.TblUsers.Where(x => x.TblStudent != null && x.TblStudent.StudentNo == studentNo).Select(x => x.UserId).FirstOrDefault();
-            var data = context.TblStudentLectures.Where(x => x.UserId == studentID).ToList();
+            List<TblStudent> output = new List<TblStudent>();
+
+            var lectures = await context.TblStudentLectures.Where(x => x.LectureId == lectureId).ToListAsync();
+            List<string> studentIds = new List<string>();
+
+            foreach(var lecture in lectures)
+            {
+                studentIds.Add(lecture.UserId);
+            }
+
+            foreach(var id in studentIds)
+            {
+                output.Add(await context.TblStudents.Where(x => x.UserId == id).FirstOrDefaultAsync());
+            }
+
+            return output;
+        }
+
+        public static async Task<List<TblStudentLecture>?> GetAllLecturesByStudentNo(string studentNo)
+        {
+            var studentID = await context.TblUsers.Where(x => x.TblStudent != null && x.TblStudent.StudentNo == studentNo).Select(x => x.UserId).FirstOrDefaultAsync();
+            var data = await context.TblStudentLectures.Where(x => x.UserId == studentID).ToListAsync();
 
             if (data != null)
             {
@@ -289,9 +334,9 @@ namespace XBCADAttendance.Models
             } else return null;
         }
 
-        public static List<TblModule>? GetAllModules()
+        public static async Task<List<TblModule>?> GetAllModules()
         {
-            var data = context.TblModules.ToList();
+            var data = await context.TblModules.ToListAsync();
 
             if (data != null)
             {
@@ -300,11 +345,11 @@ namespace XBCADAttendance.Models
             else return null;
         }
 
-        public static List<TblModule> GetModulesByStudentNo(string studentNo)
+        public static async Task<List<TblModule>> GetModulesByStudentNo(string studentNo)
         {
-            string userId = GetIdByStudentNo(studentNo)!;
-            var lectures = context.TblStudentLectures.Where(x => x.UserId == userId).Select(x => x.ModuleCode).ToList();
-            var modules = context.TblModules.ToList();
+            string userId = await GetIdByStudentNo(studentNo)!;
+            var lectures = await context.TblStudentLectures.Where(x => x.UserId == userId).Select(x => x.ModuleCode).ToListAsync();
+            var modules = await context.TblModules.ToListAsync();
             
             List<TblModule> lstModules = new List<TblModule>();
 
@@ -317,9 +362,9 @@ namespace XBCADAttendance.Models
             return lstModules;
         }
 
-        public static List<TblUser> GetAllUsers()
+        public static async Task<List<TblUser>> GetAllUsers()
         {
-            var data = context.TblUsers.ToList();
+            var data = await context.TblUsers.ToListAsync();
 
             if (data != null)
             {
@@ -328,9 +373,9 @@ namespace XBCADAttendance.Models
             else return null;
         }
 
-        public static List<TblStaff> GetAllStaff()
+        public static async Task<List<TblStaff>> GetAllStaff()
         {
-            var data = context.TblStaffs.ToList();
+            var data = await context.TblStaffs.ToListAsync();
 
             if (data != null)
             {
@@ -339,9 +384,9 @@ namespace XBCADAttendance.Models
             else return null;
         }
 
-        public static List<TblRole> GetAllRoles()
+        public static async Task<List<TblRole>> GetAllRoles()
         {
-            var data = context.TblRoles.ToList();
+            var data = await context.TblRoles.ToListAsync();
 
             if (data != null)
             {
@@ -351,13 +396,13 @@ namespace XBCADAttendance.Models
         }
 
         //Update
-        public static string UpdateUser(string userID, string? userName, string? passWord)
+        public static async Task<string> UpdateUser(string userID, string? userName, string? passWord)
         {
             bool updateName = false;
             bool updatePassword = false;
 
             //Get User from DB using userID
-            var user = context.TblUsers.Where(x => x.UserId == userID).FirstOrDefault();
+            var user = await context.TblUsers.Where(x => x.UserId == userID).FirstOrDefaultAsync();
 
             //Null check for User
             if (user != null)
@@ -412,11 +457,11 @@ namespace XBCADAttendance.Models
         }
 
         //Delete
-        public static string DeleteUser(string userID)
+        public static async Task<string> DeleteUser(string userID)
         {
             try
             {
-                var user = context.TblUsers.Where(x => x.UserId == userID).FirstOrDefault();
+                var user = await context.TblUsers.Where(x => x.UserId == userID).FirstOrDefaultAsync();
 
 
                 if (user != null)
@@ -425,19 +470,19 @@ namespace XBCADAttendance.Models
 
                     if (user.TblStaff != null)
                     {
-                        context.TblStaffs.Where(x => x.UserId == userID).ExecuteDelete();
-                        context.TblStaffLectures.Where(x => x.UserId == userID).ExecuteDelete();
+                        await context.TblStaffs.Where(x => x.UserId == userID).ExecuteDeleteAsync();
+                        await context.TblStaffLectures.Where(x => x.UserId == userID).ExecuteDeleteAsync();
 
                     }else if (user.TblStudent != null)
                     {
-                        context.TblStudents.Where(x => x.UserId == userID).ExecuteDelete();
-                        context.TblStudentLectures.Where(x => x.UserId == userID).ExecuteDelete();
+                        await context.TblStudents.Where(x => x.UserId == userID).ExecuteDeleteAsync();
+                        await context.TblStudentLectures.Where(x => x.UserId == userID).ExecuteDeleteAsync();
                     }
                 }
 
-                context.TblUsers.Where(x => x.UserId == userID).ExecuteDelete();
+                await context.TblUsers.Where(x => x.UserId == userID).ExecuteDeleteAsync();
 
-                context.SaveChanges();
+                await context.SaveChangesAsync();
                 return "User deleted successfully";
 
             }
@@ -448,12 +493,12 @@ namespace XBCADAttendance.Models
 
         }
 
-        public static string DeleteLecture(string lectureID)
+        public static async Task<string> DeleteLecture(string lectureID)
         {
             try
             {
-                context.TblStudentLectures.Where(x => x.LectureId == lectureID).ExecuteDelete();
-                context.SaveChanges();
+                await context.TblStudentLectures.Where(x => x.LectureId == lectureID).ExecuteDeleteAsync();
+                await context.SaveChangesAsync();
                 return "Lecture deleted successfully";
 
             }
@@ -463,12 +508,12 @@ namespace XBCADAttendance.Models
             }
         }
 
-        public static string DeleteModule(string moduleCode)
+        public static async Task<string> DeleteModule(string moduleCode)
         {
             try
             {
-                context.TblModules.Where(x => x.ModuleCode == moduleCode).ExecuteDelete();
-                context.SaveChanges();
+                await context.TblModules.Where(x => x.ModuleCode == moduleCode).ExecuteDeleteAsync();
+                await context.SaveChangesAsync();
                 return "Module deleted successfully";
 
             }
@@ -478,39 +523,39 @@ namespace XBCADAttendance.Models
             }
         }
 
-        public static void AddLecture(TblStaffLecture lecture)
+        public static async Task AddLecture(TblStaffLecture lecture)
         {
             //Add error handling
             if (lecture != null)
             {
-                context.TblStaffLectures.Add(lecture);
+                await context.TblStaffLectures.AddAsync(lecture);
             }
 
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
 
-        public static List<TblStaffLecture> GetStaffLectures()
+        public static async Task<List<TblStaffLecture>> GetStaffLectures()
         {
-            return context.TblStaffLectures.ToList();
+            return await context.TblStaffLectures.ToListAsync();
         }
 
-        public static List<TblStudent?> GetStudentsByModule(string moduleCode)
+        public static async Task<List<TblStudent?>> GetStudentsByModule(string moduleCode)
         {
-            return context.TblStudentLectures.Where(x => x.ModuleCode == moduleCode).Select(x => GetStudentById(x.UserId)).ToList();
+            return await context.TblStudentLectures.Where(x => x.ModuleCode == moduleCode).Select(x => GetStudentById(x.UserId).Result).ToListAsync();
         }
 
-        public static TblStudent? GetStudentById(string userId)
+        public static async Task<TblStudent?> GetStudentById(string userId)
         {
-            return context.TblStudents.Where(x => x.UserId == userId).FirstOrDefault();
+            return await context.TblStudents.Where(x => x.UserId == userId).FirstOrDefaultAsync();
         }
 
-        public static List<TblStudentLecture>? GetStudentLecturesByStaffId(string staffId)
+        public static async Task<List<TblStudentLecture>?> GetStudentLecturesByStaffId(string staffId)
         {
-            var user = context.TblStaffs.Where(x => x.StaffId == staffId).FirstOrDefault();
+            var user = await context.TblStaffs.Where(x => x.StaffId == staffId).FirstOrDefaultAsync();
 
             if (user != null)
             {
-                return context.TblStudentLectures.Where(x => x.UserId == user.UserId).ToList();
+                return await context.TblStudentLectures.Where(x => x.UserId == user.UserId).ToListAsync();
             }
             
             return null;
