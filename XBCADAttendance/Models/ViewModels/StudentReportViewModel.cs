@@ -274,6 +274,15 @@ namespace XBCADAttendance.Models
         }
     }
 
+    public class AttendancePieData
+    {
+        public List<DataPoint> attendanceValues { get; set; }
+        public AttendancePieData(List<DataPoint> attendanceValues)
+        {
+            this.attendanceValues = attendanceValues;
+        }
+    }
+
     public class AttendanceChartData 
     { 
         public List<DataPoint> attendanceValues { get; set; }
