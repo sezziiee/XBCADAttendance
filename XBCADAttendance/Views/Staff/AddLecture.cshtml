@@ -3,20 +3,20 @@
 @{
     Layout = "_LecturerLayout";
 }
-
+<div class="head-title">
+    <div class="left">
+        <h1>Add Lecturer</h1>
+        <ul class="breadcrumb">
+            <li><a href="#">Home</a></li>
+            <li><i class='bx bx-chevron-right'></i></li>
+            <li><a class="active" href="#">Add Lecturer</a></li>
+        </ul>
+    </div>
+</div>
 
 <div class="table-data">
     <div class="order">
-    <div class="head-title">
-        <div class="left">
-            <h1>Add Lecturer</h1>
-            <ul class="breadcrumb">
-                <li><a href="#">Home</a></li>
-                <li><i class='bx bx-chevron-right'></i></li>
-                <li><a class="active" href="#">Add Lecturer</a></li>
-            </ul>
-        </div>
-    </div>
+    
     <form asp-controller="LectureReport" asp-action="Create" method="post">
     <table>
         <thead>

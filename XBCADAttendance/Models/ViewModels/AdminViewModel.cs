@@ -24,7 +24,7 @@ namespace XBCADAttendance.Models.ViewModels
             var student = Students.Where(x => x.UserId == user.UserId).FirstOrDefault();
             if (student != null)
             {
-                return student.StudentNo;
+                return student.UserId;
             } else
             {
                 var staff = Staff.Where(x => x.UserId == user.UserId).FirstOrDefault();
@@ -72,6 +72,18 @@ namespace XBCADAttendance.Models.ViewModels
         public async Task<List<TblStudent>> GetStudentsFromLecture(string lectureId)
         {
             return await DataAccess.GetStudentsFromLecture(lectureId);
+        }
+
+        public async Task UpdateUserCredentialsAsync(string userId, string newUserName, string newPassword)
+        {
+            if (userId != null)
+            {
+                await DataAccess.UpdateUser(userId, newUserName, newPassword);
+            }
+            else
+            {
+                throw new ArgumentException("User not found");
+            }
         }
 
     }
