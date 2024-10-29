@@ -43,23 +43,24 @@
                         <td>@lecture.Finish</td>
                     </tr>
 
-                    <!-- Hidden header row for user details -->
-                    <tr class="accordion-content">
-                        <th colspan="1"></th>
-                        <th colspan="2" class="ree">User Name</th>
-                        <th colspan="2" class="ree">Role</th>
-                        <th colspan="2" class="ree">ID</th>
-                    </tr>
+                    var students = await Model.GetStudentsFromLecture(lecture.LectureId);
+                    if (students != null && students.Count > 0)
+                    {
+                        <tr class="accordion-content">
+                            <th colspan="1"></th>
+                            <th colspan="6" class="ree">Students Attended</th>
+                        </tr>
+                    }
 
                     <!-- Hidden rows showing each user’s details -->
-                    @foreach (var user in Model.Users)
+                    @foreach (var student in students)
                     {
                         <tr class="accordion-content">
                             <td colspan="1"></td>
-                            <td colspan="2">@user.UserName</td>
-                            <td colspan="2">@Model.GetRole(user)</td>
-                            <td colspan="2">@Model.GetID(user)</td>
+                            <td colspan="6">@student.StudentNo</td>
+                            
                         </tr>
+                        
                     }
                 }
             </tbody>
@@ -68,7 +69,7 @@
 </div>
 
 <style>
-    .ree{
+    .ree {
         background-color: #CFE8FF;
         color: #3C91E6;
     }

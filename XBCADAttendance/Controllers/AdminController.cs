@@ -60,9 +60,9 @@ namespace XBCADAttendance.Controllers
 
         [HttpGet]
         [Authorize(Policy = "AdminOnly")]
-        public IActionResult UserReport()
-
+        public async Task<IActionResult> UserReport()
         {
+
             var model = new AdminViewModel
             {
                 Users = DataAccess.Context.TblUsers.ToList(),
@@ -72,7 +72,7 @@ namespace XBCADAttendance.Controllers
                 lstRoles = DataAccess.Context.TblRoles.ToList()
             };
 
-           return View(model);
+            return View(model);
         }
 
         [HttpGet]
@@ -146,9 +146,9 @@ namespace XBCADAttendance.Controllers
 
                     DataAccess.Context.SaveChanges();
 
-                    RedirectToAction("UserReport","Admin");
+                    RedirectToAction("UserReport", "Admin");
                 } else throw new Exception("No User");
-            
+
                 return View(userInfo);
             } catch (Exception ex)
             {
@@ -176,7 +176,7 @@ namespace XBCADAttendance.Controllers
                         DataAccess.Context.SaveChanges();
 
                         RedirectToAction("UserReport", "Admin");
-                    }else
+                    } else
                     {
                         var staff = user.TblStaff;
 
@@ -187,7 +187,7 @@ namespace XBCADAttendance.Controllers
 
                         RedirectToAction("UserReport", "Admin");
                     }
-                    
+
                 } else throw new Exception("No User");
 
                 return View(userInfo);
@@ -255,90 +255,20 @@ namespace XBCADAttendance.Controllers
             }
         }
         [HttpPost]
-        public JsonResult SaveChanges([FromBody] Dictionary<string, Dictionary<string, string>> editedData)
+        public async Task<IActionResult> UpdateUsers(string Username, string Password)
         {
-            if (editedData == null || !editedData.Any())
-            {
-                return Json(new { success = false, message = "No changes detected." });
-            }
-
-            try
-            {
-                foreach (var userEdit in editedData)
-                {
-                    UserInfo userInfo = new UserInfo(userEdit.Key);
-
-                    foreach (var fieldChange in userEdit.Value)
-                    {
-                        switch (fieldChange.Key)
-                        {
-                            case "UserName":
-                                userInfo.name = fieldChange.Value;
-                                break;
-                            case "Password":
-                                userInfo.password = fieldChange.Value;
-                                break;
-                            case "Role":
-                                userInfo.role = fieldChange.Value;
-                                userInfo.UpdateRoleId();
-                                break;
-                            case "Identifier":
-                                userInfo.identifier = fieldChange.Value;
-                                break;
-                        }
-                    }
-                    
-
-                    var user = DataAccess.Context.TblUsers.Where(x => x.UserName == userInfo.userId).FirstOrDefault();
-                    if (user != null)
-                    {
-                        user.UserName = userInfo.name;
-
-                        if (!string.IsNullOrEmpty(userInfo.password))
-                        {
-                            user.Password = new Hasher(userInfo.password).GetHash();
-                        }
-
-                        if (user.TblStaff != null)
-                        {
-                            var staff = user.TblStaff;
-                            if (!string.IsNullOrEmpty(userInfo.roleId))
-                            {
-                                staff.RoleId = userInfo.roleId;
-                            }
-                            if (!string.IsNullOrEmpty(userInfo.identifier))
-                            {
-                                staff.StaffId = userInfo.identifier;
-                            }
-
-                            DataAccess.Context.TblStaffs.Update(staff);
-                        }
-
-                        else if (user.TblStudent != null)
-                        {
-                            var student = user.TblStudent;
-                            if (!string.IsNullOrEmpty(userInfo.identifier))
-                            {
-                                student.StudentNo = userInfo.identifier;
-                            }
-
-                            DataAccess.Context.TblStudents.Update(student);
-                        }
-
-                        DataAccess.Context.TblUsers.Update(user);
-                    }
-                }
-
-                DataAccess.Context.SaveChanges();
-                return Json(new { success = true, message = "Changes saved successfully." });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = $"Error saving changes: {ex.Message}" });
-            }
+            return null;
         }
 
 
+
+    }
+    public class UpdateUserModel
+    {
+        public string UserId { get; set; }
+        public string UserName { get; set; }
+        public string Password { get; set; }
+        public string Role { get; set; }
     }
 
 
