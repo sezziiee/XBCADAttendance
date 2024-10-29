@@ -21,7 +21,8 @@ namespace XBCADAttendance.Models
         private static DataAccess? instance = null;
         private static readonly object lockObj = new object();
 
-        private DataAccess() {
+        private DataAccess()
+        {
         }
 
         public static DataAccess GetInstance()
@@ -68,8 +69,10 @@ namespace XBCADAttendance.Models
                             // Login logic
                             await StoreUserCookies(httpContext, student.UserId, "Student");
                             return "Success";
-                        } else return "Incorrect password";
-                    } else return "Student not found";
+                        }
+                        else return "Incorrect password";
+                    }
+                    else return "Student not found";
                 }
                 return "Student not found";
             }
@@ -106,11 +109,13 @@ namespace XBCADAttendance.Models
 
                             await StoreUserCookies(httpContext, staff.UserId, role ?? "Unknown");
                             return role;
-                        } else
+                        }
+                        else
                         {
                             return "Incorrect password";
                         }
-                    } else
+                    }
+                    else
                     {
                         return "Staff not found";
                     }
@@ -199,11 +204,13 @@ namespace XBCADAttendance.Models
                     await context.SaveChangesAsync(); // Use SaveChangesAsync for saving changes
 
                     return "Success";
-                } catch (Exception e)
+                }
+                catch (Exception e)
                 {
                     return e.ToString();
                 }
-            } else
+            }
+            else
             {
                 return "Please fill in all fields";
             }
@@ -224,7 +231,8 @@ namespace XBCADAttendance.Models
                 if (user.TblStaff != null)
                 {
                     return await context.TblStaffLectures.Select(x => x.ModuleCode).Distinct().ToListAsync();
-                } else
+                }
+                else
                 {
                     return await context.TblStudentLectures.Select(x => x.ModuleCode).Distinct().ToListAsync();
                 }
@@ -267,11 +275,11 @@ namespace XBCADAttendance.Models
                 return ((float)attendance.Count / totalLectures.Count) * 100;
             }
 
-            return 0; 
+            return 0;
         }
 
-        public static async Task<string?> GetIdByStudentNo(string studentNo) 
-        { 
+        public static async Task<string?> GetIdByStudentNo(string studentNo)
+        {
             var students = await context.TblUsers.Where(x => x.TblStudent != null).Select(x => x.TblStudent).ToListAsync();
 
             return students.Where(x => x!.StudentNo == studentNo).Select(x => x!.UserId).FirstOrDefault();
@@ -300,7 +308,8 @@ namespace XBCADAttendance.Models
             if (data != null)
             {
                 return data;
-            } else return null;
+            }
+            else return null;
         }
 
         public static async Task<List<TblStudent>> GetStudentsFromLecture(string lectureId)
@@ -310,12 +319,12 @@ namespace XBCADAttendance.Models
             var lectures = await context.TblStudentLectures.Where(x => x.LectureId == lectureId).ToListAsync();
             List<string> studentIds = new List<string>();
 
-            foreach(var lecture in lectures)
+            foreach (var lecture in lectures)
             {
                 studentIds.Add(lecture.UserId);
             }
 
-            foreach(var id in studentIds)
+            foreach (var id in studentIds)
             {
                 output.Add(await context.TblStudents.Where(x => x.UserId == id).FirstOrDefaultAsync());
             }
@@ -331,7 +340,8 @@ namespace XBCADAttendance.Models
             if (data != null)
             {
                 return data;
-            } else return null;
+            }
+            else return null;
         }
 
         public static async Task<List<TblModule>?> GetAllModules()
@@ -350,10 +360,10 @@ namespace XBCADAttendance.Models
             string userId = await GetIdByStudentNo(studentNo)!;
             var lectures = await context.TblStudentLectures.Where(x => x.UserId == userId).Select(x => x.ModuleCode).Distinct().ToListAsync();
             var modules = await context.TblModules.ToListAsync();
-            
+
             List<TblModule> lstModules = new List<TblModule>();
 
-            foreach (var lecture in lectures) 
+            foreach (var lecture in lectures)
             {
                 var studentModules = modules.Where(x => x.ModuleCode == lecture).ToList();
                 lstModules.AddRange(studentModules);
@@ -473,7 +483,8 @@ namespace XBCADAttendance.Models
                         await context.TblStaffs.Where(x => x.UserId == userID).ExecuteDeleteAsync();
                         await context.TblStaffLectures.Where(x => x.UserId == userID).ExecuteDeleteAsync();
 
-                    }else if (user.TblStudent != null)
+                    }
+                    else if (user.TblStudent != null)
                     {
                         await context.TblStudents.Where(x => x.UserId == userID).ExecuteDeleteAsync();
                         await context.TblStudentLectures.Where(x => x.UserId == userID).ExecuteDeleteAsync();
@@ -565,7 +576,7 @@ namespace XBCADAttendance.Models
             {
                 return await context.TblStudentLectures.Where(x => x.UserId == user.UserId).ToListAsync();
             }
-            
+
             return null;
         }
 

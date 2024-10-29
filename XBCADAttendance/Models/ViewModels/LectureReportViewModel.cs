@@ -11,6 +11,7 @@ namespace XBCADAttendance.Models
     {
         public TblStaff staff { get; set; }
         public TblUser user { get; set; }
+
         public List<string>? lstModules = new List<string>();
         public List<TblStudentLecture> lstLectures = new List<TblStudentLecture>();
         public List<Student> lstStudents = new List<Student>();
@@ -28,7 +29,10 @@ namespace XBCADAttendance.Models
             this.userId = userId;
             user = DataAccess.GetUserById(userId).Result;
             staff = user.TblStaff;
-            lstModules = DataAccess.GetModulesById(staff.UserId).Result;
+            staffId = staff.StaffId;
+            name = user.UserName;
+
+            lstModules = DataAccess.GetModulesById(userId).Result;
 
             foreach (string moduleCode in lstModules)
             {
