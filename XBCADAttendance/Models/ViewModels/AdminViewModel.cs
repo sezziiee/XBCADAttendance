@@ -16,7 +16,7 @@ namespace XBCADAttendance.Models.ViewModels
             Users = DataAccess.GetAllUsers().Result;
             Students = DataAccess.GetAllStudents().Result;
             Staff = DataAccess.GetAllStaff().Result;
-            StaffLectures = DataAccess.GetStaffLectures().Result;//TODO Figure out a more efficient way of doing this
+            StaffLectures = DataAccess.GetStaffLectures().Result;
         }
 
         public string GetID(TblUser user)
@@ -68,5 +68,11 @@ namespace XBCADAttendance.Models.ViewModels
 
             return "Error";
         }
+
+        public async Task<List<TblStudent>> GetStudentsFromLecture(string lectureId)
+        {
+            return await DataAccess.GetStudentsFromLecture(lectureId);
+        }
+
     }
 }
