@@ -1,8 +1,9 @@
 ﻿@using XBCADAttendance.Models.ViewModels
 @model AdminViewModel
 @{
-    Layout = "_LecturerLayout";
+    Layout = "_AdminLayout";
 }
+
 <div class="head-title">
     <div class="left">
         <h1>Users</h1>
@@ -32,7 +33,18 @@
                         <td>@Model.GetID(user)</td>
                         <td contenteditable="true" class="editable" data-field="UserName">@user.UserName</td>
                         <td contenteditable="true" class="editable" data-field="Password">••••••</td>
-                        <td contenteditable="true" class="editable" data-field="Role">@Model.GetRole(user)</td>
+                        <td class="role-cell" data-field="Role" data-original-role="@Model.GetRole(user)">
+                            <span class="role-display">@Model.GetRole(user)</span>
+                            <select class="form-control" id="role" style="display: none;">
+                                @if (Model.lstRoles != null)
+                                {
+                                    @foreach (var role in Model.lstRoles)
+                                    {
+                                        <option>@role.RoleName</option>
+                                    }
+                                }
+                            </select>
+                        </td>
                     </tr>
                 }
             </tbody>
@@ -43,52 +55,79 @@
         </div>
     </div>
 </div>
-
-
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const originalData = {};  // Store original data for canceling changes
-        const editedData = {};    // Track only changed data for saving
+        const originalData = {};
+        const editedData = {};
 
-        // On cell focus, store original value
+        // Track changes for UserName and Password
         document.querySelectorAll('.editable').forEach(cell => {
-            cell.addEventListener('focus', (e) => {
-                const rowId = e.target.closest('tr').getAttribute('data-id');
-                const field = e.target.getAttribute('data-field');
-
-                // Store the original value in originalData if not already stored
-                if (!originalData[rowId]) originalData[rowId] = {};
-                if (!originalData[rowId][field]) originalData[rowId][field] = e.target.textContent;
-            });
-
-            // On cell blur, check if the content has changed
             cell.addEventListener('blur', (e) => {
-                const rowId = e.target.closest('tr').getAttribute('data-id');
-                const field = e.target.getAttribute('data-field');
-                const newValue = e.target.textContent.trim();
+                const rowId = cell.closest('tr').getAttribute('data-id');
+                const newValue = e.target.textContent.trim(); // Use textContent for editable fields
+                const field = cell.getAttribute('data-field');
 
-                // Track the changed data
+                // Track changes for UserName and Password
+                if (!originalData[rowId]) originalData[rowId] = {};
+                if (!originalData[rowId][field]) originalData[rowId][field] = cell.textContent.trim(); // Capture original value
                 if (!editedData[rowId]) editedData[rowId] = {};
+
                 if (newValue !== originalData[rowId][field]) {
                     editedData[rowId][field] = newValue;
                 } else {
-                    delete editedData[rowId][field]; // Remove if reverted to original
+                    delete editedData[rowId][field]; // Remove if value hasn't changed
                 }
             });
         });
 
-        // Save Changes
+        // Toggle role dropdown
+        document.querySelectorAll('.role-cell').forEach(cell => {
+            cell.addEventListener('click', () => {
+                const display = cell.querySelector('.role-display');
+                const select = cell.querySelector('.form-control');
+
+                if (display.style.display !== 'none') {
+                    display.style.display = 'none';
+                    select.style.display = 'inline';
+                    select.value = cell.getAttribute('data-original-role');
+                    select.focus();
+                }
+            });
+
+            // Save selection on blur
+            cell.querySelector('.form-control').addEventListener('blur', (e) => {
+                const rowId = cell.closest('tr').getAttribute('data-id');
+                const newValue = e.target.value;
+                const field = cell.getAttribute('data-field');
+
+                // Update display and original data
+                cell.querySelector('.role-display').textContent = newValue;
+                cell.querySelector('.role-display').style.display = 'inline';
+                cell.querySelector('.form-control').style.display = 'none';
+
+                // Track changes
+                if (!originalData[rowId]) originalData[rowId] = {};
+                if (!originalData[rowId][field]) originalData[rowId][field] = cell.getAttribute('data-original-role');
+                if (!editedData[rowId]) editedData[rowId] = {};
+                if (newValue !== originalData[rowId][field]) {
+                    editedData[rowId][field] = newValue;
+                } else {
+                    delete editedData[rowId][field];
+                }
+            });
+        });
+
+        // Save changes
         document.getElementById('saveChanges').addEventListener('click', () => {
-            // Send editedData to the server via AJAX
-            fetch('/YourController/SaveChanges', {
+            fetch('/Admin/SaveChanges', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(editedData)
-            }).then(response => response.json())
+            })
+                .then(response => response.json())
                 .then(data => {
                     if (data.success) {
                         alert('Changes saved successfully');
-                        // Clear editedData and originalData to reset the state
                         Object.keys(editedData).forEach(key => delete editedData[key]);
                         Object.keys(originalData).forEach(key => delete originalData[key]);
                     } else {
@@ -97,24 +136,27 @@
                 });
         });
 
-        // Cancel Changes
+        // Cancel changes
         document.getElementById('cancelChanges').addEventListener('click', () => {
-            // Revert cells to original data
             Object.keys(originalData).forEach(rowId => {
                 const row = document.querySelector(`tr[data-id="${rowId}"]`);
                 Object.keys(originalData[rowId]).forEach(field => {
-                    const cell = row.querySelector(`.editable[data-field="${field}"]`);
-                    cell.textContent = originalData[rowId][field];
+                    const cell = row.querySelector(`[data-field="${field}"]`);
+                    if (field === 'Role') {
+                        cell.querySelector('.role-display').textContent = originalData[rowId][field];
+                        cell.setAttribute('data-original-role', originalData[rowId][field]);
+                    } else {
+                        cell.textContent = originalData[rowId][field];
+                    }
                 });
             });
 
-            // Clear editedData and reset originalData
             Object.keys(editedData).forEach(key => delete editedData[key]);
             Object.keys(originalData).forEach(key => delete originalData[key]);
         });
     });
-
 </script>
+
 <style>
     .styled-table {
         width: 100%;
@@ -125,73 +167,80 @@
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
 
-        /* Table Header */
         .styled-table thead tr {
-            background-color: #009879;
-            color: #ffffff;
+            background-color: #CFE8FF;
+            color: #3C91E6;
             text-align: left;
         }
 
-        .styled-table th,
-        .styled-table td {
+        .styled-table th, .styled-table td {
             padding: 12px 15px;
             border: 1px solid #ddd;
         }
 
-        /* Row Hover Effect */
         .styled-table tbody tr:hover {
             background-color: #f3f3f3;
         }
 
-        /* Alternate Row Colors */
         .styled-table tbody tr:nth-of-type(even) {
             background-color: #f8f8f8;
         }
 
-    /* Editable cells styling */
     .editable {
         cursor: pointer;
         background-color: #fcfcfc;
-        transition: background-color 0.2s ease;
     }
 
-        /* Highlight editable cell on focus */
         .editable:focus {
             background-color: #e0f7fa;
             outline: none;
             border-bottom: 2px solid #009879;
         }
 
-    /* Table Title and Breadcrumbs */
-    .head-title {
-        display: flex;
-        align-items: center;
-        margin-bottom: 20px;
+    .role-display {
+        cursor: pointer;
     }
 
-        .head-title h1 {
-            font-size: 1.8em;
-            font-weight: bold;
-            color: #333;
+    .role-select {
+        display: none;
+        padding: 5px;
+        font-size: 1em;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+    }
+
+    .buttons {
+        margin-top: 15px;
+    }
+
+        .buttons button {
+            margin-right: 10px;
+            padding: 10px 15px;
+            font-size: 1em;
+            color: #fff;
+            background-color: #3C91E6;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
         }
 
-        .head-title .breadcrumb {
-            margin-left: auto;
-            font-size: 0.9em;
-        }
-
-            .head-title .breadcrumb li {
-                display: inline;
-                color: #666;
+            .buttons button:hover {
+                background-color: #6C91E6;
             }
 
-                .head-title .breadcrumb li a {
-                    color: #009879;
-                    text-decoration: none;
-                }
+    .head-title h1 {
+        font-size: 1.8em;
+        font-weight: bold;
+    }
 
-                    .head-title .breadcrumb li a.active {
-                        font-weight: bold;
-                    }
-    
+    .head-title .breadcrumb li a {
+        color: #009879;
+        text-decoration: none;
+    }
 </style>

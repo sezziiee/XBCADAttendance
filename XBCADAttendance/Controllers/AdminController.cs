@@ -1,11 +1,15 @@
 ﻿using Google.Apis.Admin.Directory.directory_v1.Data;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Permissions;
 using XBCADAttendance.Models;
 using XBCADAttendance.Models.ViewModels;
 
 namespace XBCADAttendance.Controllers
 {
+    [Authorize(Policy = "AdminOnly")]
     public class AdminController : Controller
     {
         public IActionResult Index()
@@ -20,6 +24,7 @@ namespace XBCADAttendance.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "AdminOnly")]
         public IActionResult AddStaff(AddStaffViewModel model)
         {
             try
@@ -52,18 +57,31 @@ namespace XBCADAttendance.Controllers
         }
 
         [HttpGet]
-        public IActionResult UserReport(AdminViewModel model)
+        [Authorize(Policy = "AdminOnly")]
+        public IActionResult UserReport()
+
         {
-            return View(model);
+            var model = new AdminViewModel
+            {
+                Users = DataAccess.context.TblUsers.ToList(),
+                Students = DataAccess.context.TblStudents.ToList(),
+                Staff = DataAccess.context.TblStaffs.ToList(),
+                StaffLectures = DataAccess.context.TblStaffLectures.ToList(),
+                lstRoles = DataAccess.context.TblRoles.ToList()
+            };
+
+           return View(model);
         }
 
         [HttpGet]
+        [Authorize(Policy = "AdminOnly")]
         public IActionResult LectureReport(AdminViewModel model)
         {
             return View(model);
         }
 
         [HttpGet]
+        [Authorize(Policy = "AdminOnly")]
         public IActionResult Edit_Name()
         {
             if (User.Identity.IsAuthenticated)
@@ -75,6 +93,7 @@ namespace XBCADAttendance.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "AdminOnly")]
         public IActionResult Edit_Number()
         {
             if (User.Identity.IsAuthenticated)
@@ -86,6 +105,7 @@ namespace XBCADAttendance.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "AdminOnly")]
         public IActionResult Edit_Password()
         {
             if (User.Identity.IsAuthenticated)
@@ -97,6 +117,7 @@ namespace XBCADAttendance.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "AdminOnly")]
         public IActionResult Edit_Role()
         {
             if (User.Identity.IsAuthenticated)
@@ -108,7 +129,9 @@ namespace XBCADAttendance.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> Edit_Name(UserInfo userInfo)
+
         {
             try
             {
@@ -132,6 +155,7 @@ namespace XBCADAttendance.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "AdminOnly")]
         public IActionResult Edit_Number(UserInfo userInfo)
         {
             try
@@ -172,6 +196,7 @@ namespace XBCADAttendance.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "AdminOnly")]
         public IActionResult Edit_Password(UserInfo userInfo)
         {
             try
@@ -197,6 +222,7 @@ namespace XBCADAttendance.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "AdminOnly")]
         public IActionResult Edit_Role(UserInfo userInfo)
         {
             try
@@ -226,7 +252,93 @@ namespace XBCADAttendance.Controllers
                 return View(userInfo);
             }
         }
+        /*[HttpPost]
+        public JsonResult SaveChanges([FromBody] Dictionary<string, Dictionary<string, string>> editedData)
+        {
+            if (editedData == null || !editedData.Any())
+            {
+                return Json(new { success = false, message = "No changes detected." });
+            }
+
+            try
+            {
+                foreach (var userEdit in editedData)
+                {
+                    UserInfo userInfo = new UserInfo(userEdit.Key);
+
+                    foreach (var fieldChange in userEdit.Value)
+                    {
+                        switch (fieldChange.Key)
+                        {
+                            case "UserName":
+                                userInfo.name = fieldChange.Value;
+                                break;
+                            case "Password":
+                                userInfo.password = fieldChange.Value;
+                                break;
+                            case "Role":
+                                userInfo.role = fieldChange.Value;
+                                userInfo.UpdateRoleId();
+                                break;
+                            case "Identifier":
+                                userInfo.identifier = fieldChange.Value;
+                                break;
+                        }
+                    }
+*//*                    var userId
+*//*
+                    var user = DataAccess.context.TblUsers.Where(x => x.UserName == userInfo.userId).FirstOrDefault();
+                    if (user != null)
+                    {
+                        user.UserName = userInfo.name;
+
+                        if (!string.IsNullOrEmpty(userInfo.password))
+                        {
+                            user.Password = new Hasher(userInfo.password).GetHash();
+                        }
+
+                        if (user.TblStaff != null)
+                        {
+                            var staff = user.TblStaff;
+                            if (!string.IsNullOrEmpty(userInfo.roleId))
+                            {
+                                staff.RoleId = userInfo.roleId;
+                            }
+                            if (!string.IsNullOrEmpty(userInfo.identifier))
+                            {
+                                staff.StaffId = userInfo.identifier;
+                            }
+
+                            DataAccess.context.TblStaffs.Update(staff);
+                        }
+                       
+                        else if (user.TblStudent != null)
+                        {
+                            var student = user.TblStudent;
+                            if (!string.IsNullOrEmpty(userInfo.identifier))
+                            {
+                                student.StudentNo = userInfo.identifier;
+                            }
+
+                            DataAccess.context.TblStudents.Update(student);
+                        }
+
+                        DataAccess.context.TblUsers.Update(user);
+                    }
+                }
+
+                DataAccess.context.SaveChanges();
+                return Json(new { success = true, message = "Changes saved successfully." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"Error saving changes: {ex.Message}" });
+            }
+        }*/
+
+
     }
+
 
     public struct UserInfo
     {
@@ -259,7 +371,7 @@ namespace XBCADAttendance.Controllers
 
             }
         }
-
+        [Authorize(Policy = "AdminOnly")]
         public void UpdateRoleId()
         {
             roleId = roles.IndexOf(role).ToString();

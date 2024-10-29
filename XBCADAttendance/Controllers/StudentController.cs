@@ -5,10 +5,10 @@ using XBCADAttendance.Models;
 
 namespace XBCADAttendance.Controllers
 {
-    [Authorize(Policy ="StudentOnly")]
+    [Authorize(Policy = "StudentOnly")]
     public class StudentController : Controller
     {
-
+        [Authorize(Policy = "StudentOnly")]
         public IActionResult Index()
         {
             if (!User.Identity.IsAuthenticated)
@@ -29,7 +29,7 @@ namespace XBCADAttendance.Controllers
             return View(model);
         }
 
-
+        [Authorize(Policy = "StudentOnly")]
         public IActionResult Report()
         {
             string? userID = null;
@@ -51,6 +51,8 @@ namespace XBCADAttendance.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+
+        [Authorize(Policy = "StudentOnly")]
         public IActionResult Profile()
         {
             string? userID = null;
@@ -74,7 +76,7 @@ namespace XBCADAttendance.Controllers
 
         }
 
-
+        [Authorize(Policy = "StudentOnly")]
         public IActionResult Modules()
         {
             string? userID = null;
@@ -95,7 +97,7 @@ namespace XBCADAttendance.Controllers
 
             return RedirectToAction("Index", "Home");
         }
-
+        [Authorize(Policy = "StudentOnly")]
         public IActionResult AttendanceHistory()
         {
             string? userID = null;
@@ -116,6 +118,7 @@ namespace XBCADAttendance.Controllers
 
             return RedirectToAction("Index", "Home");
         }
+        [Authorize(Policy = "StudentOnly")]
         public IActionResult StudentQRCode()
         {
             string? userID = null;

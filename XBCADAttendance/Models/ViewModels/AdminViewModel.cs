@@ -9,6 +9,7 @@ namespace XBCADAttendance.Models.ViewModels
         public List<TblStudent> Students { get; set; }
         public List<TblStaff> Staff { get; set; }
         public List<TblStaffLecture> StaffLectures { get; set; }
+        public List<TblRole> lstRoles = new List<TblRole>();
 
         public AdminViewModel() 
         {
