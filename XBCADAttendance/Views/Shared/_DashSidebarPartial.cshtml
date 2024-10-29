@@ -1,4 +1,4 @@
-﻿@using XBCADAttendance.Models.ViewModels
+﻿
 @model LectureReportViewModel
 <section id="sidebar">
     <a href="#" class="brand">
@@ -56,10 +56,17 @@
                 <label for="switch-mode" class="switch-mode"></label>
                 <a asp-controller="Staff" asp-action="Profile"  class="profile">
                     <div class="p-0 m-0">
-                     
-                            <h6>@(Model?.Name ?? "Name not available")</h6>
-                            <h6>@(Model?.staffId ?? "ID not available")</h6>
-                                                
+
+                        @if (Model != null)
+                        {
+                            <h6>@Model.Name</h6>
+                            <h6>@Model.staffId</h6>
+                        }
+                        else
+                        {
+                            <h6>No profile data available.</h6>
+                        }
+
                     </div>
                 </a>
             </div>
