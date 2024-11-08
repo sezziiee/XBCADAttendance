@@ -99,7 +99,7 @@ namespace XBCADAttendance.Controllers
             {
                 DataAccess.Context.TblModules.Add(module);
                 DataAccess.Context.SaveChanges();
-                return RedirectToAction("Index", "Admin");
+                return RedirectToAction("Index", "Home");
             } catch (Exception ex)
             {
                 ViewBag.ErrorMessage = ex.Message;
