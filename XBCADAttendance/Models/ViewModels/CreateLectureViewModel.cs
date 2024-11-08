@@ -1,6 +1,7 @@
-﻿namespace XBCADAttendance.Models.ViewModels
+﻿
+namespace XBCADAttendance.Models.ViewModels
 {
-    public class CreateLectureViewModel
+      public class CreateLectureViewModel
     {
         public List<string> lstModules; 
 
@@ -9,8 +10,8 @@
         public string moduleCode { get; set; }
 
         public CreateLectureViewModel(string userId) 
-        {
-            lstModules = DataAccess.GetModulesById(userId).Result;
-        }
+         {
+             lstModules = DataAccess.GetModulesById(userId).Result;
+         }
     }
 }

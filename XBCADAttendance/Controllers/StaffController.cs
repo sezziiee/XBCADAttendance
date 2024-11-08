@@ -51,10 +51,16 @@ namespace XBCADAttendance.Controllers
         [Authorize(Policy = "LecturerOnly")]
         public IActionResult LecturerQRCode()
         {
-            LectureReportViewModel newModel = new LectureReportViewModel();
-            byte[] qrCodeImage = newModel.GenerateQRCode();
+            if (User.Identity.IsAuthenticated && !string.IsNullOrEmpty(User.Identity.Name))
+            {
+                var userID = User.Identity.Name;
+                LectureReportViewModel newModel = new LectureReportViewModel(userID);
+                byte[] qrCodeImage = newModel.GenerateQRCode();
 
-            return File(qrCodeImage, "image/png");
+                return File(qrCodeImage, "image/png"); // Returns the QR code image directly
+            }
+
+            return RedirectToAction("Index", "Staff");
         }
 
         [Authorize(Policy = "LecturerOnly")]
@@ -97,12 +103,39 @@ namespace XBCADAttendance.Controllers
         {
             try
             {
+                if (string.IsNullOrEmpty(module.ModuleName))
+                {
+                    ViewBag.Message = "Please enter a Module Name.";
+                    return View(module);
+                }
+                if (string.IsNullOrEmpty(module.ModuleCode))
+                {
+                    ViewBag.Message = "Please enter a Module Code.";
+                    return View(module);
+                }
+
                 DataAccess.Context.TblModules.Add(module);
+
+                var existingModule = DataAccess.Context.TblModules.FirstOrDefault(m => m.ModuleCode == module.ModuleCode);
+                if (existingModule != null)
+                {
+                    string? ErrorMessage = "Module already exists.";
+                    ViewBag.Message = ErrorMessage;
+                    ModelState.Clear();
+                    return View(new TblModule());
+                }
                 DataAccess.Context.SaveChanges();
-                return RedirectToAction("Index", "Home");
+
+                string? message = "Module added successfully.";
+                ViewBag.Message = message;
+
+                ModelState.Clear();
+
+                return View(new TblModule());
+               
             } catch (Exception ex)
             {
-                ViewBag.ErrorMessage = ex.Message;
+                ViewBag.Message = ex.Message;
                 return View(module);
             }
         }

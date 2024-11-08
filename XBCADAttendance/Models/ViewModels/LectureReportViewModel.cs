@@ -78,7 +78,7 @@ namespace XBCADAttendance.Models
         {
             using (QRCodeGenerator qrGenerator = new QRCodeGenerator())
             {
-                QRCodeData qrCodeData = qrGenerator.CreateQrCode("Lecturer", QRCodeGenerator.ECCLevel.Q);
+                QRCodeData qrCodeData = qrGenerator.CreateQrCode(userId, QRCodeGenerator.ECCLevel.Q);
                 using (QRCode qrCode = new QRCode(qrCodeData))
                 {
                     using (Bitmap qrCodeImage = qrCode.GetGraphic(20))
