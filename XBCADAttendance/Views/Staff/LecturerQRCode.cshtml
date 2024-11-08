@@ -1,5 +1,5 @@
 ﻿@{
-    Layout = "_StudentLayout";
+    Layout = "_LecturerLayout";
 }
 <div class="head-title">
     <div class="left">
@@ -11,3 +11,26 @@
         </ul>
     </div>
 </div>
+
+<div class="table-data">
+    <img src="data:image/png;base64,@ViewBag.QRCodeImage" alt="QR Code" style="width: 700px; height: 600px;" />
+</div>
+
+<div class="both">
+    <div class="text-section">
+        <p>
+            Scan your unqiue QR code every time you enter a class at Varsity College to start and end lectures.
+        </p>
+    </div>
+</div>
+
+<style>
+    .text-section p, ol, strong {
+        font-size: 14px;
+    }
+
+    .text-section {
+        width: 60%;
+        padding-right: 20px;
+    }
+</style>
