@@ -29,6 +29,13 @@
             </div>
             <button type="submit" class="submit-btn">Submit</button>
         </form>
+        
+        <!-- Display the message -->
+        @if (!string.IsNullOrEmpty(ViewBag.Message))
+        {
+            <div class="alert alert-info">@ViewBag.Message</div>
+           
+        }
 </div>
 </div>
 <style>
