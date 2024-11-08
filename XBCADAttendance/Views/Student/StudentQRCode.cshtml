@@ -1,6 +1,7 @@
 ﻿@{
     Layout = "_StudentLayout";
 }
+
 <div class="head-title">
     <div class="left">
         <h1>QR Code</h1>
@@ -13,5 +14,26 @@
 </div>
 
 <div class="table-data">
-    <img src="@Url.Action("StudentQRCode", "Student")" alt="QR Code" style="width: 200px; height: 200px;" />
+    <img src="data:image/png;base64,@ViewBag.QRCodeImage" alt="QR Code" style="width: 700px; height: 600px;" />
 </div>
+
+<div class="both">
+            <div class="text-section">
+                <p>
+                    Scan your unqiue QR code every time you enter a class at Varsity College to track your attendance.
+                </p>
+            </div>
+</div>
+
+<style>
+    .text-section p, ol, strong {
+        font-size: 14px;
+    }
+
+    .text-section {
+        width: 60%;
+        padding-right: 20px;
+    }
+</style>
+
+
