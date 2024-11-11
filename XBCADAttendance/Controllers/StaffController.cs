@@ -28,8 +28,8 @@ namespace XBCADAttendance.Controllers
             return View(model);
         }
 
-       
-        [HttpGet]
+
+        /*[HttpGet]
         [Authorize(Policy = "LecturerOnly")]
         public IActionResult Create()
         {
@@ -46,7 +46,44 @@ namespace XBCADAttendance.Controllers
             DataAccess.AddLecture(lecture);
 
             return RedirectToAction("Index", "Staff");
+        }*/
+
+        [HttpGet]
+        [Authorize(Policy = "LecturerOnly")]
+        public IActionResult Create()
+        {
+            CreateLectureViewModel model = new CreateLectureViewModel(User.Identity.Name);
+            return View(model);
         }
+
+        [HttpPost]
+        [Authorize(Policy = "LecturerOnly")]
+        public async Task<IActionResult> Create(TblStaffLecture lecture)
+        {
+            try
+            {
+                if (lecture.ModuleCode.IsNullOrEmpty())
+                {
+                    ViewBag.Message = "Please select a Module Name.";
+                    return View(lecture);
+                }
+                lecture.LectureId = "L" + (await DataAccess.GetAllStaffLectures()).Count().ToString();
+                lecture.UserId = User.Identity.Name;
+               
+                await DataAccess.AddLecture(lecture);
+
+                string? message = "Lecture created successfully.";
+                ViewBag.Message = message;
+
+                return View(new CreateLectureViewModel(User.Identity.Name));
+            }
+            catch(Exception ex)
+            {
+                ViewBag.Message = ex.Message;
+                return View(lecture);
+            }
+        }
+
 
         [Authorize(Policy = "LecturerOnly")]
         public IActionResult LecturerQRCode()
