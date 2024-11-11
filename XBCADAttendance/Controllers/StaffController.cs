@@ -28,26 +28,6 @@ namespace XBCADAttendance.Controllers
             return View(model);
         }
 
-
-        /*[HttpGet]
-        [Authorize(Policy = "LecturerOnly")]
-        public IActionResult Create()
-        {
-            CreateLectureViewModel model = new CreateLectureViewModel(User.Identity.Name);
-            return View(model);
-        }
-
-        [HttpPost]
-        [Authorize(Policy = "LecturerOnly")]
-        public IActionResult Create(TblStaffLecture lecture)
-        {
-            lecture.LectureId = "L" + DataAccess.GetAllStaffLectures().Result.Count().ToString();
-            lecture.UserId = User.Identity.Name;
-            DataAccess.AddLecture(lecture);
-
-            return RedirectToAction("Index", "Staff");
-        }*/
-
         [HttpGet]
         [Authorize(Policy = "LecturerOnly")]
         public IActionResult Create()
