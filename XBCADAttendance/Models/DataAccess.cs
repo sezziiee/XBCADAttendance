@@ -69,10 +69,8 @@ namespace XBCADAttendance.Models
                             // Login logic
                             await StoreUserCookies(httpContext, student.UserId, "Student");
                             return "Success";
-                        }
-                        else return "Incorrect password";
-                    }
-                    else return "Student not found";
+                        } else return "Incorrect password";
+                    } else return "Student not found";
                 }
                 return "Student not found";
             }
@@ -109,13 +107,11 @@ namespace XBCADAttendance.Models
 
                             await StoreUserCookies(httpContext, staff.UserId, role ?? "Unknown");
                             return role;
-                        }
-                        else
+                        } else
                         {
                             return "Incorrect password";
                         }
-                    }
-                    else
+                    } else
                     {
                         return "Staff not found";
                     }
@@ -204,13 +200,11 @@ namespace XBCADAttendance.Models
                     await context.SaveChangesAsync(); // Use SaveChangesAsync for saving changes
 
                     return "Success";
-                }
-                catch (Exception e)
+                } catch (Exception e)
                 {
                     return e.ToString();
                 }
-            }
-            else
+            } else
             {
                 return "Please fill in all fields";
             }
@@ -228,14 +222,7 @@ namespace XBCADAttendance.Models
 
             if (user != null)
             {
-                if (user.TblStaff != null)
-                {
-                    return await context.TblStaffLectures.Select(x => x.ModuleCode).Distinct().ToListAsync();
-                }
-                else
-                {
-                    return await context.TblStudentLectures.Select(x => x.ModuleCode).Distinct().ToListAsync();
-                }
+                return await context.TblUserModules.Select(x => x.ModuleCode).Distinct().ToListAsync();
             }
 
             return null;
@@ -253,8 +240,7 @@ namespace XBCADAttendance.Models
             if (data != null)
             {
                 return data;
-            }
-            else return null;
+            } else return null;
         }
 
         public static async Task<List<TblStudentLecture>?> GetStudentLectures(string userID)
@@ -297,8 +283,7 @@ namespace XBCADAttendance.Models
             if (data != null)
             {
                 return data;
-            }
-            else return null;
+            } else return null;
         }
 
         public static async Task<List<TblStaffLecture>> GetAllStaffLectures()
@@ -308,8 +293,7 @@ namespace XBCADAttendance.Models
             if (data != null)
             {
                 return data;
-            }
-            else return null;
+            } else return null;
         }
 
         public static async Task<List<TblStudent>> GetStudentsFromLecture(string lectureId)
@@ -340,8 +324,7 @@ namespace XBCADAttendance.Models
             if (data != null)
             {
                 return data;
-            }
-            else return null;
+            } else return null;
         }
 
         public static async Task<List<TblModule>?> GetAllModules()
@@ -351,8 +334,7 @@ namespace XBCADAttendance.Models
             if (data != null)
             {
                 return data;
-            }
-            else return null;
+            } else return null;
         }
 
         public static async Task<List<TblModule>> GetModulesByStudentNo(string studentNo)
@@ -379,8 +361,7 @@ namespace XBCADAttendance.Models
             if (data != null)
             {
                 return data;
-            }
-            else return null;
+            } else return null;
         }
 
         public static async Task<List<TblStaff>> GetAllStaff()
@@ -390,8 +371,7 @@ namespace XBCADAttendance.Models
             if (data != null)
             {
                 return data;
-            }
-            else return null;
+            } else return null;
         }
 
         public static async Task<List<TblRole>> GetAllRoles()
@@ -401,8 +381,7 @@ namespace XBCADAttendance.Models
             if (data != null)
             {
                 return data;
-            }
-            else return null;
+            } else return null;
         }
 
         //Update
@@ -437,29 +416,25 @@ namespace XBCADAttendance.Models
                     context.SaveChanges();
                     return "User updated successfully";
 
-                }
-                else if (updateName && !updatePassword) //Update username
+                } else if (updateName && !updatePassword) //Update username
                 {
                     user.Password = passWord;
 
                     context.SaveChanges();
                     return "Password updated successfully";
 
-                }
-                else if (!updateName && updatePassword) //Update password
+                } else if (!updateName && updatePassword) //Update password
                 {
                     user.UserName = userName;
 
                     context.SaveChanges();
                     return "Username updated successfully";
 
-                }
-                else //Handle if no variables are entered
+                } else //Handle if no variables are entered
                 {
                     return "No values were updated";
                 }
-            }
-            else //Handle if userID is not found 
+            } else //Handle if userID is not found 
             {
                 return "User not found";
             }
@@ -483,8 +458,7 @@ namespace XBCADAttendance.Models
                         await context.TblStaffs.Where(x => x.UserId == userID).ExecuteDeleteAsync();
                         await context.TblStaffLectures.Where(x => x.UserId == userID).ExecuteDeleteAsync();
 
-                    }
-                    else if (user.TblStudent != null)
+                    } else if (user.TblStudent != null)
                     {
                         await context.TblStudents.Where(x => x.UserId == userID).ExecuteDeleteAsync();
                         await context.TblStudentLectures.Where(x => x.UserId == userID).ExecuteDeleteAsync();
@@ -496,8 +470,7 @@ namespace XBCADAttendance.Models
                 await context.SaveChangesAsync();
                 return "User deleted successfully";
 
-            }
-            catch (Exception e)
+            } catch (Exception e)
             {
                 return $"Error: {e}";
             }
@@ -512,8 +485,7 @@ namespace XBCADAttendance.Models
                 await context.SaveChangesAsync();
                 return "Lecture deleted successfully";
 
-            }
-            catch (Exception e)
+            } catch (Exception e)
             {
                 return $"Error: {e}";
             }
@@ -527,8 +499,7 @@ namespace XBCADAttendance.Models
                 await context.SaveChangesAsync();
                 return "Module deleted successfully";
 
-            }
-            catch (Exception e)
+            } catch (Exception e)
             {
                 return $"Error: {e}";
             }
@@ -540,6 +511,17 @@ namespace XBCADAttendance.Models
             if (lecture != null)
             {
                 await context.TblStaffLectures.AddAsync(lecture);
+
+                var userModule = context.TblUserModules.Where(x => x.ModuleCode == lecture.ModuleCode).FirstOrDefault();
+
+                if (userModule == null)
+                {
+                    context.TblUserModules.Add(new TblUserModules
+                    {
+                        ModuleCode = lecture.ModuleCode,
+                        UserId = lecture.UserId,
+                    });
+                }
             }
 
             await context.SaveChangesAsync();
@@ -577,10 +559,10 @@ namespace XBCADAttendance.Models
                 var lectures = await context.TblStaffLectures.Where(x => x.UserId == user.UserId).ToListAsync();
                 List<TblStudentLecture> output = new List<TblStudentLecture>();
 
-                foreach(var lecture in lectures)
+                foreach (var lecture in lectures)
                 {
                     var item = await context.TblStudentLectures.Where(x => x.LectureId == lecture.LectureId).FirstOrDefaultAsync();
-                    
+
                     if (item != null)
                     {
                         output.Add(item);
@@ -596,6 +578,23 @@ namespace XBCADAttendance.Models
         public static async Task<List<TblUser>> GetAllLecturers()
         {
             return await context.TblUsers.Where(x => x.TblStaff.RoleId == 1.ToString()).ToListAsync();
+        }
+
+        internal static void AddModule(string userId, TblModule module)
+        {
+            context.TblModules.Add(module);
+            context.TblUserModules.Add(new TblUserModules
+            {
+                UserId = userId,
+                ModuleCode = module.ModuleCode,
+            });
+
+            context.SaveChanges();
+        }
+
+        public static async Task<TblModule?> GetModule(string moduleCode)
+        {
+            return await context.TblModules.Where(x => x.ModuleCode == moduleCode).FirstOrDefaultAsync();
         }
     }
 }

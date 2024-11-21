@@ -29,6 +29,8 @@ public partial class DbWilContext : DbContext
 
     public virtual DbSet<TblUser> TblUsers { get; set; }
 
+    public virtual DbSet<TblUserModules> TblUserModules { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("Server=tcp:wilapidbserver.database.windows.net,1433;Initial Catalog=WIL-DB;Persist Security Info=False;User ID=ST10085210;Password=Treepair521;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
@@ -198,8 +200,42 @@ public partial class DbWilContext : DbContext
                 .IsFixedLength();
         });
 
+        modelBuilder.Entity<TblUserModules>(entity =>
+        {
+            // Composite Primary Key
+            entity.HasKey(e => new { e.ModuleCode, e.UserId })
+                  .HasName("PK_tblUserModules");
+
+            // Table Mapping
+            entity.ToTable("tblUserModules");
+
+            // Properties
+            entity.Property(e => e.ModuleCode)
+                  .HasMaxLength(50)
+                  .IsFixedLength()
+                  .HasColumnName("ModuleCode");
+
+            entity.Property(e => e.UserId)
+                  .HasMaxLength(50) // Ensure this matches the column definition
+                  .HasColumnName("UserID");
+
+            // Relationships
+            entity.HasOne(e => e.TblModule) // Navigation property to TblModule
+                  .WithMany(m => m.TblUserModules) // Reverse navigation property in TblModule
+                  .HasForeignKey(e => e.ModuleCode)
+                  .HasConstraintName("FK_tblUserModules_tblModule");
+
+            entity.HasOne(e => e.TblUser) // Navigation property to TblUser
+                  .WithMany(u => u.TblUserModules) // Reverse navigation property in TblUser
+                  .HasForeignKey(e => e.UserId)
+                  .HasConstraintName("FK_tblUserModules_tblUser");
+        });
+
+
         OnModelCreatingPartial(modelBuilder);
     }
+
+
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

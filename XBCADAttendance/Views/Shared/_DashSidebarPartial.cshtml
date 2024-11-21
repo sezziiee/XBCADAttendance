@@ -1,5 +1,4 @@
-﻿
-@* @model LectureReportViewModel *@
+﻿@* @model LectureReportViewModel *@
 <section id="sidebar">
     <a href="#" class="brand">
         <i class='bx bx-book-bookmark'></i>
@@ -66,15 +65,14 @@
             <div class="send-right-box">
                 <input type="checkbox" id="switch-mode" hidden>
                 <label for="switch-mode" class="switch-mode"></label>
-                <a asp-controller="Staff" asp-action="Profile"  class="profile">
+                <a asp-controller="Staff" asp-action="Profile" class="profile">
                     <div class="p-0 m-0">
 
                         @if (Model != null)
                         {
                             @* <h6>@Model.name</h6>
-                            <h6>@Model.staffId</h6> *@
-                        }
-                        else
+                        <h6>@Model.staffId</h6> *@
+                        } else
                         {
                             <h6></h6>
                         }
@@ -84,4 +82,4 @@
             </div>
         </div>
     </nav>
-    
+
