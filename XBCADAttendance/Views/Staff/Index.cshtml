@@ -68,20 +68,20 @@
 
     <div class="grid-container">
         <div class="card">
-            <h2>-</h2>
-            <p>PlaceHolder</p>
+            <h2>@Model.lstStudents.Count</h2>
+            <p>Total Students Taught by You</p>
         </div>
         <div class="card">
-            <h2>-</h2>
-            <p>PlaceHolder</p>
+            <h2>@Model.lstModules.Count</h2>
+            <p>Modules Assigned to You</p>
         </div>
         <div class="card">
-            <h2>-</h2>
-            <p>PlaceHolder</p>
+            <h2>@Model.lstLectures.Count</h2>
+            <p>Total Lectures Conducted</p>
         </div>
         <div class="card">
-            <h2>-</h2>
-            <p>PlaceHolder</p>
+            <h2>@Model.lstLectures.Count(l => l.LectureDate > DateOnly.FromDateTime(DateTime.Now.AddDays(-7)))</h2>
+            <p>Lectures Conducted in Last Week</p>
         </div>
     </div>
 
