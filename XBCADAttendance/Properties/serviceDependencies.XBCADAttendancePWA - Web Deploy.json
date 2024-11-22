@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "mssql1": {
+      "serviceConnectorResourceId": "/subscriptions/[parameters('subscriptionId')]/resourcegroups/[parameters('resourceGroupName')]/providers/Microsoft.Web/sites/XBCADAttendancePWA/providers/Microsoft.ServiceLinker/linkers/WILDB_0760FCD1FC",
+      "secretStore": "AzureAppSettings",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/wilapidbserver/databases/WIL-DB",
+      "type": "mssql.azure",
+      "connectionId": "WIL-DB",
+      "dynamicId": null
+    }
+  }
+}

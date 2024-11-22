@@ -222,7 +222,12 @@ namespace XBCADAttendance.Models
 
             if (user != null)
             {
-                return await context.TblUserModules.Select(x => x.ModuleCode).Distinct().ToListAsync();
+               
+                return await context.TblUserModules
+                                    .Where(x => x.UserId == userID)
+                                    .Select(x => x.ModuleCode)
+                                    .Distinct()
+                                    .ToListAsync();
             }
 
             return null;
