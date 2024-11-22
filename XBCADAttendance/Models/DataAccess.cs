@@ -12,11 +12,15 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using Azure.Core;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
+using System.Collections.Concurrent;
 
 namespace XBCADAttendance.Models
 {
     public class DataAccess
     {
+        private static readonly Queue<Func<Task>> requestQueue = new Queue<Func<Task>>();
+        private static readonly SemaphoreSlim semaphore = new(1, 1);
+        private static bool isProcessingQueue = false;
         private static DbWilContext? context = null;
         private static DataAccess? instance = null;
         private static readonly object lockObj = new object();
@@ -44,10 +48,77 @@ namespace XBCADAttendance.Models
 
         public static DbWilContext Context => context;
 
-        [ValidateAntiForgeryToken]
+        // Enqueue a database operation
+        public static Task<T> EnqueueOperation<T>(Func<Task<T>> operation)
+        {
+            var tcs = new TaskCompletionSource<T>();
+
+            // Enqueue the operation for processing
+            requestQueue.Enqueue(async () =>
+            {
+                try
+                {
+                    var result = await operation(); // Await the operation and capture its result
+                    tcs.SetResult(result);         // Set the result on the TaskCompletionSource
+                } catch (Exception ex)
+                {
+                    tcs.SetException(ex);          // Set the exception if the operation fails
+                }
+            });
+
+            // Only call ProcessQueue if it's not already processing
+            ProcessQueue();
+            return tcs.Task;
+        }
+
+        private static void ProcessQueue()
+        {
+            lock (lockObj)
+            {
+                if (isProcessingQueue) return; // Prevent re-entrance while processing
+                isProcessingQueue = true; // Flag that we're processing
+            }
+
+            _ = Task.Run(async () =>
+            {
+                while (true)
+                {
+                    Func<Task> operation;
+
+                    lock (lockObj)
+                    {
+                        if (requestQueue.Count == 0)
+                        {
+                            isProcessingQueue = false; // No more operations, stop processing
+                            break; // Exit the loop if no more tasks are in the queue
+                        }
+
+                        // Dequeue the next operation
+                        operation = requestQueue.Dequeue();
+                    }
+
+                    await semaphore.WaitAsync();
+                    try
+                    {
+                        await operation(); // Execute the operation
+                    } finally
+                    {
+                        semaphore.Release();
+                    }
+                }
+            });
+        }
+
+        // Wrapped method
         public static async Task<string> LoginStudent(HttpContext httpContext, LoginViewModel model)
         {
-            if (model.identifier.Length == 10) // Check if ID length is valid
+            return await EnqueueOperation(async () => await LoginStudentInternal(httpContext, model));
+        }
+
+        [ValidateAntiForgeryToken]
+        private static async Task<string> LoginStudentInternal(HttpContext httpContext, LoginViewModel model)
+        {
+            if (model.identifier.Length == 10)
             {
                 var student = await context.TblStudents
                     .Where(x => x.StudentNo == model.identifier)
@@ -66,19 +137,28 @@ namespace XBCADAttendance.Models
 
                         if (passwordHasher.CompareHashedPasswords(userPassword, user.Password))
                         {
-                            // Login logic
                             await StoreUserCookies(httpContext, student.UserId, "Student");
                             return "Success";
-                        } else return "Incorrect password";
-                    } else return "Student not found";
+                        } else
+                        {
+                            return "Incorrect password";
+                        }
+                    }
                 }
                 return "Student not found";
             }
             return "Invalid student number";
         }
 
-        [ValidateAntiForgeryToken]
+        // Wrapped method
         public static async Task<string> LoginStaff(HttpContext httpContext, LoginViewModel model)
+        {
+            return await EnqueueOperation(async () => await LoginStaffInternal(httpContext, model));
+        }
+
+        // Internal method
+        [ValidateAntiForgeryToken]
+        private static async Task<string> LoginStaffInternal(HttpContext httpContext, LoginViewModel model)
         {
             if (model.identifier.Length == 5)
             {
@@ -100,13 +180,16 @@ namespace XBCADAttendance.Models
                         if (passwordHasher.CompareHashedPasswords(userPassword, user.Password))
                         {
                             // Fetch role asynchronously
-                            var role = GetAllRoles().Result
-                                .Where(x => x.RoleId == staff.RoleId)
-                                .Select(x => x.RoleName)
-                                .FirstOrDefault();
+                            var allRoles = await GetAllRolesInternal();
+
+                            var role = await Task.Run(() =>
+                                    allRoles?
+                                    .Where(x => x.RoleId == staff.RoleId)
+                                    .Select(x => x.RoleName)
+                                    .FirstOrDefault());
 
                             await StoreUserCookies(httpContext, staff.UserId, role ?? "Unknown");
-                            return role;
+                            return role ?? "Unknown";
                         } else
                         {
                             return "Incorrect password";
@@ -122,7 +205,7 @@ namespace XBCADAttendance.Models
 
         //Sign in and authentication
         // Stores user authentication cookies using ASP.NET Core's cookie authentication.
-        public static async Task StoreUserCookies(HttpContext httpContext, string id, string role)
+        private static async Task StoreUserCookies(HttpContext httpContext, string id, string role)
         {
             // Create a list of claims for the user with the student's number as the user's name.
             var claims = new List<Claim>
@@ -151,7 +234,7 @@ namespace XBCADAttendance.Models
         public static async Task<int> CalcDaysAttended(string studentNo)
         {
             // Assuming GetAllLecturesByStudentNo is an async method
-            List<TblStudentLecture> studentLectures = await GetAllLecturesByStudentNo(studentNo);
+            List<TblStudentLecture> studentLectures = await GetAllLecturesByStudentNoInternal(studentNo);
             int count = 0;
 
             foreach (TblStudentLecture lecture in studentLectures)
@@ -174,7 +257,14 @@ namespace XBCADAttendance.Models
 
         //Create
         //
+        // Wrapped method
         public static async Task<string> AddStudent(string userID, string studentNo, string userName, string passWord)
+        {
+            return await EnqueueOperation(async () => await AddStudentInternal(userID, studentNo, userName, passWord));
+        }
+
+        // Internal method
+        private static async Task<string> AddStudentInternal(string userID, string studentNo, string userName, string passWord)
         {
             if (!string.IsNullOrEmpty(userID) && !string.IsNullOrEmpty(studentNo) && !string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(passWord))
             {
@@ -211,136 +301,238 @@ namespace XBCADAttendance.Models
         }
 
         //Read
+        // Wrapped method
         public static async Task<TblUser?> GetUserById(string userID)
+        {
+            return await EnqueueOperation(async () => await GetUserByIdInternal(userID));
+        }
+
+        // Internal method
+        private static async Task<TblUser?> GetUserByIdInternal(string userID)
         {
             return await context.TblUsers.Where(x => x.UserId == userID).FirstOrDefaultAsync();
         }
 
+        // Wrapped method
         public static async Task<List<string>?> GetModulesById(string userID)
         {
-            var user = await GetUserById(userID);
+            return await EnqueueOperation(async () => await GetModulesByIdInternal(userID));
+        }
+
+        // Internal method
+        private static async Task<List<string>?> GetModulesByIdInternal(string userID)
+        {
+            var user = await GetUserByIdInternal(userID);
 
             if (user != null)
             {
-                return await context.TblUserModules.Select(x => x.ModuleCode).Distinct().ToListAsync();
+                return await context.TblUserModules.Where(x => x.UserId == userID).Select(x => x.ModuleCode).Distinct().ToListAsync();
             }
 
             return null;
         }
 
+        // Wrapped method
         public static async Task<TblUser?> GetUserByStudentNo(string studentNo)
+        {
+            return await EnqueueOperation(async () => await GetUserByStudentNoInternal(studentNo));
+        }
+
+        // Internal method
+        private static async Task<TblUser?> GetUserByStudentNoInternal(string studentNo)
         {
             return await context.TblUsers.Where(x => x.TblStudent.StudentNo == studentNo).FirstOrDefaultAsync();
         }
 
+        // Wrapped method
         public static async Task<List<TblStudent>> GetAllStudents()
+        {
+            return await EnqueueOperation(async () => await GetAllStudentsInternal());
+        }
+
+        // Internal method
+        private static async Task<List<TblStudent>> GetAllStudentsInternal()
         {
             var data = await context.TblStudents.ToListAsync();
 
-            if (data != null)
-            {
-                return data;
-            } else return null;
+            return data ?? new List<TblStudent>();  // Ensure the return value is never null
         }
 
+        // Wrapped method
         public static async Task<List<TblStudentLecture>?> GetStudentLectures(string userID)
+        {
+            return await EnqueueOperation(async () => await GetStudentLecturesInternal(userID));
+        }
+
+        // Internal method
+        private static async Task<List<TblStudentLecture>?> GetStudentLecturesInternal(string userID)
         {
             var lectures = await context.TblStudentLectures.Where(x => x.UserId == userID).ToListAsync();
 
-            return lectures;
+            return lectures ?? new List<TblStudentLecture>();  // Ensure non-null return value
         }
 
+        // Wrapped method
         public static async Task<float> GetStudentAttendance(string studentNo)
         {
-            var student = await context.TblStudents.Where(x => x.StudentNo == studentNo).FirstOrDefaultAsync();
-            var totalLectures = await GetStudentLectures(student.UserId);
-            var attendance = await context.TblStudentLectures.Where(x => x.UserId == student.UserId && x.ScanOut != null).ToListAsync();
+            return await EnqueueOperation(async () => await GetStudentAttendanceInternal(studentNo));
+        }
 
-            if (totalLectures.Count > 0)
+        // Internal method
+        private static async Task<float> GetStudentAttendanceInternal(string studentNo)
+        {
+            var student = await context.TblStudents.Where(x => x.StudentNo == studentNo).FirstOrDefaultAsync();
+
+            if (student != null)
             {
-                return ((float)attendance.Count / totalLectures.Count) * 100;
+                var totalLectures = await GetStudentLecturesInternal(student.UserId);
+                var attendance = await context.TblStudentLectures.Where(x => x.UserId == student.UserId && x.ScanOut != null).ToListAsync();
+
+                if (totalLectures.Count > 0)
+                {
+                    return ((float)attendance.Count / totalLectures.Count) * 100;
+                }
             }
 
             return 0;
         }
 
+        // Wrapped method
         public static async Task<string?> GetIdByStudentNo(string studentNo)
+        {
+            return await EnqueueOperation(async () => await GetIdByStudentNoInternal(studentNo));
+        }
+
+        // Internal method
+        private static async Task<string?> GetIdByStudentNoInternal(string studentNo)
         {
             var students = await context.TblUsers.Where(x => x.TblStudent != null).Select(x => x.TblStudent).ToListAsync();
 
             return students.Where(x => x!.StudentNo == studentNo).Select(x => x!.UserId).FirstOrDefault();
         }
 
+        // Wrapped method
         public static async Task<string?> GetStudentNoById(string userID)
         {
-            return await context.TblUsers.Where(x => x.UserId == userID && x.TblStudent != null).Select(x => x.TblStudent!.StudentNo).FirstOrDefaultAsync();
+            return await EnqueueOperation(async () => await GetStudentNoByIdInternal(userID));
         }
 
+        // Internal method
+        private static async Task<string?> GetStudentNoByIdInternal(string userID)
+        {
+            return await context.TblUsers
+                .Where(x => x.UserId == userID && x.TblStudent != null)
+                .Select(x => x.TblStudent!.StudentNo)
+                .FirstOrDefaultAsync();
+        }
+
+        // Wrapped method
         public static async Task<List<TblStudentLecture>> GetAllLectures()
         {
-            var data = await context.TblStudentLectures.ToListAsync();
-
-            if (data != null)
-            {
-                return data;
-            } else return null;
+            return await EnqueueOperation(async () => await GetAllLecturesInternal());
         }
 
+        // Internal method
+        private static async Task<List<TblStudentLecture>> GetAllLecturesInternal()
+        {
+            var data = await context.TblStudentLectures.ToListAsync();
+            return data; // No need for null check since ToListAsync() returns an empty list if no records are found
+        }
+
+        // Wrapped method
         public static async Task<List<TblStaffLecture>> GetAllStaffLectures()
         {
-            var data = await context.TblStaffLectures.ToListAsync();
-
-            if (data != null)
-            {
-                return data;
-            } else return null;
+            return await EnqueueOperation(async () => await GetAllStaffLecturesInternal());
         }
 
+        // Internal method
+        private static async Task<List<TblStaffLecture>> GetAllStaffLecturesInternal()
+        {
+            var data = await context.TblStaffLectures.ToListAsync();
+            return data; // No need for null check since ToListAsync() returns an empty list if no records are found
+        }
+
+        // Wrapped method
         public static async Task<List<TblStudent>> GetStudentsFromLecture(string lectureId)
+        {
+            return await EnqueueOperation(async () => await GetStudentsFromLectureInternal(lectureId));
+        }
+
+        // Internal method
+        private static async Task<List<TblStudent>> GetStudentsFromLectureInternal(string lectureId)
         {
             List<TblStudent> output = new List<TblStudent>();
 
             var lectures = await context.TblStudentLectures.Where(x => x.LectureId == lectureId).ToListAsync();
-            List<string> studentIds = new List<string>();
-
-            foreach (var lecture in lectures)
-            {
-                studentIds.Add(lecture.UserId);
-            }
+            List<string> studentIds = lectures.Select(x => x.UserId).ToList();
 
             foreach (var id in studentIds)
             {
-                output.Add(await context.TblStudents.Where(x => x.UserId == id).FirstOrDefaultAsync());
+                var student = await context.TblStudents.Where(x => x.UserId == id).FirstOrDefaultAsync();
+                if (student != null)
+                {
+                    output.Add(student);
+                }
             }
 
             return output;
         }
 
+        // Wrapped method
         public static async Task<List<TblStudentLecture>?> GetAllLecturesByStudentNo(string studentNo)
         {
-            var studentID = await context.TblUsers.Where(x => x.TblStudent != null && x.TblStudent.StudentNo == studentNo).Select(x => x.UserId).FirstOrDefaultAsync();
-            var data = await context.TblStudentLectures.Where(x => x.UserId == studentID).ToListAsync();
-
-            if (data != null)
-            {
-                return data;
-            } else return null;
+            return await EnqueueOperation(async () => await GetAllLecturesByStudentNoInternal(studentNo));
         }
 
+        // Internal method
+        private static async Task<List<TblStudentLecture>?> GetAllLecturesByStudentNoInternal(string studentNo)
+        {
+            var studentID = await context.TblUsers
+                .Where(x => x.TblStudent != null && x.TblStudent.StudentNo == studentNo)
+                .Select(x => x.UserId)
+                .FirstOrDefaultAsync();
+
+            if (string.IsNullOrEmpty(studentID))
+            {
+                return null; // No student found
+            }
+
+            var data = await context.TblStudentLectures
+                .Where(x => x.UserId == studentID)
+                .ToListAsync();
+
+            return data;
+        }
+
+        // Wrapped method
         public static async Task<List<TblModule>?> GetAllModules()
         {
-            var data = await context.TblModules.ToListAsync();
-
-            if (data != null)
-            {
-                return data;
-            } else return null;
+            return await EnqueueOperation(async () => await GetAllModulesInternal());
         }
 
+        // Internal method
+        private static async Task<List<TblModule>?> GetAllModulesInternal()
+        {
+            var data = await context.TblModules.ToListAsync();
+            return data;
+        }
+
+        // Wrapped method
         public static async Task<List<TblModule>> GetModulesByStudentNo(string studentNo)
         {
-            string userId = await GetIdByStudentNo(studentNo)!;
-            var lectures = await context.TblStudentLectures.Where(x => x.UserId == userId).Select(x => x.ModuleCode).Distinct().ToListAsync();
+            return await EnqueueOperation(async () => await GetModulesByStudentNoInternal(studentNo));
+        }
+
+        // Internal method
+        private static async Task<List<TblModule>> GetModulesByStudentNoInternal(string studentNo)
+        {
+            string userId = await GetIdByStudentNoInternal(studentNo)!;
+            var lectures = await context.TblStudentLectures
+                .Where(x => x.UserId == userId)
+                .Select(x => x.ModuleCode)
+                .Distinct()
+                .ToListAsync();
+
             var modules = await context.TblModules.ToListAsync();
 
             List<TblModule> lstModules = new List<TblModule>();
@@ -354,38 +546,69 @@ namespace XBCADAttendance.Models
             return lstModules;
         }
 
+        // Wrapped method
         public static async Task<List<TblUser>> GetAllUsers()
+        {
+            return await EnqueueOperation(async () => await GetAllUsersInternal());
+        }
+
+        // Internal method
+        private static async Task<List<TblUser>> GetAllUsersInternal()
         {
             var data = await context.TblUsers.ToListAsync();
 
             if (data != null)
             {
                 return data;
-            } else return null;
+            }
+            return null;
         }
 
+        // Wrapped method
         public static async Task<List<TblStaff>> GetAllStaff()
+        {
+            return await EnqueueOperation(async () => await GetAllStaffInternal());
+        }
+
+        // Internal method
+        private static async Task<List<TblStaff>> GetAllStaffInternal()
         {
             var data = await context.TblStaffs.ToListAsync();
 
             if (data != null)
             {
                 return data;
-            } else return null;
+            }
+            return null;
         }
 
-        public static async Task<List<TblRole>> GetAllRoles()
+        // Wrapped method
+        public static async Task<List<TblRole>?> GetAllRoles()
+        {
+            return await EnqueueOperation(async () => await GetAllRolesInternal());
+        }
+
+        // Internal method
+        private static async Task<List<TblRole>?> GetAllRolesInternal()
         {
             var data = await context.TblRoles.ToListAsync();
 
             if (data != null)
             {
                 return data;
-            } else return null;
+            }
+            return null;
         }
 
         //Update
+        // Wrapped method
         public static async Task<string> UpdateUser(string userID, string? userName, string? passWord)
+        {
+            return await EnqueueOperation(async () => await UpdateUserInternal(userID, userName, passWord));
+        }
+
+        // Internal method
+        private static async Task<string> UpdateUserInternal(string userID, string? userName, string? passWord)
         {
             bool updateName = false;
             bool updatePassword = false;
@@ -438,16 +661,21 @@ namespace XBCADAttendance.Models
             {
                 return "User not found";
             }
-
         }
 
         //Delete
+        // Wrapped method
         public static async Task<string> DeleteUser(string userID)
+        {
+            return await EnqueueOperation(async () => await DeleteUserInternal(userID));
+        }
+
+        // Internal method
+        private static async Task<string> DeleteUserInternal(string userID)
         {
             try
             {
                 var user = await context.TblUsers.Where(x => x.UserId == userID).FirstOrDefaultAsync();
-
 
                 if (user != null)
                 {
@@ -457,7 +685,6 @@ namespace XBCADAttendance.Models
                     {
                         await context.TblStaffs.Where(x => x.UserId == userID).ExecuteDeleteAsync();
                         await context.TblStaffLectures.Where(x => x.UserId == userID).ExecuteDeleteAsync();
-
                     } else if (user.TblStudent != null)
                     {
                         await context.TblStudents.Where(x => x.UserId == userID).ExecuteDeleteAsync();
@@ -469,88 +696,142 @@ namespace XBCADAttendance.Models
 
                 await context.SaveChangesAsync();
                 return "User deleted successfully";
-
             } catch (Exception e)
             {
                 return $"Error: {e}";
             }
-
         }
 
+        // Wrapped method
         public static async Task<string> DeleteLecture(string lectureID)
+        {
+            return await EnqueueOperation(async () => await DeleteLectureInternal(lectureID));
+        }
+
+        // Internal method
+        private static async Task<string> DeleteLectureInternal(string lectureID)
         {
             try
             {
                 await context.TblStudentLectures.Where(x => x.LectureId == lectureID).ExecuteDeleteAsync();
                 await context.SaveChangesAsync();
                 return "Lecture deleted successfully";
-
             } catch (Exception e)
             {
                 return $"Error: {e}";
             }
         }
 
+        // Wrapped method
         public static async Task<string> DeleteModule(string moduleCode)
+        {
+            return await EnqueueOperation(async () => await DeleteModuleInternal(moduleCode));
+        }
+
+        // Internal method
+        private static async Task<string> DeleteModuleInternal(string moduleCode)
         {
             try
             {
                 await context.TblModules.Where(x => x.ModuleCode == moduleCode).ExecuteDeleteAsync();
                 await context.SaveChangesAsync();
                 return "Module deleted successfully";
-
             } catch (Exception e)
             {
                 return $"Error: {e}";
             }
         }
 
+        // Wrapped method
         public static async Task AddLecture(TblStaffLecture lecture)
         {
-            //Add error handling
-            if (lecture != null)
-            {
-                await context.TblStaffLectures.AddAsync(lecture);
-
-                var userModule = context.TblUserModules.Where(x => x.ModuleCode == lecture.ModuleCode).FirstOrDefault();
-
-                if (userModule == null)
-                {
-                    context.TblUserModules.Add(new TblUserModules
-                    {
-                        ModuleCode = lecture.ModuleCode,
-                        UserId = lecture.UserId,
-                    });
-                }
-            }
-
-            await context.SaveChangesAsync();
+            await EnqueueOperation(async () => await AddLectureInternal(lecture));
         }
 
+        // Internal method
+        private static async Task<string> AddLectureInternal(TblStaffLecture lecture)
+        {
+            try
+            {
+                // Add error handling
+                if (lecture != null)
+                {
+                    await context.TblStaffLectures.AddAsync(lecture);
+
+                    var userModule = context.TblUserModules.Where(x => x.ModuleCode == lecture.ModuleCode).FirstOrDefault();
+
+                    if (userModule == null)
+                    {
+                        context.TblUserModules.Add(new TblUserModules
+                        {
+                            ModuleCode = lecture.ModuleCode,
+                            UserId = lecture.UserId,
+                        });
+                    }
+                }
+
+                await context.SaveChangesAsync();
+
+                return "Success";
+
+            } catch (Exception e) 
+            { 
+                return e.Message;
+            }
+        }
+
+        // Wrapped method
         public static async Task<List<TblStaffLecture>> GetStaffLectures()
+        {
+            return await EnqueueOperation(async () => await GetStaffLecturesInternal());
+        }
+
+        // Internal method
+        private static async Task<List<TblStaffLecture>> GetStaffLecturesInternal()
         {
             return await context.TblStaffLectures.ToListAsync();
         }
 
+        // Wrapped method
         public static async Task<List<TblStudent?>> GetStudentsByModule(string moduleCode)
+        {
+            return await EnqueueOperation(async () => await GetStudentsByModuleInternal(moduleCode));
+        }
+
+        // Internal method
+        private static async Task<List<TblStudent?>> GetStudentsByModuleInternal(string moduleCode)
         {
             var uids = await context.TblStudentLectures.Where(x => x.ModuleCode == moduleCode).Select(x => x.UserId).ToListAsync();
             List<TblStudent> output = new List<TblStudent>();
 
             foreach (var id in uids)
             {
-                output.Add(GetStudentById(id).Result);
+                output.Add(await GetStudentByIdInternal(id)); // Use 'await' here instead of '.Result' to avoid blocking
             }
 
             return output;
         }
 
+        // Wrapped method
         public static async Task<TblStudent?> GetStudentById(string userId)
+        {
+            return await EnqueueOperation(async () => await GetStudentByIdInternal(userId));
+        }
+
+        // Internal method
+        private static async Task<TblStudent?> GetStudentByIdInternal(string userId)
         {
             return await context.TblStudents.Where(x => x.UserId == userId).FirstOrDefaultAsync();
         }
 
+        // Wrapped method
         public static async Task<List<TblStudentLecture>> GetStudentLecturesByStaffId(string staffId)
+        {
+            return await EnqueueOperation(async () => await GetStudentLecturesByStaffIdInternal(staffId));
+        }
+
+        // Internal method
+        private static async Task<List<TblStudentLecture>> GetStudentLecturesByStaffIdInternal(string staffId)
         {
             var user = await context.TblStaffs.Where(x => x.StaffId == staffId).FirstOrDefaultAsync();
 
@@ -575,24 +856,54 @@ namespace XBCADAttendance.Models
             return null;
         }
 
+        // Wrapped method
         public static async Task<List<TblUser>> GetAllLecturers()
+        {
+            return await EnqueueOperation(async () => await GetAllLecturersInternal());
+        }
+
+        // Internal method
+        private static async Task<List<TblUser>> GetAllLecturersInternal()
         {
             return await context.TblUsers.Where(x => x.TblStaff.RoleId == 1.ToString()).ToListAsync();
         }
 
-        internal static void AddModule(string userId, TblModule module)
+        // Wrapped method
+        public static async Task AddModule(string userId, TblModule module)
         {
-            context.TblModules.Add(module);
-            context.TblUserModules.Add(new TblUserModules
-            {
-                UserId = userId,
-                ModuleCode = module.ModuleCode,
-            });
-
-            context.SaveChanges();
+            await EnqueueOperation(async () => await AddModuleInternal(userId, module));
         }
 
+        // Internal method
+        private static async Task<string> AddModuleInternal(string userId, TblModule module)
+        {
+            try
+            {
+                context.TblModules.Add(module);
+                context.TblUserModules.Add(new TblUserModules
+                {
+                    UserId = userId,
+                    ModuleCode = module.ModuleCode,
+                });
+
+                await context.SaveChangesAsync();
+
+                return "Success";
+
+            } catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+        // Wrapped method
         public static async Task<TblModule?> GetModule(string moduleCode)
+        {
+            return await EnqueueOperation(async () => await GetModuleInternal(moduleCode));
+        }
+
+        // Internal method
+        private static async Task<TblModule?> GetModuleInternal(string moduleCode)
         {
             return await context.TblModules.Where(x => x.ModuleCode == moduleCode).FirstOrDefaultAsync();
         }
