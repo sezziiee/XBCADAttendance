@@ -174,23 +174,24 @@
         var userPassword = '@ViewData["UserPassword"]';
         var hased = '@ViewData["hased"]';
 
-        if (userPassword === hased) { 
-            document.querySelector('.modalbox').style.display = 'block'; 
+        if (userPassword === hased) {
+            document.querySelector('.modalbox').style.display = 'block';
+
+
+            setTimeout(function () {
+                document.querySelector('.modalbox').style.display = 'block';
+            }, 2000);
+
+            document.querySelector('.close-btn').addEventListener('click', function () {
+                document.querySelector('.modalbox').style.display = 'none';
+            });
+
+            // document.querySelector('.go-to-events-btn').addEventListener('click', function () {
+            //     window.location.href = 'LocalEvents/Index'; // Change this URL to link to the page you want
+            // });
+
+            function closeModal() { document.querySelector('.modalbox').style.display = 'none'; }
         }
-
-        setTimeout(function () { 
-            document.querySelector('.modalbox').style.display = 'block'; 
-        }, 2000);
-
-        document.querySelector('.close-btn').addEventListener('click', function () {
-            document.querySelector('.modalbox').style.display = 'none';
-        });
-
-        // document.querySelector('.go-to-events-btn').addEventListener('click', function () {
-        //     window.location.href = 'LocalEvents/Index'; // Change this URL to link to the page you want
-        // });
-
-        function closeModal() { document.querySelector('.modalbox').style.display = 'none'; }
     });
 </script>
 
