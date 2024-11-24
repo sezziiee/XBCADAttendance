@@ -405,8 +405,8 @@ form {
     }
 
     .contain.sign-up-mode .signin-signup {
-        top: 5%;
-        transform: translate(-50%, 0);
+        top: 10%;
+        transform: translate(-25%, 0);
     }
 }
 
