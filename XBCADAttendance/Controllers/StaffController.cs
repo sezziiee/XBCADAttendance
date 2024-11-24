@@ -139,17 +139,18 @@ namespace XBCADAttendance.Controllers
                     return View(module);
                 }
 
-                DataAccess.Context.TblModules.Add(module);
-
-                var existingModule = DataAccess.Context.TblModules.FirstOrDefault(m => m.ModuleCode == module.ModuleCode);
+                var existingModule = DataAccess.GetModule(module.ModuleCode).Result;
+                
                 if (existingModule != null)
                 {
                     string? ErrorMessage = "Module already exists.";
                     ViewBag.Message = ErrorMessage;
                     ModelState.Clear();
                     return View(new TblModule());
+                } else
+                {
+                    DataAccess.AddModule(User.Identity.Name, module);
                 }
-                DataAccess.Context.SaveChanges();
 
                 string? message = "Module added successfully.";
                 ViewBag.Message = message;
@@ -157,12 +158,12 @@ namespace XBCADAttendance.Controllers
                 ModelState.Clear();
 
                 return View(new TblModule());
-               
-            } catch (Exception ex)
-            {
-                ViewBag.Message = ex.Message;
-                return View(module);
+
+                } catch (Exception ex)
+                {
+                    ViewBag.Message = ex.Message;
+                    return View(module);
+                }
             }
-        }
     }
 }
