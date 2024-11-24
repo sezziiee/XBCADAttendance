@@ -74,32 +74,40 @@
         </ul>
     </div>
 </div>
-
+<div class="box-info">
+    <li >
+        <span class="text">
+            <h3>@Model.GetNextLecture()</h3>
+        <p>Next Lecture</p>
+        </span>
+    </li>
+    <li>
+        <span class="text">
+            <h3>@Model.GetLateLectures()</h3>
+        <p>Late Lectures</p>
+        </span>
+    </li>
+    <li >
+        <span class="text">
+            <h3>@Model.GetMissedLectures()</h3>
+        <p>Absent Lectures</p>
+        </span>
+    </li>
+    <li>
+        <span class="text">
+            <h3>@Model.GetTotalAttendance().ToString("n2")%</h3>
+        <p>Attendance</p>
+        </span>
+    </li>
+</div>
 <div class="table-data">
     <div class="order">
 
-        <div class="grid-container">
-            <div class="card">
-                <h2>@Model.GetNextLecture()</h2>
-                <p>Next Lecture</p>
-            </div>
-            <div class="card">
-                <h2>@Model.GetLateLectures()</h2>
-                <p>Late Lectures</p>
-            </div>
-            <div class="card">
-                <h2>@Model.GetMissedLectures()</h2>
-                <p>Absent Lectures</p>
-            </div>
-            <div class="card">
-                <h2>@Model.GetTotalAttendance().ToString("n2")%</h2>
-                <p>Attendance</p>
-            </div>
-        </div>
-
+        
+        <br />
         <div class="chart-container">
             <div class="chart">
-                <div id="PieChart" style="width: 400px; height: 400px;"></div>
+                <div id="PieChart" style="width: 400px; height: 400px; background-color: var(--light);"></div>
                 <script>
                     document.addEventListener("DOMContentLoaded", function () {
                         Highcharts.chart("PieChart", {
