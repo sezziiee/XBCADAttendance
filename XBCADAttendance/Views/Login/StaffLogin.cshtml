@@ -1,9 +1,9 @@
 ﻿@model LoginViewModel;
 @{
+    Layout = "_LoginLayout";
 }
 
 <div class="both">
-    @await Html.PartialAsync("_SidebarPartial")
     <div class="main-content">
         <div class="flex-container">
             <div class="text-section">
@@ -24,7 +24,7 @@
                             <li>Your password must include a minimum of 1 capital letter</li>
                         </ol>
                     </strong>
-                    Please do not attempt to reset your password multiple times, it should take 5 - 10 minutes for the password to be delivered via SMS. If you are still unable to log onto your account, check your internet connection and try clearing your browser cache by pressing the following buttons on your keyboard <strong>CTRL+SHIFT+R</strong> or <strong>CTRL+F5</strong>
+                    Please do not attempt to reset your password multiple times. It should take 5 - 10 minutes for the password to be delivered via SMS. If you are still unable to log onto your account, check your internet connection and try clearing your browser cache by pressing the following buttons on your keyboard <strong>CTRL+SHIFT+R</strong> or <strong>CTRL+F5</strong>.
                 </p>
             </div>
             <div class="login-section">
@@ -41,61 +41,5 @@
                 }
             </div>
         </div>
-
     </div>
 </div>
-
-<style>
-    .flex-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 40px;
-    }
-
-    .text-section p, ol, strong {
-        font-size: 14px;
-    }
-
-    .text-section {
-        width: 60%;
-        padding-right: 20px;
-    }
-
-    .login-section {
-        width: 35%;
-    }
-
-    .form-text {
-        width: 100%;
-        padding: 8px;
-        margin-bottom: 10px;
-        box-sizing: border-box;
-    }
-
-    i {
-        font-size: 20px;
-    }
-
-    .butt {
-        padding: 10px 20px;
-        background-color: #13829e;
-        color: #fff;
-        border: none;
-        cursor: pointer;
-        transition: 0.5s;
-    }
-
-        .butt:hover {
-            background-color: #0056b3;
-        }
-
-    .alert-info {
-        margin-top: 10px;
-        padding: 10px;
-        background-color: #d9edf7;
-        color: #31708f;
-        border: 1px solid #bce8f1;
-    }
-</style>
-

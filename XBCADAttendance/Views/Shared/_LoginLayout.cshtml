@@ -8,21 +8,27 @@
     <meta name="theme-color" content="#000000" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
-    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/XBCAD_Attendance_PWA.styles.css" asp-append-version="true" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
 </head>
 <body>
-
-    <div>
-        <main role="main">
             @RenderBody()
-        </main>
-    </div>
-
 
     <script>
+            const sign_in_btn = document.querySelector("#sign-in-btn");
+            const sign_up_btn = document.querySelector("#sign-up-btn");
+            const container = document.querySelector(".contain");
+
+            sign_up_btn.addEventListener("click", () => {
+                container.classList.add("sign-up-mode");
+            });
+
+            sign_in_btn.addEventListener("click", () => {
+                container.classList.remove("sign-up-mode");
+            });
+
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/js/service-worker.js')
                 .then(function (registration) {
@@ -31,7 +37,49 @@
                     console.log('Service Worker registration failed:', error);
                 });
         }
+       
+            document.querySelector('.sign-in-form').addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                const form = e.target;
+                const formData = new FormData(form);
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                const alertBox = document.querySelector('.alert-info');
+                if (result.success) {
+                    window.location.href = result.redirectUrl;
+                } else {
+                    alertBox.textContent = result.message;
+                    alertBox.style.display = 'block';
+                }
+            });
+            document.querySelector('.sign-up-form').addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                const form = e.target;
+                const formData = new FormData(form);
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                const alertBox = form.querySelector('.alert-info');
+                if (result.success) {
+                    window.location.href = result.redirectUrl;
+                } else {
+                    alertBox.textContent = result.message;
+                    alertBox.style.display = 'block';
+                }
+            });
     </script>
+
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
