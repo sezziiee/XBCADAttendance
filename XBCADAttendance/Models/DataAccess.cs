@@ -907,5 +907,25 @@ namespace XBCADAttendance.Models
         {
             return await context.TblModules.Where(x => x.ModuleCode == moduleCode).FirstOrDefaultAsync();
         }
+
+        // Wrapped method 
+        public static async Task<List<TblModule>> GetUserModules(string userId)
+        {
+            return await EnqueueOperation(async () => await GetUserModulesInternal(userId));
+        }
+
+        // Internal method
+        private static async Task<List<TblModule>> GetUserModulesInternal(string userId)
+        {
+            var codes = context.TblUserModules.Where(x => x.UserId == userId).ToList();
+            List<TblModule> modules = new List<TblModule>();
+
+            foreach (var code in codes)
+            {
+                modules.Add(context.TblModules.Where(x => x.ModuleCode == code.ModuleCode).FirstOrDefault());
+            }
+
+            return modules;
+        }
     }
 }

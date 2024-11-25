@@ -36,33 +36,33 @@ namespace XBCADAttendance.Controllers
             return View(model);
         }
 
-         [HttpPost]
-         [Authorize(Policy = "LecturerOnly")]
-         public async Task<IActionResult> Create(TblStaffLecture lecture)
-         {
-             try
-             {
-                 if (string.IsNullOrEmpty(lecture.ModuleCode))
-                 {
-                     ViewBag.Message = "Please select a Module Name.";
-                     return View(lecture);
-                 }
-                 lecture.LectureId = "L" + (await DataAccess.GetAllStaffLectures()).Count().ToString();
-                 lecture.UserId = User.Identity.Name;
+        [HttpPost]
+        [Authorize(Policy = "LecturerOnly")]
+        public async Task<IActionResult> Create(TblStaffLecture lecture)
+        {
+            try
+            {
+                if (lecture.ModuleCode.IsNullOrEmpty())
+                {
+                    ViewBag.Message = "Please select a Module Name.";
+                    return View(lecture);
+                }
+                lecture.LectureId = "L" + (await DataAccess.GetAllStaffLectures()).Count().ToString();
+                lecture.UserId = User.Identity.Name;
+               
+                await DataAccess.AddLecture(lecture);
 
-                 await DataAccess.AddLecture(lecture);
+                string? message = "Lecture created successfully.";
+                ViewBag.Message = message;
 
-                 string? message = "Lecture created successfully.";
-                 ViewBag.Message = message;
-                CreateLectureViewModel model = new CreateLectureViewModel(User.Identity.Name);
-                return View(model);
-             }
-             catch(Exception ex)
-             {
-                 ViewBag.Message = ex.Message;
-                 return View(lecture);
-             }
-         }
+                return View();
+            }
+            catch(Exception ex)
+            {
+                ViewBag.Message = ex.Message;
+                return View(lecture);
+            }
+        }
 
         [Authorize(Policy = "LecturerOnly")]
         public IActionResult LecturerQRCode()

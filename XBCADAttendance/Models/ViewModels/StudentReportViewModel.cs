@@ -25,22 +25,14 @@ namespace XBCADAttendance.Models
 
         }
 
-        public StudentReportViewModel(string? userID = null, string? studentNo = null)
+        public StudentReportViewModel(string? userID = null)
         {
             if (userID != null)
             {
                 UserID = userID;
                 StudentNo = DataAccess.GetStudentNoById(UserID)!.Result;
-                lstModules = DataAccess.GetModulesByStudentNo(StudentNo).Result;
+                lstModules = DataAccess.GetUserModules(UserID).Result;
                 lstLectures = DataAccess.GetAllLecturesByStudentNo(StudentNo).Result;
-                Name = DataAccess.GetUserById(UserID)!.Result.UserName!;
-            }
-            else if (studentNo != null)
-            {
-                StudentNo = studentNo;
-                lstModules = DataAccess.GetModulesByStudentNo(StudentNo).Result;
-                lstLectures = DataAccess.GetAllLecturesByStudentNo(StudentNo).Result;
-                UserID = DataAccess.GetIdByStudentNo(StudentNo).Result!;
                 Name = DataAccess.GetUserById(UserID)!.Result.UserName!;
             }
 
