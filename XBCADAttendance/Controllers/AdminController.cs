@@ -7,6 +7,7 @@ using System.Security.Permissions;
 using XBCADAttendance.Models;
 using XBCADAttendance.Models.ViewModels;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+using Microsoft.IdentityModel.Tokens;
 
 namespace XBCADAttendance.Controllers
 {
@@ -265,6 +266,27 @@ namespace XBCADAttendance.Controllers
             await DataAccess.UpdateUser(Id, Username, userPassword);
             return RedirectToAction("UserReport", "Admin");
             
+        }
+
+        [Authorize(Policy = "AdminOnly")]
+        public IActionResult Profile()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                string userID = User.Identity.Name;
+
+                if (!userID.IsNullOrEmpty())
+                {
+                    AdminViewModel newModel = new AdminViewModel();
+                    return View(newModel);
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+
+            return RedirectToAction("Index", "Home");
         }
 
     }

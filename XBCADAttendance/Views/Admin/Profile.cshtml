@@ -1,0 +1,80 @@
+﻿@using XBCADAttendance.Models.ViewModels
+@model AdminViewModel
+@{
+    Layout = "_AdminLayout";
+}
+<div class="table-data">
+    <div class="order">
+        <div class="profile-header">
+
+            <h1>Admin</h1>
+
+        </div>
+        <div class="profile-info">
+            <div class="profile-details">
+                <p><strong>Email:</strong> Admin@iie.edu.za</p>
+                <p><strong>Lecturer Number:</strong> 12345</p>
+
+            </div>
+        </div>
+        <div class="profile-actions">
+            <a href="/Staff/Logout" class="btn btn-logout">Logout</a>
+        </div>
+    </div>
+</div>
+
+<style>
+
+
+    .profile-header h1 {
+        font-size: 24px;
+        color: var(--dark);
+        margin-bottom: 15px;
+    }
+
+    /* .profile-info {
+                display: flex;
+                align-items: center;
+                margin-bottom: 20px;
+            } */
+
+    .profile-pic {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-right: 20px;
+        border: 2px solid #ddd;
+    }
+
+    .profile-details p {
+        font-size: 16px;
+        color: var(--dark);
+        margin: 5px 0;
+    }
+
+    .profile-details strong {
+        color: var(--dark);
+    }
+
+    .profile-actions {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .btn-logout {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #d9534f;
+        color: var(--dark);
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-logout:hover {
+            background-color: #c9302c;
+        }
+
+</style>
