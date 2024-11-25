@@ -13,24 +13,33 @@
 </div>
 
 <div class="table-data">
-    <img src="data:image/png;base64,@ViewBag.QRCodeImage" alt="QR Code" style="width: 700px; height: 600px;" />
+    <img src="data:image/png;base64,@ViewBag.QRCodeImage" alt="QR Code" class="qr-code" />
 </div>
 
-<div class="both">
+
     <div class="text-section">
-        <p>
+        <p class="text">
             Scan your unqiue QR code every time you enter a class at Varsity College to start and end lectures.
         </p>
     </div>
-</div>
+
 
 <style>
-    .text-section p, ol, strong {
+    .text-section p{
         font-size: 14px;
+        color: var(--dark);
     }
 
     .text-section {
-        width: 60%;
+        width: 100%;
         padding-right: 20px;
+
+    }
+
+    .qr-code {
+        max-width: 100%; /* Makes the image responsive to the container's width */
+        height: auto; /* Maintains aspect ratio */
+        border: 1px solid #ccc; /* Optional: Adds a border for better visibility */
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Optional: Adds a subtle shadow */
     }
 </style>

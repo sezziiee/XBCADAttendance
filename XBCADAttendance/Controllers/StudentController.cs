@@ -111,7 +111,7 @@ namespace XBCADAttendance.Controllers
         }
 
         [Authorize(Policy = "StudentOnly")]
-        public IActionResult AttendanceHistory()
+        public IActionResult AttendanceHistory(string? moduleCode, DateOnly? date)
         {
             string? userID = null;
 
@@ -122,6 +122,7 @@ namespace XBCADAttendance.Controllers
                 if (!userID.IsNullOrEmpty())
                 {
                     StudentReportViewModel newModel = new StudentReportViewModel(userID);
+                    newModel.ApplyattendanceFilters(moduleCode, date);
                     return View(newModel);
                 } else
                 {
