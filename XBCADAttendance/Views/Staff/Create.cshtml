@@ -95,9 +95,11 @@
         <div class="form-group">
             <label for="moduleCode">Module Code</label>
             <select asp-for="moduleCode">
-                @foreach (var module in Model.lstModules)
-                {
-                    <option>@module</option>
+                @if(Model != null){
+                    foreach (var module in Model.lstModules)
+                    {
+                        <option>@module</option>
+                    }
                 }
             </select>
         </div>

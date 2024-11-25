@@ -55,7 +55,7 @@ namespace XBCADAttendance.Controllers
                 string? message = "Lecture created successfully.";
                 ViewBag.Message = message;
 
-                return View(new CreateLectureViewModel(User.Identity.Name));
+                return View();
             }
             catch(Exception ex)
             {
