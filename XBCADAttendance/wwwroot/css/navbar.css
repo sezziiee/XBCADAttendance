@@ -43,6 +43,7 @@ body.dark {
 body {
     background: var(--grey);
     overflow-x: hidden;
+    transition: none;
 }
 ul{
     padding-left: 0.7rem;
@@ -629,9 +630,6 @@ ul{
         width: 0px;
         
     }
-        #sidebar.hide {
-            width: 300px;
-        }
         #content {
             width: 100%;
             left: 0;
@@ -688,5 +686,8 @@ ul{
 
         #content main .table-data .todo .todo-list {
             min-width: 420px;
+        }
+        ul {
+            padding-left: 0.2rem;
         }
     }

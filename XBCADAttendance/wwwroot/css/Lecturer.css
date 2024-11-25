@@ -41,6 +41,7 @@ body.dark {
 body {
     background: var(--grey);
     overflow-x: hidden;
+    transition: none;
 }
 
 ul {
