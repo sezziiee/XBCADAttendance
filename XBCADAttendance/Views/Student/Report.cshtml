@@ -12,113 +12,157 @@
             <li><a class="active" href="#">Student Report</a></li>
         </ul>
     </div>
+    <div class="right">
+        <!-- Filter Icon -->
+        <div class="filter-icons">
+            <i class="bi bi-filter" id="filter-icon" title="Open Filter"></i>
+            <i class="bi bi-arrow-counterclockwise" id="reset-icon" title="Reset Filters"></i>
+        </div>
+    
+
+        <!-- Modal Section -->
+        <div class="filter-modal" id="filter-modal">
+            <div class="modal-content">
+                <span class="close-btn" id="close-modal">&times;</span>
+                <h3>Filter By:</h3>
+                <form method="get" asp-action="Report" class="filter-form">
+                    <div class="filter-group">
+                        <label for="moduleCode">Module:</label>
+                        <select id="moduleCode" name="moduleCode" asp-items="@Model.GetModuleCodesForFilter()">
+                            <option value="">Select Module</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="status">Status:</label>
+                        <select id="status" name="status" asp-items="@Model.GetStatii()">
+                            <option value="">Select Status</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="start">Start Date:</label>
+                        <input type="date" id="start" name="start" class="form-control" />
+                    </div>
+                    <div class="filter-group">
+                        <label for="end">End Date:</label>
+                        <input type="date" id="end" name="end" class="form-control" />
+                    </div>
+                    <button type="submit" class="filter-button">Apply Filters</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div class="container1">
-    <!-- Filter Section -->
-    <div class="filter-section">
-        <h3>Filter By:</h3>
-        <form method="get" asp-action="Report" class="filter-form">
-            <div class="filter-group">
-                <label for="moduleCode">Module:</label>
-                <select id="moduleCode" name="moduleCode" asp-items="@Model.GetModuleCodesForFilter()">
-                    <option value="">Select Module</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label for="status">Status:</label>
-                <select id="status" name="status" asp-items="@Model.GetStatii()">
-                    <option value="">Select Status</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label for="start">Start Date:</label>
-                <input type="date" id="start" name="start" class="form-control" />
-            </div>
-            <div class="filter-group">
-                <label for="end">End Date:</label>
-                <input type="date" id="end" name="end" class="form-control" />
-            </div>
-           
-            <button type="submit" class="filter-button">Apply Filters</button>
-        </form>
-    </div>
+<div class="table-data">
+    <div class="order">
+        
 
-    <!-- Table Section -->
-    <div class="table-container">
-        <table class="styled-table">
-            <thead>
-                <tr>
-                    <th>Module Code</th>
-                    <th>Class</th>
-                    <th>Lecture Date</th>
-                    <th>Time</th>
-                    <th>Attendance</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var lecture in Model.lstLectures)
-                {
+        <!-- Table Section -->
+        <div class="table-container">
+            <table class="styled-table">
+                <thead>
                     <tr>
-                        <td>@lecture.ModuleCode</td>
-                        <td>@lecture.ClassroomCode</td>
-                        <td>@lecture.LectureDate</td>
-                        <td>@lecture.ScanIn - @lecture.ScanOut</td>
-                        <td>@Model.GetAttendance(lecture)</td>
+                        <th>Module Code</th>
+                        <th>Class</th>
+                        <th>Lecture Date</th>
+                        <th>Time</th>
+                        <th>Attendance</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var lecture in Model.lstLectures)
+                    {
+                        <tr>
+                            <td>@lecture.ModuleCode</td>
+                            <td>@lecture.ClassroomCode</td>
+                            <td>@lecture.LectureDate</td>
+                            <td>@lecture.ScanIn - @lecture.ScanOut</td>
+                            <td>@Model.GetAttendance(lecture)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
 <style>
-    /* Overall container styling */
-    .container1 {
-        display: flex;
-        flex-direction: column;
-        gap: 2rem;
-        padding: 1.5rem;
-        background-color: #f8f9fc;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    /* Adjust Icon Sizes */
+    .filter-icons i {
+        font-size: 34px; /* Consistent size for both bx and bi icons */
+        line-height: 1; /* Ensure alignment */
+        display: inline-block; /* For proper spacing */
+        cursor: pointer;
     }
 
-    /* Filter Section */
-    .filter-section {
-        background-color: #ffffff;
-        padding: 1.5rem;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        display: grid;
-        gap: 1rem;
+    #filter-icon {
+        color: #007bff; /* Blue */
     }
 
-        .filter-section h3 {
-            margin-bottom: 1rem;
-            font-size: 1.25rem;
-            color: #333;
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 0.5rem;
+        #filter-icon:hover {
+            color: #0056b3;
         }
 
-    .filter-form {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1.5rem;
-        align-items: end;
+    #reset-icon {
+        color: var(--dark); /* Use your dark theme color */
     }
 
-    .filter-group {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
+
+
+
+
+    /* Modal Styles */
+    .filter-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        overflow: hidden;
     }
 
-        .filter-group label {
-            font-size: 0.9rem;
-            color: #666;
+    .modal-content {
+        background-color: var(--light);
+        margin: 10% auto;
+        padding: 1.5rem;
+        border-radius: 8px;
+        width: 90%;
+        color: var(--dark);
+        max-width: 500px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .styled-table thead tr {
+        background-color: #3C91E6;
+        color: #ffffff;
+        text-align: left;
+    }
+
+    .styled-table th,
+    .styled-table td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .close-btn {
+        float: right;
+        font-size: 24px;
+        font-weight: bold;
+        color: var(--dark);
+        cursor: pointer;
+    }
+
+        .close-btn:hover {
+            color: #007bff;
         }
+
+    .filter-group label {
+        font-size: 0.9rem;
+        color: var(--dark);
+    }
 
     .filter-form select,
     .filter-form input[type="date"],
@@ -127,61 +171,46 @@
         border-radius: 4px;
         border: 1px solid #ccc;
         font-size: 1rem;
-        transition: box-shadow 0.3s;
+        width: 100%;
+        margin-bottom: 1rem;
     }
 
     .filter-button {
-        grid-column: span 2;
-        padding: 0.75rem 1.25rem;
         background-color: #007bff;
-        color: #ffffff;
+        color: white;
         border: none;
         cursor: pointer;
-        transition: background-color 0.3s;
+        font-size: 1rem;
     }
 
         .filter-button:hover {
             background-color: #0056b3;
         }
+</style>
 
-    /* Table styling */
-    .table-container {
-        overflow-x: auto;
-        background-color: #ffffff;
-        padding: 1.5rem;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
+<script>
+    const filterIcon = document.getElementById("filter-icon");
+    const filterModal = document.getElementById("filter-modal");
+    const closeModal = document.getElementById("close-modal");
+    const resetIcon = document.getElementById("reset-icon");
 
-    .styled-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 16px;
-        font-family: Arial, sans-serif;
-    }
+    filterIcon.addEventListener("click", () => {
+        filterModal.style.display = "block";
+    });
 
-        .styled-table thead tr {
-            background-color: #007bff;
-            color: #ffffff;
-            text-align: left;
+    closeModal.addEventListener("click", () => {
+        filterModal.style.display = "none";
+    });
+
+    window.addEventListener("click", (e) => {
+        if (e.target === filterModal) {
+            filterModal.style.display = "none";
         }
+    });
 
-        .styled-table th,
-        .styled-table td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #ddd;
-        }
+    // Reset filters
+    resetIcon.addEventListener("click", () => {
+        window.location.href = window.location.pathname; // Reloads the page without query parameters
+    });
 
-        .styled-table tbody tr {
-            transition: background-color 0.2s;
-        }
-
-            .styled-table tbody tr:nth-of-type(even) {
-                background-color: #f3f3f3;
-            }
-
-            .styled-table tbody tr:hover {
-                background-color: #dfe9f3;
-            }
-
-   </style>
+</script>

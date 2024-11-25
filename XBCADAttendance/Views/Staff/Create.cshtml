@@ -44,10 +44,9 @@
     }
 
         .form-group label {
-            display: block;
-            font-size: 16px;
-            color: #333;
+            font-size: 1.1em;
             margin-bottom: 5px;
+            font-weight: bold;
         }
 
         .form-group select,
@@ -58,24 +57,6 @@
             border: 1px solid #ddd;
             border-radius: 4px;
             background-color: #f9f9f9;
-        }
-
-    /* Button styling */
-    button[type="submit"] {
-        width: 100%;
-        padding: 10px;
-        font-size: 18px;
-        font-weight: bold;
-        color: #fff;
-        background-color: #007bff;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
-
-        button[type="submit"]:hover {
-            background-color: #0056b3;
         }
 </style>
 
@@ -90,8 +71,9 @@
     </div>
 </div>
 
-<div class="table-data form-container">
-    <form asp-controller="Staff" asp-action="Create">
+<div class="table-data">
+    <div class="order">
+    <form asp-controller="Staff" asp-action="Create" class="createform">
         <div class="form-group">
             <label for="moduleCode">Module Code</label>
             <select asp-for="moduleCode">
@@ -109,10 +91,11 @@
             <input type="date" asp-for="date" />
         </div>
 
-        <button type="submit">Create Lecture</button>
+            <button type="submit" class="submit-btn">Create Lecture</button>
     </form>
     
     
+</div>
 </div>
 <div class="table-data">
     <!-- Display the message -->

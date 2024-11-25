@@ -676,6 +676,9 @@ ul {
 
 
 @media screen and (max-width: 576px) {
+    .submit-btn{
+        width: 100% !important;
+    }
     #content nav form .form-input input {
         display: none;
     }
@@ -813,3 +816,20 @@ ul {
     height: 100%;
     background: var(--dark);
 }
+
+.submit-btn {
+    padding: 12px 20px;
+    font-size: 1em;
+    background-color: var(--light-blue);
+    color: var(--blue);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 15%;
+    transition: 0.5s ease;
+}
+
+    .submit-btn:hover {
+        background-color: var(--blue);
+        color: black;
+    }

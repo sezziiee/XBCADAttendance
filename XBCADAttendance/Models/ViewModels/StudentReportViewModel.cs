@@ -83,6 +83,19 @@ namespace XBCADAttendance.Models
             }
         }
 
+        public void ApplyattendanceFilters(string? moduleCode = null, DateOnly? date = null)
+        {
+            if (moduleCode != null)
+            {
+                lstLectures = lstLectures.Where(x => x.ModuleCode == moduleCode).ToList();
+            }
+
+            if (date != null)
+            {
+                lstLectures = lstLectures.Where(x => x.LectureDate == date).ToList();
+            }
+        }
+
         public IEnumerable<SelectListItem> GetStatii()
         {
             return statii.Select(x => new SelectListItem { Value = x, Text = x }).ToList();

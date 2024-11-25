@@ -34,7 +34,7 @@
                 {
                     <!-- Main row that toggles the accordion -->
                     <tr class="accordion-toggle" onclick="toggleAccordion(this)">
-                        <td></td>
+                        <td><i class="bx bx-chevron-down"></i></td>
                         <td>@Model.GetLecturer(lecture)</td>
                         <td>@lecture.ModuleCode</td>
                         <td>@lecture.ClassroomCode</td>
@@ -68,32 +68,11 @@
     </div>
 </div>
 
-<style>
-    .ree {
-        background-color: #CFE8FF;
-        color: #3C91E6;
-    }
-    /* Hide accordion content by default */
-    .accordion-content {
-        display: none;
-    }
-
-    /* Cursor styling to indicate clickable rows */
-    .accordion-toggle {
-        cursor: pointer;
-    }
-
-    /* Optional: Styling for additional details */
-    .accordion-details {
-        padding: 10px;
-        background-color: #f0f0f0;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-    }
-</style>
-
 <script>
+    // Function to toggle accordion rows
     function toggleAccordion(element) {
+        const icon = element.querySelector(".bx-chevron-down");
+
         // Find all sibling rows that are accordion-content rows
         let contentRows = [];
         let currentRow = element.nextElementSibling;
@@ -103,8 +82,38 @@
         }
 
         // Toggle visibility of each accordion content row
+        let isOpen = contentRows[0].style.display === "table-row";
         contentRows.forEach(row => {
-            row.style.display = row.style.display === "none" || row.style.display === "" ? "table-row" : "none";
+            row.style.display = isOpen ? "none" : "table-row";
         });
+
+        // Toggle the chevron state
+        if (icon) {
+            icon.classList.toggle("open", !isOpen);
+        }
     }
+
+    // Initialize accordion states on page load
+    document.addEventListener("DOMContentLoaded", () => {
+        const toggles = document.querySelectorAll(".accordion-toggle");
+
+        toggles.forEach(toggle => {
+            const icon = toggle.querySelector(".bx-chevron-down");
+            let contentRows = [];
+            let currentRow = toggle.nextElementSibling;
+
+            while (currentRow && currentRow.classList.contains("accordion-content")) {
+                contentRows.push(currentRow);
+                currentRow = currentRow.nextElementSibling;
+            }
+
+            // Ensure all rows are initially hidden and chevron is closed
+            contentRows.forEach(row => (row.style.display = "none"));
+            if (icon) {
+                icon.classList.remove("open");
+            }
+        });
+    });
+
+
 </script>

@@ -10,6 +10,40 @@
             <li><i class='bx bx-chevron-right'></i></li>
             <li><a class="active" href="#">Attendance History</a></li>
         </ul>
+    </div><div class="right">
+        <!-- Filter Icon -->
+        <div class="filter-icons">
+            <i class="bx bx-filter" id="filter-icon" title="Open Filter"></i>
+            <i class="bi bi-arrow-counterclockwise" id="reset-icon" title="Reset Filters"></i>
+        </div>
+
+        <!-- Modal Section -->
+        <div class="filter-modal" id="filter-modal">
+            <div class="modal-content">
+                <span class="close-btn" id="close-modal">&times;</span>
+                <h3>Filter By:</h3>
+                <form method="get" asp-action="AttendanceHistory" class="filter-form">
+                    <div class="filter-group">
+                        <label for="moduleCode">Module Code:</label>
+                        <select id="moduleCode" name="moduleCode" asp-items="@Model.GetModuleCodesForFilter()">
+                            <option value="">Select Module Code</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="Date">Date:</label>
+                        <input type="date" id="Date" name="Date" class="form-control" />
+                    </div>
+
+                    @* <div class="filter-group">
+                        <label for="classroom">Classroom:</label>
+                        <select id="classroom" name="classroom" asp-items="@Model.GetClassroomCodesForFilter()">
+                            <option value="">Select Classroom</option>
+                        </select>
+                    </div> *@
+                    <button type="submit" class="filter-button">Apply Filters</button>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -29,74 +63,154 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @if (Model != null)
+                    @foreach (var lecture in Model.lstLectures)
                     {
-                        @foreach (var lecture in Model.lstLectures)
-                        {
-                            <tr>
-                                <td>@lecture.ModuleCode</td>
-                                <td>@lecture.LectureDate</td>
-                                <td>@Model.CalcDuration(lecture)</td>
-                                <td>@lecture.ScanIn.ToShortTimeString()</td>
-                                <td>@(lecture.ScanOut != null ? lecture.ScanOut.Value.ToShortTimeString() : "N/A")</td>
-                                <td>@lecture.ClassroomCode</td>
-                            </tr>
-                        }
+                        <tr>
+                            <td>@lecture.ModuleCode</td>
+                            <td>@lecture.LectureDate</td>
+                            <td>@Model.CalcDuration(lecture)</td>
+                            <td>@lecture.ScanIn.ToShortTimeString()</td>
+                            <td>@(lecture.ScanOut != null ? lecture.ScanOut.Value.ToShortTimeString() : "N/A")</td>
+                            <td>@lecture.ClassroomCode</td>
+                        </tr>
                     }
                 </tbody>
             </table>
         }
         else
         {
-            <h3>
-                You haven't had a lecture yet; check back once you have.
-            </h3>
+            <h3>No lectures found with the selected filters.</h3>
         }
     </div>
 </div>
 <style>
     /* Table container */
-.table-data .order {
-    overflow-x: auto;
-    margin-top: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
+    .styled-table thead tr {
+        background-color: #3C91E6;
+        color: #ffffff;
+        text-align: left;
+    }
 
-/* Styled table */
-.styled-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 16px;
-    font-family: Arial, sans-serif;
-}
+    .styled-table th,
+    .styled-table td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #ddd;
+    }
 
-/* Table header */
-.styled-table thead tr {
-    background-color: #3C91E6;
-    color: #ffffff;
-    text-align: left;
-}
+    /* Filter and Reset Icons */
+    .filter-icons {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+        margin-bottom: 1rem;
+    }
 
-.styled-table th,
-.styled-table td {
-    padding: 12px 15px;
-    border-bottom: 1px solid #ddd;
-}
+        .filter-icons .bx-filter {
+            font-size: 34px;
+            color: #007bff;
+            cursor: pointer;
+        }
 
-/* Table body */
-.styled-table tbody tr {
-    transition: background-color 0.2s;
-}
+            .filter-icons .bx-filter:hover {
+                color: #0056b3;
+            }
 
-.styled-table tbody tr:nth-of-type(even) {
-    background-color: #f3f3f3;
-}
+        .filter-icons .bi-arrow-counterclockwise {
+            font-size: 34px;
+            color: var(--dark);
+            cursor: pointer;
+        }
 
-.styled-table tbody tr:hover {
-    background-color: #dfe9f3;
-}
+            .filter-icons .bi-arrow-counterclockwise:hover {
+                color: var(--light);
+            }
 
+    /* Modal Styles */
+    .filter-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        overflow: hidden;
+    }
 
+    .modal-content {
+        background-color: var(--light);
+        margin: 10% auto;
+        padding: 1.5rem;
+        border-radius: 8px;
+        width: 90%;
+        color: var(--dark);
+        max-width: 500px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
 
+    .close-btn {
+        float: right;
+        font-size: 24px;
+        font-weight: bold;
+        color: var(--dark);
+        cursor: pointer;
+    }
+
+        .close-btn:hover {
+            color: #007bff;
+        }
+
+    .filter-group label {
+        font-size: 0.9rem;
+        color: var(--dark);
+    }
+
+    .filter-form select,
+    .filter-form input[type="date"],
+    .filter-button {
+        padding: 0.5rem;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        font-size: 1rem;
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+
+    .filter-button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-size: 1rem;
+    }
+
+        .filter-button:hover {
+            background-color: #0056b3;
+        }
 </style>
+
+<script>
+    const filterIcon = document.getElementById("filter-icon");
+    const filterModal = document.getElementById("filter-modal");
+    const closeModal = document.getElementById("close-modal");
+    const resetIcon = document.getElementById("reset-icon");
+
+    filterIcon.addEventListener("click", () => {
+        filterModal.style.display = "block";
+    });
+
+    closeModal.addEventListener("click", () => {
+        filterModal.style.display = "none";
+    });
+
+    window.addEventListener("click", (e) => {
+        if (e.target === filterModal) {
+            filterModal.style.display = "none";
+        }
+    });
+
+    resetIcon.addEventListener("click", () => {
+        window.location.href = window.location.pathname; // Reset the page
+    });
+</script>

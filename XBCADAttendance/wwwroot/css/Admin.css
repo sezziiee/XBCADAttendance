@@ -26,6 +26,11 @@ li {
     --light-yellow: #FFF2C6;
     --orange: #FD7238;
     --light-orange: #FFE0D3;
+    --table-header-bg: #CFE8FF;
+    --table-header-text: #3C91E6;
+    --accordion-bg: #F4F4F4;
+    --accordion-bg2: #fff;
+    --accordion-text: #000;
 }
 
 html {
@@ -36,6 +41,11 @@ body.dark {
     --light: #141414;
     --grey: #212121;
     --dark: #FBFBFB;
+    --table-header-bg: #1F1F1F;
+    --table-header-text: #50C878;
+    --accordion-bg: #111;
+    --accordion-bg2: #212121;
+    --accordion-text: #E0E0E0;
 }
 
 body {
@@ -642,7 +652,10 @@ ul {
 
 
 @media screen and (max-width: 576px) {
-    #content nav form .form-input input {
+    .styled-form .btn-submit {
+        width: 100% !important;
+    }
+        #content nav form .form-input input {
         display: none;
     }
 
@@ -687,4 +700,63 @@ ul {
     #content main .table-data .todo .todo-list {
         min-width: 420px;
     }
+}
+.bx-chevron-down {
+    transform: rotate(0);
+    transition: transform 0.3s ease;
+}
+
+    .bx-chevron-down.open {
+        transform: rotate(180deg);
+    }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+
+.ree {
+    background-color: var(--table-header-bg);
+    color: var(--table-header-text);
+}
+
+.accordion-toggle {
+    background-color: var(--accordion-bg);
+    color: var(--accordion-text);
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.accordion-content {
+    background-color: var(--accordion-bg);
+    color: var(--accordion-text);
+    border-left: 6px solid var(--blue);
+    display: none;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.accordion-toggle:hover {
+    background-color: var(--blue);
+}
+
+tbody tr:nth-child(odd) {
+    background-color: var(--accordion-bg);
+}
+
+tbody tr:nth-child(even) {
+    background-color: var(--accordion-bg2);
+}
+
+
+/* Header styling */
+thead th {
+    background-color: #3C91E6;
+    color: #ffffff;
+    text-transform: uppercase;
+    font-size: 0.85em;
 }
