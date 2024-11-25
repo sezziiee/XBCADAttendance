@@ -31,10 +31,11 @@ namespace XBCADAttendance.Controllers
                 return RedirectToAction("Index", "Home");
             }
             
-            Hasher passwordHasher = new Hasher("0000"); 
-            string hashed = passwordHasher.GetHash();
+  
+            string hashed = new Hasher("0000").GetHash();
             ViewData["UserPassword"] = user.Result.Password; 
             ViewData["hashed"] = hashed;
+
 
             StudentReportViewModel model = new StudentReportViewModel(userID);
             return View(model);
