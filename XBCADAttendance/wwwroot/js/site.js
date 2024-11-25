@@ -60,10 +60,22 @@ menuBar.addEventListener('click', function () {
 
 const switchMode = document.getElementById('switch-mode');
 
+// Check and apply the saved theme on page load
+document.addEventListener('DOMContentLoaded', () => {
+	const isDarkMode = localStorage.getItem('darkMode') === 'true';
+	if (isDarkMode) {
+		document.body.classList.add('dark');
+		switchMode.checked = true; // Ensure the switch reflects the state
+	}
+});
+
+// Listen for changes and save the theme to localStorage
 switchMode.addEventListener('change', function () {
 	if (this.checked) {
 		document.body.classList.add('dark');
+		localStorage.setItem('darkMode', 'true');
 	} else {
 		document.body.classList.remove('dark');
+		localStorage.setItem('darkMode', 'false');
 	}
-})
+});

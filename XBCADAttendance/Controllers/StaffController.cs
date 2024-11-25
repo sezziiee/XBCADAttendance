@@ -64,7 +64,6 @@ namespace XBCADAttendance.Controllers
             }
         }
 
-
         [Authorize(Policy = "LecturerOnly")]
         public IActionResult LecturerQRCode()
         {
