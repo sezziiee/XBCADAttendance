@@ -927,5 +927,15 @@ namespace XBCADAttendance.Models
 
             return modules;
         }
+
+        public static async Task<TblStaff?> GetStaffByUID(string userId)
+        {
+            return await EnqueueOperation(async () => await GetStaffByUIDInternal(userId));
+        }
+
+        private static async Task<TblStaff?> GetStaffByUIDInternal(string userId)
+        {
+            return await context.TblStaffs.Where(x =>x.UserId == userId).FirstOrDefaultAsync();
+        }
     }
 }
