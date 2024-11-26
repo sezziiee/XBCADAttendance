@@ -66,6 +66,50 @@ namespace XBCADAttendance.Models
             NextLecture = GetNextLecture();
         }
 
+        public int GetStudentAttendance(Student student)
+        {
+            int count = 0;
+
+            foreach(var lecture in lstLectures)
+            {
+                foreach(var studLecture in student.TblStudentLectures)
+                {
+                    if (lecture.LectureId == studLecture.LectureId)
+                    {
+                        count++;
+                    }
+                }
+            }
+
+            return count;
+        }
+
+        public int CalcLate(Student student)
+        {
+            int count = 0;
+
+            foreach (var lecture in lstLectures)
+            {
+                foreach (var studLecture in student.TblStudentLectures)
+                {
+                    if (lecture.LectureId == studLecture.LectureId)
+                    {
+                        if(lecture.Start?.AddMinutes(5) < studLecture.ScanIn)
+                        {
+                            count++;
+                        }
+                    }
+                }
+            }
+
+            return count;
+        }
+
+        public int CalcAbsent(Student student)
+        {
+            return lstLectures.Count - GetStudentAttendance(student);
+        }
+
         private int GetAttendanceByLecturer(string staffId)
         {
             var lectures = DataAccess.GetStudentLecturesByStaffId(staffId).Result;
