@@ -36,8 +36,7 @@
                         <td>@Model.GetStudentAttendance(item)</td>
                         <td>@Model.CalcLate(item)</td>
                         <td>@Model.CalcAbsent(item)</td>
-                        <td>@item.attendancePerc</td>
-                       <td></td>
+                        <td>@Model.CalcAttendancePerc(item)%</td>
                     </tr>
                 }
             </tbody>
