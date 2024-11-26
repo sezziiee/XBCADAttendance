@@ -24,15 +24,29 @@ namespace XBCADAttendance.Controllers
 
                 if (user != null)
                 {
-                    if (user.Role == "Lecturer")
+                    var isConnected = InternetConnectivityService.IsInternetAvailableAsync().Result;
+
+                    if (isConnected)
                     {
-                        return RedirectToAction("Index", "Staff");
-                    } else if(user.Role == "Administrator") 
-                    {
-                        return RedirectToAction("Index", "Admin");
+                        if (user.Role == "Lecturer")
+                        {
+                            return RedirectToAction("Index", "Staff");
+                        } else if (user.Role == "Administrator")
+                        {
+                            return RedirectToAction("Index", "Admin");
+                        } else
+                        {
+                            return RedirectToAction("Index", "Student", new { userID = user.UserID });
+                        }
                     } else
                     {
-                        return RedirectToAction("Index", "Student", new { userID = user.UserID });
+                        if (user.Role == "Lecturer")
+                        {
+                            return RedirectToAction("LecturerQRCode", "Staff");
+                        }else if (user.Role == "Student")
+                        {
+                            return RedirectToAction("StudentQRCode", "Student");
+                        }
                     }
                 }
             }
