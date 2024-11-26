@@ -16,6 +16,7 @@ namespace XBCADAttendance.Controllers
 
         public IActionResult Index()
         {
+            DataAccess.GetInstance();
             string token = HttpContext.Request.Cookies["session_token"];
 
             if (token != null)
@@ -47,74 +48,6 @@ namespace XBCADAttendance.Controllers
             {
                 if (model == null)
                 {
-                    ViewBag.Message = "Invalid login data.";
-                    return View();
-                }
-
-
-                if (string.IsNullOrEmpty(model.identifier))
-                {
-                    ViewBag.Message = "Please enter your student/Staff number.";
-                    return View(model);
-                }
-
-                if (string.IsNullOrEmpty(model.password))
-                {
-                    ViewBag.Message = "Please enter a password.";
-                    return View(model);
-                }
-
-                if (model.identifier.Length < 10)
-                {
-                    if (!model.identifier.ToLower().StartsWith("st"))
-                    {
-                        model.identifier = "ST" + model.identifier;
-                    } else
-                    {
-                        ViewBag.Message = "Please enter a valid student number.";
-                        return View(model);
-                    }
-                }
-
-                string? message = await DataAccess.LoginStudent(HttpContext, model);
-
-                ViewBag.Message = message;
-
-                if (message == "Success")
-                {
-                    // Generate a session token (e.g., JWT or custom token)
-                    var sessionToken = GenerateSessionToken(model.identifier, message);
-
-                    // Store the session token in an HTTP-only, secure cookie
-                    Response.Cookies.Append("session_token", sessionToken, new CookieOptions
-                    {
-                        HttpOnly = true, // Ensure JavaScript cannot access it
-                        Secure = true,   // Only send cookie over HTTPS
-                        SameSite = SameSiteMode.Strict, // Prevent CSRF attacks
-                        Expires = DateTime.UtcNow.AddHours(1) // Set expiration date
-                    });
-
-                    return RedirectToAction("Index", "Student", new { userID = model.identifier });
-                } else
-                {
-                    return View(model);
-                }
-            } catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-                ViewBag.Message = "An error occurred while processing your request. Please try again later.";
-                return View(model);
-            }
-        }
-
-        /*
-        [HttpPost]
-        public async Task<IActionResult> StudentLogin(LoginViewModel model)
-        {
-            try
-            {
-                if (model == null)
-                {
                     return Json(new { success = false, message = "Invalid login data." });
                 }
 
@@ -132,36 +65,49 @@ namespace XBCADAttendance.Controllers
                 {
                     model.identifier = "ST" + model.identifier;
                 }
+                
+                
 
                 string? message = await DataAccess.LoginStudent(HttpContext, model);
 
+                ViewBag.Message = message;
+
                 if (message == "Success")
                 {
-                    return Json(new { success = true, redirectUrl = Url.Action("Index", "Student", new { userID = model.identifier }) });
-                }
+                    var sessionToken = GenerateSessionToken(model.identifier, message);
 
-                return Json(new { success = false, message });
-            }
-            catch (Exception ex)
+                    Response.Cookies.Append("session_token", sessionToken, new CookieOptions
+                    {
+                        HttpOnly = true, 
+                        Secure = true,  
+                        SameSite = SameSiteMode.Strict, 
+                        Expires = DateTime.UtcNow.AddHours(1) 
+                    });
+
+                    return Json(new { success = true, redirectUrl = Url.Action("Index", "Student", new { userID = model.identifier }) });
+                } else
+                {
+                    return Json(new { success = false, message });
+                }
+            } catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
                 return Json(new { success = false, message = "An error occurred while processing your request. Please try again later." });
             }
-        }*/
+        }
+        
 
         [HttpPost]
         public async Task<IActionResult> StaffLogin(LoginViewModel model)
         {
             if (string.IsNullOrEmpty(model.identifier))
             {
-                ViewBag.Message = "Please enter your lecturer number.";
-                return View(model);
+                return Json(new { success = false, message = "Please enter your staff number." });
             }
 
             if (string.IsNullOrEmpty(model.password))
             {
-                ViewBag.Message = "Please enter a password.";
-                return View(model);
+                return Json(new { success = false, message = "Please enter a password." });
             }
 
             string? message = await DataAccess.LoginStaff(HttpContext, model);
@@ -170,45 +116,40 @@ namespace XBCADAttendance.Controllers
 
             if (message == "Administrator")
             {
-                // Generate a session token (e.g., JWT or custom token)
                 var sessionToken = GenerateSessionToken(model.identifier, message);
 
-                // Store the session token in an HTTP-only, secure cookie
                 Response.Cookies.Append("session_token", sessionToken, new CookieOptions
                 {
-                    HttpOnly = true, // Ensure JavaScript cannot access it
-                    Secure = true,   // Only send cookie over HTTPS
-                    SameSite = SameSiteMode.Strict, // Prevent CSRF attacks
-                    Expires = DateTime.UtcNow.AddHours(1) // Set expiration date
+                    HttpOnly = true, 
+                    Secure = true, 
+                    SameSite = SameSiteMode.Strict, 
+                    Expires = DateTime.UtcNow.AddHours(1) 
                 });
 
-                return RedirectToAction("Index", "Admin");
+                return Json(new { success = true, redirectUrl = Url.Action("Index", "Admin") });
             }
             if (message == "Lecturer")
             {
-                // Generate a session token (e.g., JWT or custom token)
                 var sessionToken = GenerateSessionToken(model.identifier, message);
 
-                // Store the session token in an HTTP-only, secure cookie
                 Response.Cookies.Append("session_token", sessionToken, new CookieOptions
                 {
-                    HttpOnly = true, // Ensure JavaScript cannot access it
-                    Secure = true,   // Only send cookie over HTTPS
-                    SameSite = SameSiteMode.Strict, // Prevent CSRF attacks
-                    Expires = DateTime.UtcNow.AddHours(1) // Set expiration date
+                    HttpOnly = true, 
+                    Secure = true,   
+                    SameSite = SameSiteMode.Strict, 
+                    Expires = DateTime.UtcNow.AddHours(1) 
                 });
 
-                return RedirectToAction("Index", "Staff");
+                return Json(new { success = true, redirectUrl = Url.Action("Index", "Staff") });
             } else
             {
-                return View(model);
+                return Json(new { success = false, message });
             }
 
         }
 
         public string GenerateSessionToken(string userID, string role)
         {
-            // Simple token generation using GUID and the userID
             return Convert.ToBase64String(Encoding.UTF8.GetBytes(userID + "|" + role + "|" + Guid.NewGuid().ToString()));
         }
 
@@ -216,7 +157,6 @@ namespace XBCADAttendance.Controllers
         {
             try
             {
-                // Decode the base64 string back to the user ID and GUID
                 var decodedString = Encoding.UTF8.GetString(Convert.FromBase64String(token));
                 var parts = decodedString.Split('|');
 
@@ -225,7 +165,6 @@ namespace XBCADAttendance.Controllers
                     var userID = parts[0];
                     var role = parts[1];
 
-                    // Validate the userID
                     if (!string.IsNullOrEmpty(userID) && !string.IsNullOrEmpty(role))
                     {
                         return new UserAuth { UserID = userID, Role = role };
@@ -245,44 +184,7 @@ namespace XBCADAttendance.Controllers
             public string Role { get; set; }
         }
 
-        /*
-        [HttpPost]
-        public async Task<IActionResult> StaffLogin(LoginViewModel model)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(model.identifier))
-                {
-                    return Json(new { success = false, message = "Please enter your staff number." });
-                }
-
-                if (string.IsNullOrEmpty(model.password))
-                {
-                    return Json(new { success = false, message = "Please enter a password." });
-                }
-
-                string? message = await DataAccess.LoginStaff(HttpContext, model);
-
-                if (message == "Administrator")
-                {
-                    return Json(new { success = true, redirectUrl = Url.Action("Index", "Admin") });
-                }
-                else if (message == "Lecturer")
-                {
-                    return Json(new { success = true, redirectUrl = Url.Action("Index", "Staff") });
-                }
-                else
-                {
-                    return Json(new { success = false, message });
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-                return Json(new { success = false, message = "An error occurred while processing your request. Please try again later." });
-            }
-        }
-        */
+        
 
 
 
