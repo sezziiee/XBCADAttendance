@@ -5,9 +5,10 @@ using System.Security.Claims;
 using XBCADAttendance.Models;
 using XBCADAttendance.Models.ViewModels;
 using Newtonsoft.Json;
+using System.Text;
 
 namespace XBCADAttendance.Controllers
-{
+{/*
     public class LoginController : Controller
     {
 
@@ -65,6 +66,18 @@ namespace XBCADAttendance.Controllers
 
                 if (message == "Success")
                 {
+                    // Generate a session token (e.g., JWT or custom token)
+                    var sessionToken = GenerateSessionToken(model.identifier, "Student");
+
+                    // Store the session token in an HTTP-only, secure cookie
+                    Response.Cookies.Append("session_token", sessionToken, new CookieOptions
+                    {
+                        HttpOnly = true, // Ensure JavaScript cannot access it
+                        Secure = true,   // Only send cookie over HTTPS
+                        SameSite = SameSiteMode.Strict, // Prevent CSRF attacks
+                        Expires = DateTime.UtcNow.AddHours(1) // Set expiration date
+                    });
+
                     return RedirectToAction("Index", "Student", new { userID = model.identifier });
                 }
                 else
@@ -108,10 +121,34 @@ namespace XBCADAttendance.Controllers
 
             if (message == "Administrator")
             {
+                // Generate a session token (e.g., JWT or custom token)
+                var sessionToken = GenerateSessionToken(model.identifier, message);
+
+                // Store the session token in an HTTP-only, secure cookie
+                Response.Cookies.Append("session_token", sessionToken, new CookieOptions
+                {
+                    HttpOnly = true, // Ensure JavaScript cannot access it
+                    Secure = true,   // Only send cookie over HTTPS
+                    SameSite = SameSiteMode.Strict, // Prevent CSRF attacks
+                    Expires = DateTime.UtcNow.AddHours(1) // Set expiration date
+                });
+
                 return RedirectToAction("Index", "Admin");
             }
             if (message == "Lecturer")
             {
+                // Generate a session token (e.g., JWT or custom token)
+                var sessionToken = GenerateSessionToken(model.identifier, message);
+
+                // Store the session token in an HTTP-only, secure cookie
+                Response.Cookies.Append("session_token", sessionToken, new CookieOptions
+                {
+                    HttpOnly = true, // Ensure JavaScript cannot access it
+                    Secure = true,   // Only send cookie over HTTPS
+                    SameSite = SameSiteMode.Strict, // Prevent CSRF attacks
+                    Expires = DateTime.UtcNow.AddHours(1) // Set expiration date
+                });
+
                 return RedirectToAction("Index", "Staff");
             }
             else
@@ -120,6 +157,12 @@ namespace XBCADAttendance.Controllers
             }
 
         }
+
+        
+
+        
+
     }
+    */
 }
 

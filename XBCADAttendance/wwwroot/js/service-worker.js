@@ -8,7 +8,9 @@
                 '/script.js',
                 '/manifest.json',
                 '/icons/instagram (1).png',
-                '/icons/instagram.png'
+                '/icons/instagram.png',
+                '/Student/StudentQRCode',
+                '/Staff/LecturerQRCode'
             ]);
         })
     );
