@@ -105,7 +105,6 @@
     <div class="todo">
         <div class="head">
             <h3>Ranked Achievers</h3>
-            <i class='bx bx-plus'></i>
             <i class='bx bx-sort-up' onclick="sortStudents('desc')" style="cursor: pointer; margin-left: 10px;"></i>
             <i class='bx bx-sort-down' onclick="sortStudents('asc')" style="cursor: pointer; margin-left: 5px;"></i>
         </div>
@@ -119,7 +118,7 @@
             }
         </ul>
     </div>
-</div>
+
 
 <script>
     function sortStudents(order) {
@@ -138,7 +137,9 @@
     }
 </script>
 
+<div class="order">
 <div class="chart-container">
+            <h3 style="color: var(--dark); z-index: 999;">Average Attendance per Lecturer</h3>
     <!-- Pie Chart for Average Attendance per Lecturer -->
     <div id="PieChart" style="width: 400px; height: 400px;"></div>
     <script>
@@ -149,7 +150,7 @@
                     backgroundColor: "var(--light)"
                 },
                 title: {
-                    text: "Average Attendance per Lecturer"
+                    text: ""
                 },
                 series: [{
                     name: "Attendance",
@@ -162,6 +163,11 @@
             });
         });
     </script>
+    </div>
+    </div>
+    <div class="order">
+        <div class="chart-container">
+        <h3 style="color: var(--dark); z-index: 999;">Average Attendance per Module</h3>
     <div id="LineChart" style="width: 400px; height: 400px;"></div>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -171,7 +177,7 @@
                     backgroundColor: "var(--light)"
                 },
                 title: {
-                    text: "Average Attendance per Module"
+                    text: ""
                 },
                 xAxis: {
                     categories: @Html.Raw(Json.Serialize(Model.ModuleAttendanceChartData.Select(dp => dp.Name))),
@@ -192,6 +198,8 @@
         });
     </script>
     </div>
+    
+</div>
 
 
 

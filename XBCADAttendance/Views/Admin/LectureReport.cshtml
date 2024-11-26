@@ -27,13 +27,13 @@
                     <th class="ree">Date</th>
                     <th class="ree">Start</th>
                     <th class="ree">Finish</th>
+                    <th class="ree"></th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var lecture in Model.StaffLectures)
                 {
-                    <!-- Main row that toggles the accordion -->
-                    <tr class="accordion-toggle" onclick="toggleAccordion(this)">
+                    <tr class="accordion-toggle" onclick="toggleAccordion(this)" data-id="@lecture.LectureId">
                         <td><i class="bx bx-chevron-down"></i></td>
                         <td>@Model.GetLecturer(lecture)</td>
                         <td>@lecture.ModuleCode</td>
@@ -41,6 +41,19 @@
                         <td>@lecture.Date</td>
                         <td>@lecture.Start</td>
                         <td>@lecture.Finish</td>
+                        <td>
+                            <!-- Edit button to open the modal -->
+                            <button class="edit-button" onclick="openEditModal(this, event)"
+                                    data-id="@lecture.LectureId"
+                                    data-lecturer="@Model.GetLecturer(lecture)"
+                                    data-module="@lecture.ModuleCode"
+                                    data-classroom="@lecture.ClassroomCode"
+                                    data-date="@lecture.Date"
+                                    data-start="@lecture.Start"
+                                    data-finish="@lecture.Finish">
+                                Edit
+                            </button>
+                        </td>
                     </tr>
 
                     var students = await Model.GetStudentsFromLecture(lecture.LectureId);
@@ -48,7 +61,7 @@
                     {
                         <tr class="accordion-content">
                             <th colspan="1"></th>
-                            <th colspan="6" class="ree">Students Attended</th>
+                            <th colspan="7" class="ree">Students Attended</th>
                         </tr>
                     }
 
@@ -65,6 +78,35 @@
                 }
             </tbody>
         </table>
+    </div>
+</div>
+
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeEditModal()">&times;</span>
+        <h2>Edit Lecture Details</h2>
+        <form id="editForm">
+            <input type="hidden" id="lectureId" name="lectureId" />
+            <label for="lecturer">Lecturer:</label>
+            <input type="text" id="lecturer" name="lecturer" />
+
+            <label for="module">Module:</label>
+            <input type="text" id="module" name="module" />
+
+            <label for="classroom">Classroom:</label>
+            <input type="text" id="classroom" name="classroom" />
+
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date" />
+
+            <label for="start">Start Time:</label>
+            <input type="time" id="start" name="start" />
+
+            <label for="finish">Finish Time:</label>
+            <input type="time" id="finish" name="finish" />
+
+            <button type="button" onclick="saveEdit()">Save Changes</button>
+        </form>
     </div>
 </div>
 
@@ -115,5 +157,108 @@
         });
     });
 
+    function openEditModal(row) {
+        const modal = document.getElementById("editModal");
+        modal.style.display = "block";
+
+        // Populate the form with data attributes from the clicked row
+        document.getElementById("lectureId").value = row.dataset.id;
+        document.getElementById("lecturer").value = row.dataset.lecturer;
+        document.getElementById("module").value = row.dataset.module;
+        document.getElementById("classroom").value = row.dataset.classroom;
+        document.getElementById("date").value = row.dataset.date;
+        document.getElementById("start").value = row.dataset.start;
+        document.getElementById("finish").value = row.dataset.finish;
+    }
+
+    // Close the modal
+    function closeEditModal() {
+        document.getElementById("editModal").style.display = "none";
+    }
+
+    // Save changes (placeholder for actual save logic)
+    function saveEdit() {
+        const formData = new FormData(document.getElementById("editForm"));
+
+        // Example: send data via AJAX or perform other actions
+        console.log("Saving changes:", Object.fromEntries(formData.entries()));
+
+        closeEditModal();
+    }
+
 
 </script>
+
+<style>
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 4% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 50%;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+    /* Flex column styling for the form */
+    #editForm {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem; /* Spacing between elements */
+    }
+
+        #editForm label {
+            font-weight: bold;
+        }
+
+        #editForm input {
+            width: 100%;
+            padding: 0.5rem;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        #editForm button {
+            width: 100%;
+            padding: 0.7rem;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #fff;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+            #editForm button:hover {
+                background-color: #0056b3;
+            }
+</style>
