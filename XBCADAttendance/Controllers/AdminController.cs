@@ -68,11 +68,7 @@ namespace XBCADAttendance.Controllers
 
             var model = new AdminViewModel
             {
-                Users = DataAccess.Context.TblUsers.ToList(),
-                Students = DataAccess.Context.TblStudents.ToList(),
-                Staff = DataAccess.Context.TblStaffs.ToList(),
-                StaffLectures = DataAccess.Context.TblStaffLectures.ToList(),
-                lstRoles = DataAccess.Context.TblRoles.ToList()
+                StaffLectures = DataAccess.Context.TblStaffLectures.ToList()
             };
 
             return View(model);
@@ -80,8 +76,16 @@ namespace XBCADAttendance.Controllers
 
         [HttpGet]
         [Authorize(Policy = "AdminOnly")]
-        public IActionResult LectureReport(AdminViewModel model)
+        public IActionResult LectureReport()
         {
+            var model = new AdminViewModel
+            {
+                Users = DataAccess.Context.TblUsers.ToList(),
+                Students = DataAccess.Context.TblStudents.ToList(),
+                Staff = DataAccess.Context.TblStaffs.ToList(),
+                StaffLectures = DataAccess.Context.TblStaffLectures.ToList(),
+                lstRoles = DataAccess.Context.TblRoles.ToList()
+            };
             return View(model);
         }
 
@@ -265,17 +269,28 @@ namespace XBCADAttendance.Controllers
             string userPassword = passwordHasher.GetHash();
             await DataAccess.UpdateUser(Id, Username, userPassword);
             return RedirectToAction("UserReport", "Admin");
-            
+
         }
-        //[HttpPost]
-        //public async Task<IActionResult> UpdateLectures()
-        //{
-        //    //Hasher passwordHasher = new Hasher(Password!);
-        //    //string userPassword = passwordHasher.GetHash();
-        //    //await DataAccess.UpdateUser(Id, Username, userPassword);
-        //    //return RedirectToAction("UserReport", "Admin");
-            
-        //}
+        [HttpPost]
+        public async Task<IActionResult> UpdateLecture([FromBody] TblStaffLecture lecture)
+        {
+            if (lecture == null)
+            {
+                return Json(new { success = false, message = "Invalid lecture data." });
+            }
+
+            var result = await DataAccess.UpdateLecture(lecture);
+
+            if (result == "Success")
+            {
+                return Json(new { success = true });
+            }
+            else
+            {
+                return Json(new { success = false, message = result });
+            }
+        }
+
 
         [Authorize(Policy = "AdminOnly")]
         public IActionResult Profile()
