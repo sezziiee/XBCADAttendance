@@ -267,6 +267,15 @@ namespace XBCADAttendance.Controllers
             return RedirectToAction("UserReport", "Admin");
             
         }
+        //[HttpPost]
+        //public async Task<IActionResult> UpdateLectures()
+        //{
+        //    //Hasher passwordHasher = new Hasher(Password!);
+        //    //string userPassword = passwordHasher.GetHash();
+        //    //await DataAccess.UpdateUser(Id, Username, userPassword);
+        //    //return RedirectToAction("UserReport", "Admin");
+            
+        //}
 
         [Authorize(Policy = "AdminOnly")]
         public IActionResult Profile()
