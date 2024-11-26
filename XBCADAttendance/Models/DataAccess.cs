@@ -937,5 +937,15 @@ namespace XBCADAttendance.Models
         {
             return await context.TblStaffs.Where(x =>x.UserId == userId).FirstOrDefaultAsync();
         }
+
+        public static async Task<TblUser?> GetUserByStaffNo(string staffNo)
+        {
+            return await EnqueueOperation(async () => await GetUserByStaffNoInternal(staffNo));
+        }
+
+        private static async Task<TblUser?> GetUserByStaffNoInternal(string staffNo)
+        {
+            return await context.TblUsers.Where(x => x.TblStaff.StaffId == staffNo).FirstOrDefaultAsync();
+        }
     }
 }
