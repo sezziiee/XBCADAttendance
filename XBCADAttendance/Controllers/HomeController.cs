@@ -28,7 +28,7 @@ namespace XBCADAttendance.Controllers
                 {
                     var isConnected = InternetConnectivityService.IsInternetAvailableAsync().Result;
 
-                    if (isConnected)
+                    if (false)
                     {
                         var cachedUsers = LocalCacheService.GetAllCachedUsers();
                         foreach (var cachedUser in cachedUsers)
@@ -81,9 +81,9 @@ namespace XBCADAttendance.Controllers
             switch (user.Role)
             {
                 case "Lecturer":
-                    return Json(new { success = true, redirectUrl = Url.Action("LecturerQRCode", "Staff") });
+                    return RedirectToAction("LecturerQRCode", "Staff");
                 case "Student":
-                    return Json(new { success = true, redirectUrl = Url.Action("StudentQRCode", "Student") });
+                    return RedirectToAction("StudentQRCode", "Student");
                 default:
                     return View(); //return Json(new { suucess = false, error = "fuck"});
             }
