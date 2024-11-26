@@ -55,38 +55,41 @@
 
 <div class="table-data">
     <div class="order">
-        
-
         <!-- Table Section -->
         <div class="table-container">
-            <table class="styled-table">
-                <thead>
-                    <tr>
-                        <th>Module Code</th>
-                        <th>Class</th>
-                        <th>Lecture Date</th>
-                        <th>Time</th>
-                        <th>Attendance</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var lecture in Model.lstLectures)
-                    {
+            <div class="table-responsive">
+                <table class="styled-table">
+                    <thead>
                         <tr>
-                            <td>@lecture.ModuleCode</td>
-                            <td>@lecture.ClassroomCode</td>
-                            <td>@lecture.LectureDate</td>
-                            <td>@lecture.ScanIn - @lecture.ScanOut</td>
-                            <td>@Model.GetAttendance(lecture)</td>
+                            <th>Module Code</th>
+                            <th>Class</th>
+                            <th>Lecture Date</th>
+                            <th>Time</th>
+                            <th>Attendance</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach (var lecture in Model.lstLectures)
+                        {
+                            <tr>
+                                <td>@lecture.ModuleCode</td>
+                                <td>@lecture.ClassroomCode</td>
+                                <td>@lecture.LectureDate</td>
+                                <td>@lecture.ScanIn - @lecture.ScanOut</td>
+                                <td>@Model.GetAttendance(lecture)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
 
+
+
 <style>
+
     /* Adjust Icon Sizes */
     .filter-icons i {
         font-size: 34px; /* Consistent size for both bx and bi icons */

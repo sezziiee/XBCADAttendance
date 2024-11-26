@@ -103,13 +103,9 @@
 <div class="table-data">
     <div class="order">
 
-        
-        <br />
-
         <div class="chart-container">
-            <!-- Pie Chart -->
-            <div class="chart">
-                <div id="PieChart"></div>
+            <h3 style="color: var(--dark); z-index: 999;">Attendance</h3>
+            <div id="PieChart"></div>
                 <script>
                     document.addEventListener("DOMContentLoaded", function () {
                         Highcharts.chart("PieChart", {
@@ -128,7 +124,7 @@
                             responsive: {
                                 rules: [{
                                     condition: {
-                                        maxWidth: 600
+                                        maxWidth: 800
                                     },
                                     chartOptions: {
                                         legend: {
@@ -144,11 +140,10 @@
                 </script>
             </div>
             </div>
-            </div>
 
             <div class="order">
-            <!-- Bar Chart -->
-            <div class="chart">
+        <br />
+        <h3 style="color: var(--dark); z-index: 999; text-align: center;">Attendance by Lecture</h3>
                 <div id="BarChart"></div>
                 <script>
                     document.addEventListener("DOMContentLoaded", function () {
@@ -205,10 +200,6 @@
                 </script>
             </div>
         </div>
-
-
-    </div>
-    </div>
 
 <div class="modalbox">
     <div class="modal-content">

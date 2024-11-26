@@ -1,7 +1,6 @@
 ﻿@{
     Layout = "_StudentLayout";
 }
-
 <div class="head-title">
     <div class="left">
         <h1>QR Code</h1>
@@ -14,34 +13,47 @@
 </div>
 
 <div class="table-data">
-    <div class="order">
-        <img src="@ViewBag.QRCodePath" alt="Student QR Code" />
-        <div class="text-section">
-            <p>
-                Scan your unqiue QR code every time you enter a class at Varsity College to track your attendance.
-            </p>
-        </div>
+    <!-- Added a specific container for the image -->
+    <div class="qr-code-container">
+        <img src="@ViewBag.QRCodePath" alt="Student QR Code" class="qr-code-image" />
     </div>
 </div>
 
+<div class="text-section">
+    <p>
+        Scan your unique QR code every time you enter a class at Varsity College to track your attendance.
+    </p>
+</div>
+   
 
 
 <style>
-    .text-section p, ol, strong {
+    .table-data {
+        margin: 20px 0;
+    }
+
+    .qr-code-container {
+        width: 100%; /* Ensures the container spans the full width */
+        max-width: 600px; /* Optional: Restricts maximum size for the container */
+    }
+
+    .qr-code-image {
+        max-width: 100%; /* Ensures the image fits within its container */
+        height: auto; /* Maintains aspect ratio */
+        display: block; /* Removes inline space below the image */
+        margin: 0 auto; /* Centers the image */
+        border: 1px solid #ccc; /* Optional: Adds a border */
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Optional: Adds a shadow */
+    }
+
+    .text-section p {
         font-size: 14px;
+        color: var(--dark);
     }
 
     .text-section {
         width: 100%;
         padding-right: 20px;
-        background-color: var(--light); 
-    }
-
-    .qr-code {
-        max-width: 100%; /* Makes the image responsive to the container's width */
-        height: auto; /* Maintains aspect ratio */
-        border: 1px solid #ccc; /* Optional: Adds a border for better visibility */
-        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Optional: Adds a subtle shadow */
     }
 </style>
 

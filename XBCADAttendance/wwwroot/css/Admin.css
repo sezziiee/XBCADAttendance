@@ -637,9 +637,7 @@ ul {
         width: 0px;
     }
 
-        #sidebar.hide {
-            width: 300px;
-        }
+        
 
     #content {
         width: 100%;
@@ -653,9 +651,7 @@ ul {
 
 
 @media screen and (max-width: 576px) {
-    .styled-form .btn-submit {
-        width: 100% !important;
-    }
+    
         #content nav form .form-input input {
         display: none;
     }
@@ -700,6 +696,9 @@ ul {
 
     #content main .table-data .todo .todo-list {
         min-width: 420px;
+    }
+    .styled-form .btn-submit {
+        width: 100% !important;
     }
 }
 .bx-chevron-down {

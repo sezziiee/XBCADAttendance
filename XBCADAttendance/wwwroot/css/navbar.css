@@ -603,14 +603,14 @@ ul{
 
 
 .chart-container {
-    display: flex;
+    display: flex !important;
     justify-content: center;
     flex-wrap: wrap; /* Allows wrapping of elements */
     gap: 20px; /* Adds spacing between charts */
     margin: 20px 0;
 }
 
-.chart {
+#BarChart, #PieChart {
     flex: 1 1 100%; /* Makes charts take up half the container width, minus gap */
     max-width: 100%; /* Prevents overflow */
 }
@@ -620,6 +620,10 @@ ul{
         flex: 1 1 100%; /* Makes charts take full width on small screens */
         max-width: 100%;
     }
+}
+
+.highcharts-container text{
+    color: var(--dark) !important;
 }
 
 #PieChart, #BarChart {
@@ -714,3 +718,109 @@ ul{
             padding-left: 0.2rem;
         }
     }
+
+/* General Styles */
+.table-data {
+    margin-top: 20px;
+}
+
+/* Responsive Table Wrapper */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    .styled-table thead tr {
+
+    }
+
+    .styled-table th,
+    .styled-table td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #ddd;
+    }
+
+
+
+/* Modal Styles */
+.filter-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Filter Form */
+.filter-group label {
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.filter-form select,
+.filter-form input[type="date"],
+.filter-button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.filter-button {
+    background-color: #007bff;
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+    .filter-button:hover {
+        background-color: #0056b3;
+    }
+
+/* Media Queries */
+@media (max-width: 768px) {
+    .head-title .left h1 {
+        font-size: 1.5rem;
+    }
+
+    .styled-table th,
+    .styled-table td {
+        padding: 8px 10px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 576px) {
+    .filter-icons i {
+        font-size: 24px;
+    }
+
+    .styled-table th,
+    .styled-table td {
+        font-size: 12px;
+        padding: 6px 8px;
+    }
+}
+
