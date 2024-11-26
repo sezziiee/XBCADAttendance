@@ -137,19 +137,24 @@ namespace XBCADAttendance.Controllers
         [Authorize(Policy = "StudentOnly")]
         public IActionResult StudentQRCode()
         {
-            string? userID = null;
-
             if (User.Identity.IsAuthenticated)
             {
-                userID = User.Identity.Name;
+                string userID = User.Identity.Name;
 
                 if (!string.IsNullOrEmpty(userID))
                 {
                     StudentReportViewModel newModel = new StudentReportViewModel(userID);
                     byte[] qrCodeImage = newModel.GenerateQRCode();
-                    string base64Image = Convert.ToBase64String(qrCodeImage);
 
-                    ViewBag.QRCodeImage = base64Image;
+                    // Define the file path
+                    string fileName = $"{userID}.png";
+                    string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "qrcodes", fileName);
+                    
+                    // Save the image to the file system
+                    System.IO.File.WriteAllBytes(filePath, qrCodeImage);
+
+                    // Store the relative path in ViewBag for rendering
+                    ViewBag.QRCodePath = $"/qrcodes/{fileName}";
                     return View(newModel);
                 }
             }
