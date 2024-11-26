@@ -29,7 +29,7 @@ namespace XBCADAttendance.Models
         {
             this.userId = userId;
             user = DataAccess.GetUserById(userId).Result;
-            staff = user.TblStaff;//TODO
+            staff = DataAccess.GetStaffByUID(userId).Result;
             staffId = staff.StaffId;
             name = user.UserName;
 
