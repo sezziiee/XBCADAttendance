@@ -26,6 +26,11 @@ li {
     --light-yellow: #FFF2C6;
     --orange: #FD7238;
     --light-orange: #FFE0D3;
+    --table-header-bg: #CFE8FF;
+    --table-header-text: #3C91E6;
+    --accordion-bg: #F4F4F4;
+    --accordion-bg2: #fff;
+    --accordion-text: #000;
 }
 
 html {
@@ -36,6 +41,11 @@ body.dark {
     --light: #141414;
     --grey: #212121;
     --dark: #FBFBFB;
+    --table-header-bg: #1F1F1F;
+    --table-header-text: #50C878;
+    --accordion-bg: #111;
+    --accordion-bg2: #212121;
+    --accordion-text: #E0E0E0;
 }
 
 body {
@@ -740,6 +750,29 @@ ul {
         flex: 1 1 100%; /* Makes charts take full width on small screens */
         max-width: 100%;
     }
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+
+.ree {
+    background-color: var(--table-header-bg);
+    color: var(--table-header-text);
+}
+
+tbody tr:nth-child(odd) {
+    background-color: var(--accordion-bg);
+}
+
+tbody tr:nth-child(even) {
+    background-color: var(--accordion-bg2);
 }
 
 .highcharts-container text {
