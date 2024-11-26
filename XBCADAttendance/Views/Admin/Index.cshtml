@@ -76,30 +76,19 @@
     </div>
 </div>
     <ul class="box-info">
-        <li>
-        <span class="text">
-            <h3>-</h3>
-            <p>PlaceHolder</p>
-            </span>
-        </li>
     <li>
         <span class="text">
-            <h3>-</h3>
-            <p>PlaceHolder</p>
+            <h3>@Model.lstStudents.Count</h3>
+            <p>Students</p>
         </span>
     </li>
     <li>
         <span class="text">
-            <h3>-</h3>
-            <p>PlaceHolder</p>
+            <h3>@Model.lstLectures.Count</h3>
+            <p>Staff</p>
         </span>
     </li>
-    <li>
-        <span class="text">
-            <h3>-</h3>
-            <p>PlaceHolder</p>
-        </span>
-    </li>
+
     </ul>
     <div class="table-data">
         <div class="todo">
@@ -138,7 +127,8 @@
                 document.addEventListener("DOMContentLoaded", function () {
                     Highcharts.chart("PieChart", {
                         chart: {
-                            type: "pie"
+                            type: "pie",
+                            backgroundColor: "var(--light)"
                         },
                         title: {
                             text: "Attendance"
@@ -152,12 +142,13 @@
             </script>
         </div>
         <div class="chart">
-            <div id="BarChart" style="width: 400px; height: 400px;"></div>
+            <div id="LineChart" style="width: 400px; height: 400px;"></div>
             <script>
                 document.addEventListener("DOMContentLoaded", function () {
-                    Highcharts.chart("BarChart", {
+                    Highcharts.chart("LineChart", {
                         chart: {
-                            type: "column"
+                            type: "area",
+                            backgroundColor: "var(--light)"
                         },
                         title: {
                             text: "Attendance by Lecture"
@@ -173,14 +164,13 @@
                             }
                         },
                         series: @Html.Raw(Json.Serialize(Model.chart.attendanceValues.Select(dp => new
-                        {
-                            name = dp.Name,  // Each data point's "Name" becomes the series name
-                            data = new[] { dp.Y } // Each data point's "Y" value becomes the series data
-                        })))
-                    });
+                    {
+                        name = dp.Name,  // Each data point's "Name" becomes the series name
+                        data = new[] { dp.Y } // Each data point's "Y" value becomes the series data
+                    })))
+                            });
                 });
             </script>
         </div>
-    </div>
 </div>
 </div>
