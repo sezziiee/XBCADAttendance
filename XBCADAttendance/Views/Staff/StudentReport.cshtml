@@ -19,27 +19,27 @@
         <table>
             <thead>
                 <tr>
-                    <th>Student Number</th>
-                    <th>Name</th>
-                    <th>Attended</th>
-                    <th>Late</th>
-                    <th>Absent</th>
-                    <th>Perc. Attended</th>
+                    <th class="ree">Student Number</th>
+                    <th class="ree">Name</th>
+                    <th class="ree">Attended</th>
+                    <th class="ree">Late</th>
+                    <th class="ree">Absent</th>
+                    <th class="ree">Perc. Attended</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var item in Model.lstLectures)
                 {
-                    <tr>
+                    <tr class="user-row">
                         <td>@item.LectureId</td>
                         <td>@item.ModuleCode</td>
                         <td>@item.Date</td>
                         <td>@item.ClassroomCode</td>
                         <td>@Model.GetTotalStudents(item)</td>
+                        <td></td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
 </div>
-
