@@ -28,14 +28,15 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.lstLectures)
+                @foreach (var item in Model.lstStudents)
                 {
                     <tr>
-                        <td>@item.LectureId</td>
-                        <td>@item.ModuleCode</td>
-                        <td>@item.Date</td>
-                        <td>@item.ClassroomCode</td>
-                        <td>@Model.GetTotalStudents(item)</td>
+                        <td>@item.studentNo</td>
+                        <td>@item.name</td>
+                        <td>@Model.GetStudentAttendance(item)</td>
+                        <td>@Model.CalcLate(item)</td>
+                        <td>@Model.CalcAbsent(item)</td>
+                        <td>@item.attendancePerc</td>
                     </tr>
                 }
             </tbody>
