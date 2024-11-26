@@ -546,6 +546,15 @@ namespace XBCADAttendance.Models
             return lstModules;
         }
 
+        public static async Task<List<TblStaffLecture>> GetLecturesByModuleCode(string moduleCode)
+        {
+            var lectures = DataAccess.Context.TblStaffLectures
+                            .Where(lecture => lecture.ModuleCode == moduleCode)
+                            .ToList();
+
+            return lectures;
+        }
+
         // Wrapped method
         public static async Task<List<TblUser>> GetAllUsers()
         {
