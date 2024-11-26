@@ -14,7 +14,6 @@
         </ul>
     </div>
 </div>
-
 <div class="table-data">
     <div class="order">
         <table>
@@ -27,7 +26,7 @@
                     <th class="ree">Date</th>
                     <th class="ree">Start</th>
                     <th class="ree">Finish</th>
-                    <th class="ree"></th>
+                    @* <th class="ree"></th> *@
                 </tr>
             </thead>
             <tbody>
@@ -41,9 +40,8 @@
                         <td>@lecture.Date</td>
                         <td>@lecture.Start</td>
                         <td>@lecture.Finish</td>
-                        <td>
-                            <!-- Edit button to open the modal -->
-                            <button class="edit-button" onclick="openEditModal(this, event)"
+                        @* <td>
+                            <button class="edit-button" style="background-color: transparent; border: none; color: var(--blue);" onclick="openEditModal(this, event)"
                                     data-id="@lecture.LectureId"
                                     data-lecturer="@Model.GetLecturer(lecture)"
                                     data-module="@lecture.ModuleCode"
@@ -51,17 +49,16 @@
                                     data-date="@lecture.Date"
                                     data-start="@lecture.Start"
                                     data-finish="@lecture.Finish">
-                                Edit
-                            </button>
-                        </td>
+                                Manage
+                            </button> 
+                        </td>*@
                     </tr>
-
                     var students = await Model.GetStudentsFromLecture(lecture.LectureId);
                     if (students != null && students.Count > 0)
                     {
                         <tr class="accordion-content">
                             <th colspan="1"></th>
-                            <th colspan="7" class="ree">Students Attended</th>
+                            <th colspan="6" class="ree">Students Attended</th>
                         </tr>
                     }
 
@@ -70,10 +67,10 @@
                     {
                         <tr class="accordion-content">
                             <td colspan="1"></td>
-                            <td colspan="6">@student.StudentNo  -  @student.User.UserName</td>
-                            
+                            <td colspan="7">@student.StudentNo  -  @student.User.UserName</td>
+
                         </tr>
-                        
+
                     }
                 }
             </tbody>
@@ -105,7 +102,7 @@
             <label for="finish">Finish Time:</label>
             <input type="time" id="finish" name="finish" />
 
-            <button type="button" onclick="saveEdit()">Save Changes</button>
+            <button type="button" style="background-color: var(--light-blue); color: var(--blue);" onclick="saveEdit()">Save Changes</button>
         </form>
     </div>
 </div>
@@ -156,39 +153,59 @@
             }
         });
     });
-
-    function openEditModal(row) {
+    function openEditModal(button, event) {
+        event.stopPropagation(); // Prevent accordion toggle
         const modal = document.getElementById("editModal");
         modal.style.display = "block";
 
-        // Populate the form with data attributes from the clicked row
-        document.getElementById("lectureId").value = row.dataset.id;
-        document.getElementById("lecturer").value = row.dataset.lecturer;
-        document.getElementById("module").value = row.dataset.module;
-        document.getElementById("classroom").value = row.dataset.classroom;
-        document.getElementById("date").value = row.dataset.date;
-        document.getElementById("start").value = row.dataset.start;
-        document.getElementById("finish").value = row.dataset.finish;
+        document.getElementById("lectureId").value = button.dataset.id;
+        document.getElementById("lecturer").value = button.dataset.lecturer;
+        document.getElementById("module").value = button.dataset.module;
+        document.getElementById("classroom").value = button.dataset.classroom;
+        document.getElementById("date").value = button.dataset.date;
+        document.getElementById("start").value = button.dataset.start;
+        document.getElementById("finish").value = button.dataset.finish;
     }
 
-    // Close the modal
     function closeEditModal() {
         document.getElementById("editModal").style.display = "none";
     }
 
-    // Save changes (placeholder for actual save logic)
     function saveEdit() {
-        const formData = new FormData(document.getElementById("editForm"));
+        const lectureData = {
+            LectureId: document.getElementById("lectureId").value,
+            Lecturer: document.getElementById("lecturer").value,
+            ModuleCode: document.getElementById("module").value,
+            ClassroomCode: document.getElementById("classroom").value,
+            Date: document.getElementById("date").value,
+            Start: document.getElementById("start").value,
+            Finish: document.getElementById("finish").value,
+        };
 
-        // Example: send data via AJAX or perform other actions
-        console.log("Saving changes:", Object.fromEntries(formData.entries()));
+        fetch('/Admin/UpdateLecture', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(lectureData),
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Lecture updated successfully!");
+                    location.reload();
+                } else {
+                    alert("Failed to update lecture: " + data.message);
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("An error occurred while updating the lecture.");
+            });
 
         closeEditModal();
     }
-
-
 </script>
-
 <style>
     .modal {
         display: none; /* Hidden by default */

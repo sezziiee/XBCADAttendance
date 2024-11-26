@@ -532,7 +532,7 @@ namespace XBCADAttendance.Models
                 {
                     context.TblStaffLectures.Update(lecture);
                 }
-
+                context.SaveChanges();
                 return "Success";
             } catch (Exception ex)
             {
