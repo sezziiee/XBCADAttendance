@@ -5,10 +5,13 @@
                 '/',
                 '/index.html',
                 '/styles.css',
+                '/Admin.css',
+                '/Lecturer.css',
+                '/navbar.css',
                 '/script.js',
                 '/manifest.json',
-                '/icons/instagram (1).png',
-                '/icons/instagram.png'
+                '/img/Attendance_resized.png',
+                '/img/Attendance.png'
             ]);
         })
     );
