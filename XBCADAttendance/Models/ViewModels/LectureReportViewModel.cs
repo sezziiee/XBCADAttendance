@@ -19,6 +19,7 @@ namespace XBCADAttendance.Models
         public string userId { get; set; }
         public string name { get; set; }
         public string staffId { get; set; }
+        public string NextLecture { get; set; }
 
         public AttendanceByLecturerChart chart { get; set; }
 
@@ -61,6 +62,8 @@ namespace XBCADAttendance.Models
             chart = new AttendanceByLecturerChart(chartData, headings);
 
             lstLectures = DataAccess.GetStudentLecturesByStaffId(staff.StaffId).Result;
+
+            NextLecture = GetNextLecture();
         }
 
         private int GetAttendanceByLecturer(string staffId)
@@ -72,6 +75,36 @@ namespace XBCADAttendance.Models
         public string GetAttendance(TblStudentLecture lecture)
         {
             return lecture.ScanOut != null ? "Attended" : "Absent";
+        }
+
+        public string GetNextLecture()
+        {
+            var lectures = DataAccess.GetStaffLectures().Result;
+
+            var codes = lstModules.Select(x => x).ToList();
+            lectures = lectures.Where(x => codes.Contains(x.ModuleCode)).ToList();
+
+            var nextLecture = lectures
+                .Where(x => x.Date >= DateOnly.FromDateTime(DateTime.Now) && x.Start == null)
+                .OrderBy(x => x.Date)
+                .FirstOrDefault();
+
+            if (nextLecture != null)
+            {
+                var now = DateTime.Now;
+                var lectureDateTime = nextLecture.Date.ToDateTime(TimeOnly.MinValue); 
+                var timeLeft = lectureDateTime - now;
+
+                var days = timeLeft.Days;
+                var hours = timeLeft.Hours;
+                var minutes = timeLeft.Minutes;
+
+                var timeLeftString = $"{(days > 0 ? $"{days} day(s) " : "")}{(hours > 0 ? $"{hours}h : " : "")}{minutes}m";
+
+                return $"{timeLeftString}";
+            }
+
+            return "No upcoming lectures found.";
         }
 
         public byte[] GenerateQRCode()
@@ -121,7 +154,6 @@ namespace XBCADAttendance.Models
             return attendance.ToString();
         }*/
     }
-
     public class Student
     {
         public string studentNo { get; set; }

@@ -22,7 +22,7 @@
     <li>
         <i class='bx bxs-calendar'></i>
         <span class="text">
-            <h3>10h 20m</h3>
+            <h3>@Model.GetNextLecture()</h3>
             <p>Until Next lecture</p>
         </span>
     </li>
@@ -42,35 +42,23 @@
     </li>
 </ul>
 <div class="table-data">
-<div class="todo">
-    <div class="head">
-        <h3>Modules</h3>
-        <i class='bx bx-plus'></i>
-        <i class='bx bx-filter'></i>
+    <div class="todo">
+        <div class="head">
+            <h3>Modules</h3>
+            <i class='bx bx-plus'></i>
+            <i class='bx bx-filter'></i>
+        </div>
+        <ul class="todo-list">
+            @foreach (var module in Model.lstModules)
+            {
+                <li class="completed">
+                    <p>@module</p>
+                    <i class='bx bx-dots-vertical-rounded'></i>
+                </li>
+            }
+        </ul>
     </div>
-    <ul class="todo-list">
-        <li class="completed">
-            <p>Todo List</p>
-            <i class='bx bx-dots-vertical-rounded'></i>
-        </li>
-        <li class="completed">
-            <p>Todo List</p>
-            <i class='bx bx-dots-vertical-rounded'></i>
-        </li>
-        <li class="not-completed">
-            <p>Todo List</p>
-            <i class='bx bx-dots-vertical-rounded'></i>
-        </li>
-        <li class="completed">
-            <p>Todo List</p>
-            <i class='bx bx-dots-vertical-rounded'></i>
-        </li>
-        <li class="not-completed">
-            <p>Todo List</p>
-            <i class='bx bx-dots-vertical-rounded'></i>
-        </li>
-    </ul>
-</div>
+
     <div class="chart">
         <h2>Attendance by Module</h2>
         <div id="BarChart"></div>
