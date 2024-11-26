@@ -45,28 +45,28 @@
     <div class="todo">
         <div class="head">
             <h3>Modules</h3>
-            <i class='bx bx-plus'></i>
-            <i class='bx bx-filter'></i>
+            <a asp-action="create"><i class='bx bx-plus'></i></a>
         </div>
         <ul class="todo-list">
             @foreach (var module in Model.lstModules)
             {
                 <li class="completed">
                     <p>@module</p>
-                    <i class='bx bx-dots-vertical-rounded'></i>
+                    
                 </li>
             }
         </ul>
     </div>
-
-    <div class="chart">
-        <h2>Attendance by Module</h2>
+    <div class="order">
+        <br />
+        <h3 style="color: var(--dark); z-index: 999; text-align: center;">Attendance by Lecture</h3>
         <div id="BarChart"></div>
         <script>
             document.addEventListener("DOMContentLoaded", function () {
                 Highcharts.chart("BarChart", {
                     chart: {
-                        type: "column"
+                        type: "column",
+                        backgroundColor: "var(--light)"
                     },
                     title: { text: "" },
                     xAxis: {
@@ -84,4 +84,4 @@
             });
         </script>
     </div>
-</div>
+    </div>
