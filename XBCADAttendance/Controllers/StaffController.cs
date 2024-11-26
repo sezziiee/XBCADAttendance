@@ -17,14 +17,17 @@ namespace XBCADAttendance.Controllers
         }
 
         [Authorize(Policy = "LecturerOnly")]
-        public IActionResult LectureReport(LectureReportViewModel model)
+        public  IActionResult LectureReport()
         {
+            var model = new LectureReportViewModel(User.Identity.Name);
+            model.lstStudents = model.GetStudentsByLecturer(model.staffId);
             return View(model);
         }
 
         [Authorize(Policy = "LecturerOnly")]
-        public IActionResult StudentReport(LectureReportViewModel model)
+        public IActionResult StudentReport()
         {
+            var model = new LectureReportViewModel(User.Identity.Name);
             return View(model);
         }
 

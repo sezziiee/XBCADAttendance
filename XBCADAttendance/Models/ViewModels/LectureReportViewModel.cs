@@ -13,7 +13,7 @@ namespace XBCADAttendance.Models
         public TblUser user { get; set; }
 
         public List<string>? lstModules = new List<string>();
-        public List<TblStudentLecture> lstLectures = new List<TblStudentLecture>();
+        public List<TblStaffLecture> lstLectures = new List<TblStaffLecture>();
         public List<Student> lstStudents = new List<Student>();
 
         public string userId { get; set; }
@@ -61,7 +61,7 @@ namespace XBCADAttendance.Models
 
             chart = new AttendanceByLecturerChart(chartData, headings);
 
-            lstLectures = DataAccess.GetStudentLecturesByStaffId(staff.StaffId).Result;
+            lstLectures = DataAccess.GetStaffLecturesById(user.UserId).Result;
 
             NextLecture = GetNextLecture();
         }
@@ -125,6 +125,42 @@ namespace XBCADAttendance.Models
                 }
             }
         }
+
+        public List<Student> GetStudentsByLecturer(string staffId)
+        {
+            var students = new List<Student>();
+
+            var lectures = DataAccess.GetStudentLecturesByStaffId(staffId).Result;
+            foreach (var lecture in lectures)
+            {
+                var lectureStudents = DataAccess.GetStudentsFromLecture(lecture.LectureId).Result;
+                foreach (var tblStudent in lectureStudents)
+                {
+                    Student student = new Student(tblStudent.StudentNo)
+                    {
+                        name = tblStudent.StudentNo,
+                        attendancePerc = DataAccess.GetStudentAttendance(tblStudent.StudentNo).Result,
+                        TblStudentLectures = DataAccess.GetAllLecturesByStudentNo(tblStudent.StudentNo).Result.ToList()
+                    };
+                    students.Add(student);
+                }
+            }
+
+            return students.Distinct().ToList();
+        }
+
+        public int GetTotalStudents(TblStaffLecture staffLecture)
+        {
+            var studentLectures = DataAccess.GetStudentLecturesByLectureID(staffLecture.LectureId).Result;
+            return studentLectures.Count;
+        }
+
+        //public async Task GetLecturesByLecturerAsync(string staffId)
+        //{
+        //    LecturerClasses = await DataAccess.GetStudentLecturesByStaffId(staffId);
+        //}
+
+
 
         /*public void GetAllLectures()
         {
