@@ -20,13 +20,11 @@
        <table>
             <thead>
                 <tr>
-                    <th>Student No</th>
+                    <th>Lecture No</th>
                     <th>Lecture Date</th>
                     <th>Module</th>
                     <th>Time</th>
                     <th>Classroom</th>
-                    <th>Attendance</th>
-
                 </tr>
             </thead>
             <tbody>
@@ -38,7 +36,6 @@
                         <td>@item.ModuleCode</td>
                         <td>@item.Start - @item.Finish</td>
                         <td>@item.ClassroomCode</td>
-                        <td>@Model.GetTotalStudents(item)</td>
                     </tr>
                 }
             </tbody>

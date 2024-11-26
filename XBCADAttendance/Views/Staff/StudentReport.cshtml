@@ -19,10 +19,11 @@
         <table>
             <thead>
                 <tr>
-                    <th>LectureId</th>
+                    <th>Student No</th>
                     <th>Module Code</th>
                     <th>Date</th>
                     <th>Classroom</th>
+                    <th>Attendance</th>
                 </tr>
             </thead>
             <tbody>
@@ -33,6 +34,7 @@
                         <td>@item.ModuleCode</td>
                         <td>@item.Date</td>
                         <td>@item.ClassroomCode</td>
+                        <td>@Model.GetTotalStudents(item)</td>
                     </tr>
                 }
             </tbody>
