@@ -72,7 +72,7 @@ namespace XBCADAttendance.Controllers
                 case "Student":
                     return RedirectToAction("Index", "Student", new { userID = user.UserID });
                 default:
-                    return View("Error"); // Handle unknown roles gracefully
+                    return View();
             }
         }
 
@@ -85,7 +85,7 @@ namespace XBCADAttendance.Controllers
                 case "Student":
                     return Json(new { success = true, redirectUrl = Url.Action("StudentQRCode", "Student") });
                 default:
-                    return View("OfflineError"); // Custom view for offline errors
+                    return View(); //return Json(new { suucess = false, error = "fuck"});
             }
         }
 
