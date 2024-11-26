@@ -15,7 +15,7 @@ namespace XBCADAttendance.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             DataAccess.GetInstance();
             string token = HttpContext.Request.Cookies["session_token"];
@@ -34,21 +34,26 @@ namespace XBCADAttendance.Controllers
                         foreach (var cachedUser in cachedUsers)
                         {
                             // Sync each cached UserAuth object with the server
-                            var serverUser = DataAccess.GetUserById(cachedUser.UserAuth.UserID).Result;
-                            string role = serverUser.TblStudent != null ? "Student" : "Lecturer";
+                            var serverUser = await DataAccess.GetUserById(cachedUser.UserAuth.UserID);
+                            var serverStudent = await DataAccess.GetStudentById(cachedUser.UserAuth.UserID);
 
-                            var serverUserAuth = new UserAuth { UserID = serverUser.UserId };
-
-                            if (serverUserAuth != null)
+                            if (serverUser != null)
                             {
-                                LocalCacheService.SaveUserToCache(serverUserAuth, cachedUser.SessionToken); // Update cache
+                                string role = serverStudent != null ? "Student" : "Lecturer";
+
+                                var serverUserAuth = new UserAuth { UserID = serverUser.UserId, Role = role };
+
+                                if (serverUserAuth != null)
+                                {
+                                    LocalCacheService.SaveUserToCache(serverUserAuth, cachedUser.SessionToken); // Update cache
+                                }
                             }
                         }
 
-                        RedirectBasedOnRole(user);
+                        return RedirectBasedOnRole(user);
                     } else
                     {
-                        RedirectToOfflineView(user);
+                        return RedirectToOfflineView(user);
                     }
                 }
             }
@@ -76,9 +81,9 @@ namespace XBCADAttendance.Controllers
             switch (user.Role)
             {
                 case "Lecturer":
-                    return RedirectToAction("LecturerQRCode", "Staff");
+                    return Json(new { success = true, redirectUrl = Url.Action("LecturerQRCode", "Staff") });
                 case "Student":
-                    return RedirectToAction("StudentQRCode", "Student");
+                    return Json(new { success = true, redirectUrl = Url.Action("StudentQRCode", "Student") });
                 default:
                     return View("OfflineError"); // Custom view for offline errors
             }
@@ -87,6 +92,8 @@ namespace XBCADAttendance.Controllers
         [HttpPost]
         public async Task<IActionResult> StudentLogin(LoginViewModel model)
         {
+            await model.InitializeAsync();
+
             try
             {
                 if (model == null)
@@ -117,7 +124,7 @@ namespace XBCADAttendance.Controllers
 
                 if (message == "Success")
                 {
-                    var sessionToken = GenerateSessionToken(model.identifier, message);
+                    var sessionToken = GenerateSessionToken(model.userId, "Student");
 
                     Response.Cookies.Append("session_token", sessionToken, new CookieOptions
                     {
@@ -143,6 +150,8 @@ namespace XBCADAttendance.Controllers
         [HttpPost]
         public async Task<IActionResult> StaffLogin(LoginViewModel model)
         {
+            await model.InitializeAsync();
+
             if (string.IsNullOrEmpty(model.identifier))
             {
                 return Json(new { success = false, message = "Please enter your staff number." });
@@ -159,7 +168,7 @@ namespace XBCADAttendance.Controllers
 
             if (message == "Administrator")
             {
-                var sessionToken = GenerateSessionToken(model.identifier, message);
+                var sessionToken = GenerateSessionToken(model.userId, message);
 
                 Response.Cookies.Append("session_token", sessionToken, new CookieOptions
                 {
@@ -173,7 +182,7 @@ namespace XBCADAttendance.Controllers
             }
             if (message == "Lecturer")
             {
-                var sessionToken = GenerateSessionToken(model.identifier, message);
+                var sessionToken = GenerateSessionToken(model.userId, message);
 
                 Response.Cookies.Append("session_token", sessionToken, new CookieOptions
                 {
