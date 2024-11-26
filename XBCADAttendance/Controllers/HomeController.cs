@@ -28,7 +28,7 @@ namespace XBCADAttendance.Controllers
                 {
                     var isConnected = InternetConnectivityService.IsInternetAvailableAsync().Result;
 
-                    if (false)
+                    if (isConnected)
                     {
                         var cachedUsers = LocalCacheService.GetAllCachedUsers();
                         foreach (var cachedUser in cachedUsers)
@@ -116,8 +116,6 @@ namespace XBCADAttendance.Controllers
                     model.identifier = "ST" + model.identifier;
                 }
                 
-                
-
                 string? message = await DataAccess.LoginStudent(HttpContext, model);
 
                 ViewBag.Message = message;

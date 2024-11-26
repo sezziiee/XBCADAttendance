@@ -17,33 +17,23 @@
 
 <div class="table-data">
     <div class="order">
-        
-
-
         <table>
             <thead>
                 <tr>
-                    <th>Student No</th>
-                    <th>Lecture Date</th>
-                    <th>Module</th>
-                    <th>Start Time</th>
-                    <th>End Time</th>
+                    <th>LectureId</th>                   
+                    <th>Module Code</th>
+                    <th>Date</th>
                     <th>Classroom</th>
-                    <th>Attendance</th>
-
                 </tr>
             </thead>
             <tbody>
                 @foreach (var item in Model.lstLectures)
                 {        
                         <tr>
-                            <td>stud no</td>
-                            <td>@item.LectureDate</td>
+                            <td>@item.LectureId</td>
                             <td>@item.ModuleCode</td>
-                            <td>Start Time</td>
-                            <td>End Time</td>
-                            <td>@item.ClassroomCode</td> 
-                            <td>@Model.GetAttendance(item)</td>
+                            <td>@item.Date</td>
+                            <td>@item.ClassroomCode</td>
                         </tr>
                 }           
             </tbody>
