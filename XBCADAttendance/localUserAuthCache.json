@@ -1,3 +1,1 @@
-
-[{"SessionToken":"QUJDREVGR0h8U3R1ZGVudHxlZGQ2MGU5Ny1hM2NlLTRmOTItOGJjZS00NzkwZjFjNjIxNGE=","UserAuth":{"UserID":"ABCDEFGH","Role":"Student"}},{"SessionToken":"UVdFUlRZQVN8TGVjdHVyZXJ8YjJmNTdiZTMtMDM5Yy00ODFiLWI1YTAtZWQwYzUwYjZhNzZi","UserAuth":{"UserID":"QWERTYAS","Role":"Lecturer"}},{"SessionToken":"SUpLTE1OT1B8QWRtaW5pc3RyYXRvcnwyNGY0OTdiOS1hMDdkLTRiMDEtYmM5NC1iZGU4ZmZkYjg3OWU=","UserAuth":{"UserID":"IJKLMNOP","Role":"Administrator"}}]
-
+[{"SessionToken":"SUpLTE1OT1B8QWRtaW5pc3RyYXRvcnwyNGY0OTdiOS1hMDdkLTRiMDEtYmM5NC1iZGU4ZmZkYjg3OWU=","UserAuth":{"UserID":"IJKLMNOP","Role":"Lecturer"}},{"SessionToken":"QUJDREVGR0h8U3R1ZGVudHxlZGQ2MGU5Ny1hM2NlLTRmOTItOGJjZS00NzkwZjFjNjIxNGE=","UserAuth":{"UserID":"ABCDEFGH","Role":"Student"}},{"SessionToken":"UVdFUlRZQVN8TGVjdHVyZXJ8YjdiYzAwNjEtYWY2OC00MGY5LTgxMDAtM2ZlODlhMjhkNDY5","UserAuth":{"UserID":"QWERTYAS","Role":"Lecturer"}}]
