@@ -16,10 +16,21 @@ public class LoginViewModel
 
     public async Task InitializeAsync()
     {
-        var user = await DataAccess.GetUserByStudentNo(identifier);
-        if (user == null)
-            throw new InvalidOperationException("User not found for the provided identifier.");
+        if (identifier.Length > 5)
+        {
+            var user = await DataAccess.GetUserByStudentNo(identifier);
+            if (user == null)
+                throw new InvalidOperationException("User not found for the provided identifier.");
 
-        userId = user.UserId;
+            userId = user.UserId;
+        } else
+        {
+            var user = await DataAccess.GetUserByStaffNo(identifier);
+            if (user == null)
+                throw new InvalidOperationException("User not found for the provided identifier.");
+
+            userId = user.UserId;
+        }
+        
     }
 }
