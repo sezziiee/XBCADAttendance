@@ -19,18 +19,18 @@
         <table>
             <thead>
                 <tr>
-                    <th>Student Number</th>
-                    <th>Name</th>
-                    <th>Attended</th>
-                    <th>Late</th>
-                    <th>Absent</th>
-                    <th>Perc. Attended</th>
+                    <th class="ree">Student Number</th>
+                    <th class="ree">Name</th>
+                    <th class="ree">Attended</th>
+                    <th class="ree">Late</th>
+                    <th class="ree">Absent</th>
+                    <th class="ree">Perc. Attended</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var item in Model.lstStudents)
                 {
-                    <tr>
+                    <tr class="user-row">
                         <td>@item.studentNo</td>
                         <td>@item.name</td>
                         <td>@Model.GetStudentAttendance(item)</td>
@@ -43,4 +43,3 @@
         </table>
     </div>
 </div>
-
