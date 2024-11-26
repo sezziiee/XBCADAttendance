@@ -13,7 +13,7 @@ public static class LocalCacheService
     public static void SaveUserToCache(UserAuth userAuth, string sessionToken)
     {
         var cachedData = GetAllCachedUsers();
-        var existingUser = cachedData.FirstOrDefault(u => u.SessionToken == sessionToken);
+        var existingUser = cachedData.FirstOrDefault(u => u.UserAuth.UserID == userAuth.UserID);
 
         if (existingUser != null)
         {
@@ -47,6 +47,14 @@ public static class LocalCacheService
         }
 
         return new List<CachedUserAuth>();
+    }
+
+    public static void ClearCache()
+    {
+        if (File.Exists(CacheFilePath))
+        {
+            File.Delete(CacheFilePath);
+        }
     }
 }
 
