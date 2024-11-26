@@ -4,45 +4,39 @@
 }
 <div class="table-data">
     <div class="order">
-            <div class="profile-header">
-                <h1>@Model.Name</h1>
-            </div>
-            <div class="profile-info">
-                <img src="" alt="Profile Picture" class="profile-pic">
-                <div class="profile-details">
+        <div class="profile-header">
+
+            <h1>@Model.Name</h1>
+
+        </div>
+        <div class="profile-info">
+            <div class="profile-details">
                     <p><strong>Email:</strong> @($"{Model.StudentNo}@vcconnect.edu.za")</p>
-                    <p><strong>Student Number:</strong> @Model.StudentNo</p>
-                </div>
-            </div>
-            <div class="profile-actions">
-                <a asp-action="logout" class="btn btn-logout">Logout</a>
+                <p><strong>Student Number:</strong> @Model.StudentNo</p>
+
             </div>
         </div>
+        <div class="profile-actions">
+            <a asp-action="logout" class="btn btn-logout">Logout</a>
         </div>
+    </div>
+</div>
     
 
 <style>
 
-    .profile-container {
-        background-color: #ffffff;
-        padding: 20px;
-        height: 100%;
-        align-content: space-between;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
 
     .profile-header h1 {
         font-size: 24px;
-        color: #333333;
+        color: var(--dark);
         margin-bottom: 15px;
     }
 
     /* .profile-info {
-        display: flex;
-        align-items: center;
-        margin-bottom: 20px;
-    } */
+                    display: flex;
+                    align-items: center;
+                    margin-bottom: 20px;
+                } */
 
     .profile-pic {
         width: 100px;
@@ -55,12 +49,12 @@
 
     .profile-details p {
         font-size: 16px;
-        color: #555555;
+        color: var(--dark);
         margin: 5px 0;
     }
 
     .profile-details strong {
-        color: #333333;
+        color: var(--dark);
     }
 
     .profile-actions {
@@ -73,7 +67,7 @@
         display: inline-block;
         padding: 10px 20px;
         background-color: #d9534f;
-        color: #ffffff;
+        color: var(--dark);
         text-decoration: none;
         border-radius: 5px;
         transition: background-color 0.3s ease;
