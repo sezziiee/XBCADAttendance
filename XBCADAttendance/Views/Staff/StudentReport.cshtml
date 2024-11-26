@@ -28,7 +28,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.lstStudents)
+                @foreach (var item in Model.lstStudents.DistinctBy(s => s.studentNo))
                 {
                     <tr class="user-row">
                         <td>@item.studentNo</td>
