@@ -10,7 +10,8 @@
             <li><i class='bx bx-chevron-right'></i></li>
             <li><a class="active" href="#">Attendance History</a></li>
         </ul>
-    </div><div class="right">
+    </div>
+    <div class="right">
         <!-- Filter Icon -->
         <div class="filter-icons">
             <i class="bx bx-filter" id="filter-icon" title="Open Filter"></i>
@@ -33,13 +34,6 @@
                         <label for="Date">Date:</label>
                         <input type="date" id="Date" name="Date" class="form-control" />
                     </div>
-
-                    @* <div class="filter-group">
-                        <label for="classroom">Classroom:</label>
-                        <select id="classroom" name="classroom" asp-items="@Model.GetClassroomCodesForFilter()">
-                            <option value="">Select Classroom</option>
-                        </select>
-                    </div> *@
                     <button type="submit" class="filter-button">Apply Filters</button>
                 </form>
             </div>
@@ -51,31 +45,33 @@
     <div class="order">
         @if (Model.lstLectures.Count > 0)
         {
-            <table class="styled-table">
-                <thead>
-                    <tr>
-                        <th>Module Code</th>
-                        <th>Date</th>
-                        <th>Duration</th>
-                        <th>Scan In</th>
-                        <th>Scan Out</th>
-                        <th>Classroom</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var lecture in Model.lstLectures)
-                    {
+            <div class="table-responsive">
+                <table class="styled-table">
+                    <thead>
                         <tr>
-                            <td>@lecture.ModuleCode</td>
-                            <td>@lecture.LectureDate</td>
-                            <td>@Model.CalcDuration(lecture)</td>
-                            <td>@lecture.ScanIn.ToShortTimeString()</td>
-                            <td>@(lecture.ScanOut != null ? lecture.ScanOut.Value.ToShortTimeString() : "N/A")</td>
-                            <td>@lecture.ClassroomCode</td>
+                            <th>Module Code</th>
+                            <th>Date</th>
+                            <th>Duration</th>
+                            <th>Scan In</th>
+                            <th>Scan Out</th>
+                            <th>Classroom</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach (var lecture in Model.lstLectures)
+                        {
+                            <tr>
+                                <td>@lecture.ModuleCode</td>
+                                <td>@lecture.LectureDate</td>
+                                <td>@Model.CalcDuration(lecture)</td>
+                                <td>@lecture.ScanIn.ToShortTimeString()</td>
+                                <td>@(lecture.ScanOut != null ? lecture.ScanOut.Value.ToShortTimeString() : "N/A")</td>
+                                <td>@lecture.ClassroomCode</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         }
         else
         {
@@ -83,6 +79,7 @@
         }
     </div>
 </div>
+
 <style>
     /* Table container */
     .styled-table thead tr {

@@ -661,10 +661,6 @@ ul {
         width: 0px;
     }
 
-        #sidebar.hide {
-            width: 300px;
-        }
-
     #content {
         width: 100%;
         left: 0;
