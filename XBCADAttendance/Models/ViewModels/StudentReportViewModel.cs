@@ -4,6 +4,7 @@ using System.Drawing;
 using XBCADAttendance;
 using QRCoder;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace XBCADAttendance.Models
 {
@@ -114,12 +115,12 @@ namespace XBCADAttendance.Models
         }
 
         public float CalcAttendencePerModule(string moduleCode)
-        {
-            var attendedLectures = DataAccess.Context.TblStudentLectures.Where(x => x.ScanOut != null && x.UserId == UserID).ToList();
-            var totalLectures = DataAccess.GetStaffLectures().Result.Where(x => x.ModuleCode == moduleCode).ToList();
+         {
+             var attendedLectures = DataAccess.Context.TblStudentLectures.Where(x => x.ScanOut != null && x.UserId == UserID).ToList();
+             var totalLectures = DataAccess.GetStaffLectures().Result.Where(x => x.ModuleCode == moduleCode).ToList();
 
-            return ((float)attendedLectures.Count / totalLectures.Count) * 100;
-        }
+             return ((float)attendedLectures.Count / totalLectures.Count) * 100;
+         }
 
         public float CalcTotalAttendencePerModule(string moduleCode)
         {
@@ -152,10 +153,15 @@ namespace XBCADAttendance.Models
         {
             if (lecture.ScanOut != null)
             {
+   
                 var staffLecture = DataAccess.Context.TblStaffLectures.Where(x => x.LectureId == lecture.LectureId).FirstOrDefault();
-
+                if (lecture.ScanOut - lecture.ScanIn <= TimeSpan.FromMinutes(5))
+                {
+                    return "Absent";
+                }
                 return staffLecture.Start?.AddMinutes(5) > lecture.ScanIn ? "Present" : "Late";
             }
+           
 
             return "Absent";
         }
@@ -193,7 +199,7 @@ namespace XBCADAttendance.Models
 
                 if (actualLecture != null)
                 {
-                    if (lecture.Start?.AddMinutes(5) > actualLecture.ScanIn && actualLecture.ScanIn < lecture.Finish)
+                    if (actualLecture.ScanIn > lecture.Start?.AddMinutes(5) && actualLecture.ScanIn < lecture.Finish)
                     {
                         total++;
                     }
@@ -214,9 +220,18 @@ namespace XBCADAttendance.Models
 
             foreach (var lecture in staffLectures)
             {
-                if (modules.Contains(lecture.ModuleCode) && attended.Where(x => x.LectureId == lecture.LectureId).FirstOrDefault() == null)
+                var attendedLecture = attended.FirstOrDefault(x => x.LectureId == lecture.LectureId);
+
+                if (modules.Contains(lecture.ModuleCode) && attendedLecture == null)
                 {
                     total++;
+                }
+                else if (attendedLecture != null)
+                {
+                    if (attendedLecture.ScanOut - attendedLecture.ScanIn <= TimeSpan.FromMinutes(5))
+                    {
+                        total++;
+                    }
                 }
             }
 
@@ -233,10 +248,20 @@ namespace XBCADAttendance.Models
                 actualLectures.AddRange(staffLectures.Where(x => x.ModuleCode == module.ModuleCode).ToList());
             }
 
-            var total = ((float)(GetAttendedLectures() + GetLateLectures()) / actualLectures.Count()) * 100;
+            int totalLectures = actualLectures.Count;
 
-            return total;
+            if (totalLectures == 0)
+            {
+                return 0; 
+            }
+
+            int attendedLectures = GetAttendedLectures(); 
+
+            var attendancePercentage = ((float)attendedLectures / totalLectures) * 100;
+
+            return attendancePercentage;
         }
+
 
         public int GetAttendedLectures()
         {
