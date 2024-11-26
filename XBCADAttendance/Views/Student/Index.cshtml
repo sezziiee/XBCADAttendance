@@ -203,7 +203,7 @@
 
 <div class="modalbox">
     <div class="modal-content">
-        <h2>Change Details</h2>
+        <h2 style="color: var(--dark);">Change Details</h2>
         <form method="post" asp-action="Update">
          
             <input type="text" name="username" placeholder="New Username" required />      
@@ -256,7 +256,7 @@
     }
 
     .modal-content {
-        background-color: white;
+        background-color: var(--light);
         margin: 15% auto;
         padding: 20px;
         border: 1px solid #888;
@@ -275,15 +275,25 @@
         cursor: pointer;
     }
 
+    .modal-content input{
+        padding: 5px;
+        border: none;
+        background-color: var(--light-blue);
+        border-radius: 6px;
+    }
+
     .close-btn {
-        background-color: red;
+        border: none;
+        border-radius: 6px;
+        background-color: grey;
         color: white;
     }
 
     .savebtn {
-        background-color: green;
+        background-color: var(--blue);
         color: white;
         border: none;
+        border-radius: 6px;
     }
 </style>
 

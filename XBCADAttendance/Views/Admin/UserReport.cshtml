@@ -76,7 +76,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="updateUser">Update</button>
+                <button type="button" class="btn" style="background-color: var(--light-blue); color: var(--blue);" id="updateUser">Update</button>
             </div>
         </div>
     </div>
@@ -85,7 +85,6 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
-            // Handle row click to populate modal
             $('.user-row').on('click', function () {
                 const userId = $(this).data('id');
                 const userName = $(this).find('td:nth-child(2)').text().trim();
@@ -93,36 +92,31 @@
 
                 $('#userId').val(userId);
                 $('#userName').val(userName);
-                $('#userRole').val(userRole); // This line should correctly set the selected role
+                $('#userRole').val(userRole); 
                 $('#userModal').modal('show');
             });
 
-            // Handle update user
             $('#updateUser').on('click', function () {
-                // Implement your AJAX update logic here
-                const userId = $('#userId').val(); // Get the selected user's ID
+                const userId = $('#userId').val();
                 const userName = $('#userName').val();
-                const userRole = $('#userRole').val(); // Capture selected role
+                const userRole = $('#userRole').val();
                 const userPassword = $('#userPassword').val();
 
-                // Example AJAX call
                 $.ajax({
-                    url: '/Admin/UpdateUsers', // Ensure this URL matches your route
+                    url: '/Admin/UpdateUsers',
                     type: 'POST',
                     data: {
-                        Id: userId,           // Send the user ID
-                        UserName: userName,   // Send the user name
-                        Role: userRole,       // Send the selected role
-                        Password: userPassword // Send the password
+                        Id: userId, 
+                        UserName: userName,   
+                        Role: userRole,      
+                        Password: userPassword 
                     },
                     success: function (response) {
-                        // Handle success
                         $('#userModal').modal('hide');
                         location.reload();
-                        // Optionally, refresh the table or show a success message
                     },
                     error: function (xhr, status, error) {
-                        // Handle error
+                        
                     }
                 });
             });
