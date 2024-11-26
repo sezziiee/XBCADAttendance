@@ -602,7 +602,30 @@ ul{
 
 
 
+.chart-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap; /* Allows wrapping of elements */
+    gap: 20px; /* Adds spacing between charts */
+    margin: 20px 0;
+}
 
+.chart {
+    flex: 1 1 100%; /* Makes charts take up half the container width, minus gap */
+    max-width: 100%; /* Prevents overflow */
+}
+
+@media (max-width: 600px) {
+    .chart {
+        flex: 1 1 100%; /* Makes charts take full width on small screens */
+        max-width: 100%;
+    }
+}
+
+#PieChart, #BarChart {
+    width: 100% !important; /* Ensures charts take full container width */
+    height: auto !important; /* Adjusts height for responsiveness */
+}
 
 
 
