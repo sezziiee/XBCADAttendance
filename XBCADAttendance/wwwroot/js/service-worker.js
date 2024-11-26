@@ -5,10 +5,13 @@
                 '/', // Home page
                 '/index.html',
                 '/styles.css',
+                '/Admin.css',
+                '/Lecturer.css',
+                '/navbar.css',
                 '/script.js',
                 '/manifest.json',
-                '/icons/instagram (1).png',
-                '/icons/instagram.png',
+                '/icons/Attendance_resized.png',
+                '/icons/Attendance.png'
                 '/Student/StudentQRCode',
                 '/Staff/LecturerQRCode'
             ]);
