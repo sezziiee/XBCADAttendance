@@ -711,7 +711,7 @@ ul {
     }
 
     #content main .table-data .head {
-        min-width: 420px;
+        min-width: 300px;
     }
 
     #content main .table-data .order table {
@@ -719,10 +719,36 @@ ul {
     }
 
     #content main .table-data .todo .todo-list {
-        min-width: 420px;
+        min-width: 100%;
+    }
+}
+.chart-container {
+    display: flex !important;
+    justify-content: center;
+    flex-wrap: wrap; /* Allows wrapping of elements */
+    gap: 20px; /* Adds spacing between charts */
+    margin: 20px 0;
+}
+
+#BarChart {
+    flex: 1 1 100%; /* Makes charts take up half the container width, minus gap */
+    max-width: 100%; /* Prevents overflow */
+}
+
+@media (max-width: 600px) {
+    .chart {
+        flex: 1 1 100%; /* Makes charts take full width on small screens */
+        max-width: 100%;
     }
 }
 
+.highcharts-container text {
+    color: var(--dark) !important;
+}
+#BarChart {
+    width: 100% !important; /* Ensures charts take full container width */
+    height: auto !important; /* Adjusts height for responsiveness */
+}
 
 .dashboard {
     font-family: 'Roboto', Arial, sans-serif;
