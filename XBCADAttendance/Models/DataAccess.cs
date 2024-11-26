@@ -810,12 +810,16 @@ namespace XBCADAttendance.Models
         // Internal method
         private static async Task<List<TblStudent?>> GetStudentsByModuleInternal(string moduleCode)
         {
-            var uids = await context.TblStudentLectures.Where(x => x.ModuleCode == moduleCode).Select(x => x.UserId).ToListAsync();
+            var uids = await context.TblUserModules.Where(x => x.ModuleCode == moduleCode).Select(x => x.UserId).ToListAsync();
             List<TblStudent> output = new List<TblStudent>();
 
             foreach (var id in uids)
             {
-                output.Add(await GetStudentByIdInternal(id)); // Use 'await' here instead of '.Result' to avoid blocking
+                var student = await GetStudentByIdInternal(id);
+                if (student != null)
+                {
+                    output.Add(student);
+                }
             }
 
             return output;

@@ -110,6 +110,15 @@ namespace XBCADAttendance.Models
             return lstLectures.Count - GetStudentAttendance(student);
         }
 
+        public float CalcAttendancePerc(Student student)
+        {
+            var late = CalcLate(student);
+            var absent = CalcAbsent(student);
+            var attended = GetStudentAttendance(student);
+            var output = ((float)attended / (attended + absent + late)) * 100;
+            return output;
+        }
+
         private int GetAttendanceByLecturer(string staffId)
         {
             var lectures = DataAccess.GetStudentLecturesByStaffId(staffId).Result;
