@@ -11,7 +11,7 @@
                 '/script.js',
                 '/manifest.json',
                 '/icons/Attendance_resized.png',
-                '/icons/Attendance.png'
+                '/icons/Attendance.png',
                 '/Student/StudentQRCode',
                 '/Staff/LecturerQRCode'
             ]);
