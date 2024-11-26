@@ -1,5 +1,7 @@
 ﻿@using Highsoft.Web.Mvc.Charts
-@model LectureReportViewModel
+@using XBCADAttendance.Models.ViewModels
+@model AdminViewModel
+
 <script src="https://code.highcharts.com/highcharts.js"></script>
 <style>
     .dashboard {
@@ -59,6 +61,15 @@
         .logout-button:hover {
             background-color: #e04343;
         }
+
+    .completed {
+        color: green;
+    }
+
+    .not-completed {
+        color: red;
+    }
+
 </style>
 
 @{
@@ -78,99 +89,109 @@
     <ul class="box-info">
     <li>
         <span class="text">
-            <h3>@Model.lstStudents.Count</h3>
+            <h3>@Model.Students.Count</h3>
             <p>Students</p>
         </span>
     </li>
     <li>
         <span class="text">
-            <h3>@Model.lstLectures.Count</h3>
+            <h3>@Model.Staff.Count</h3>
             <p>Staff</p>
         </span>
     </li>
 
     </ul>
-    <div class="table-data">
-        <div class="todo">
-            <div class="head">
-                <h3>Ranked Achievers</h3>
-                <i class='bx bx-plus'></i>
-                <i class='bx bx-filter'></i>
-            </div>
-            <ul class="todo-list">
-                <li class="completed">
-                    <p>Todo List</p>
-                    <i class='bx bx-dots-vertical-rounded'></i>
-                </li>
-                <li class="completed">
-                    <p>Todo List</p>
-                    <i class='bx bx-dots-vertical-rounded'></i>
-                </li>
-                <li class="not-completed">
-                    <p>Todo List</p>
-                    <i class='bx bx-dots-vertical-rounded'></i>
-                </li>
-                <li class="completed">
-                    <p>Todo List</p>
-                    <i class='bx bx-dots-vertical-rounded'></i>
-                </li>
-                <li class="not-completed">
-                    <p>Todo List</p>
-                    <i class='bx bx-dots-vertical-rounded'></i>
-                </li>
-            </ul>
+<div class="table-data">
+    <div class="todo">
+        <div class="head">
+            <h3>Ranked Achievers</h3>
+            <i class='bx bx-plus'></i>
+            <i class='bx bx-sort-up' onclick="sortStudents('desc')" style="cursor: pointer; margin-left: 10px;"></i>
+            <i class='bx bx-sort-down' onclick="sortStudents('asc')" style="cursor: pointer; margin-left: 5px;"></i>
         </div>
-    <div class="chart-container">
-        <div class="chart">
-            <div id="PieChart" style="width: 400px; height: 400px;"></div>
-            <script>
-                document.addEventListener("DOMContentLoaded", function () {
-                    Highcharts.chart("PieChart", {
-                        chart: {
-                            type: "pie",
-                            backgroundColor: "var(--light)"
-                        },
-                        title: {
-                            text: "Attendance"
-                        },
-                        series: [{
-                            name: "Value",
-                            data: @Html.Raw(Json.Serialize(Model.chart.attendanceValues))
-                                                                    }]
-                    });
-                });
-            </script>
-        </div>
-        <div class="chart">
-            <div id="LineChart" style="width: 400px; height: 400px;"></div>
-            <script>
-                document.addEventListener("DOMContentLoaded", function () {
-                    Highcharts.chart("LineChart", {
-                        chart: {
-                            type: "area",
-                            backgroundColor: "var(--light)"
-                        },
-                        title: {
-                            text: "Attendance by Lecture"
-                        },
-                        xAxis: {
-                            labels: {
-                                enabled: false // Hides the x-axis labels
-                            }
-                        },
-                        yAxis: {
-                            title: {
-                                text: "Students"
-                            }
-                        },
-                        series: @Html.Raw(Json.Serialize(Model.chart.attendanceValues.Select(dp => new
-                    {
-                        name = dp.Name,  // Each data point's "Name" becomes the series name
-                        data = new[] { dp.Y } // Each data point's "Y" value becomes the series data
-                    })))
-                            });
-                });
-            </script>
-        </div>
+        <ul class="todo-list" id="studentList">
+            @foreach (var student in Model.GetStudentsWithAttendance().Result.OrderByDescending(s => s.AttendancePercentage))
+            {
+                <li class="@(student.AttendancePercentage >= 75 ? "completed" : "not-completed")">
+                    <p>@student.StudentName - @student.AttendancePercentage%</p>
+                    <i class='bx bx-dots-vertical-rounded'></i>
+                </li>
+            }
+        </ul>
+    </div>
 </div>
-</div>
+
+<script>
+    function sortStudents(order) {
+        const list = document.getElementById('studentList');
+
+        const items = Array.from(list.getElementsByTagName('li'));
+
+        items.sort((a, b) => {
+            const aValue = parseFloat(a.querySelector('p').textContent.split('-')[1].replace('%', '').trim());
+            const bValue = parseFloat(b.querySelector('p').textContent.split('-')[1].replace('%', '').trim());
+            return order === 'asc' ? aValue - bValue : bValue - aValue;
+        });
+
+        list.innerHTML = '';
+        items.forEach(item => list.appendChild(item));
+    }
+</script>
+
+<div class="chart-container">
+    <!-- Pie Chart for Average Attendance per Lecturer -->
+    <div id="PieChart" style="width: 400px; height: 400px;"></div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Highcharts.chart("PieChart", {
+                chart: {
+                    type: "pie",
+                    backgroundColor: "var(--light)"
+                },
+                title: {
+                    text: "Average Attendance per Lecturer"
+                },
+                series: [{
+                    name: "Attendance",
+                    data: @Html.Raw(Json.Serialize(Model.LecturerAttendanceChartData.Select(dp => new
+            {
+                name = dp.Name,
+                y = dp.Y
+            })))
+                        }]
+            });
+        });
+    </script>
+    <div id="LineChart" style="width: 400px; height: 400px;"></div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Highcharts.chart("LineChart", {
+                chart: {
+                    type: "area",
+                    backgroundColor: "var(--light)"
+                },
+                title: {
+                    text: "Average Attendance per Module"
+                },
+                xAxis: {
+                    categories: @Html.Raw(Json.Serialize(Model.ModuleAttendanceChartData.Select(dp => dp.Name))),
+                    title: {
+                        text: "Modules"
+                    }
+                },
+                yAxis: {
+                    title: {
+                        text: "Average Attendance"
+                    }
+                },
+                series: [{
+                    name: "Attendance",
+                    data: @Html.Raw(Json.Serialize(Model.ModuleAttendanceChartData.Select(dp => dp.Y)))
+                        }]
+            });
+        });
+    </script>
+    </div>
+
+
+

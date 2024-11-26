@@ -16,7 +16,7 @@ namespace XBCADAttendance.Controllers
     {
         public IActionResult Index()
         {
-            LectureReportViewModel model = new LectureReportViewModel(User.Identity.Name);
+            AdminViewModel model = new AdminViewModel();
             return View(model);
         }
 
