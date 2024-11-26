@@ -54,7 +54,7 @@ namespace XBCADAttendance.Models
             {
                 headings.Add(lecturer.UserName);
 
-                string staffId = DataAccess.Context.TblStaffs.Where(x => x.UserId == lecturer.UserId).Select(x => x.StaffId).FirstOrDefault();
+                string staffId = DataAccess.GetStaffIdFromUserId(userId).Result;
 
                 chartData.Add(new DataPoint(lecturer.UserName, GetAttendanceByLecturer(staffId)));
             }
