@@ -137,14 +137,16 @@ namespace XBCADAttendance.Models
             var codes = lstModules.Select(x => x).ToList();
             lectures = lectures.Where(x => codes.Contains(x.ModuleCode)).ToList();
 
+            var now = DateTime.Now;
+            var today = DateOnly.FromDateTime(now);
+
             var nextLecture = lectures
-                .Where(x => x.Date >= DateOnly.FromDateTime(DateTime.Now) && x.Start == null)
-                .OrderBy(x => x.Date)
-                .FirstOrDefault();
+                .Where(x => x.Date > today)  
+                .OrderBy(x => x.Date)  
+                .FirstOrDefault(); 
 
             if (nextLecture != null)
             {
-                var now = DateTime.Now;
                 var lectureDateTime = nextLecture.Date.ToDateTime(TimeOnly.MinValue); 
                 var timeLeft = lectureDateTime - now;
 
