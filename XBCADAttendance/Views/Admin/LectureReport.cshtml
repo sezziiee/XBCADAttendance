@@ -153,61 +153,10 @@
             }
         });
     });
-    function openEditModal(button, event) {
-        event.stopPropagation(); // Prevent accordion toggle
-        const modal = document.getElementById("editModal");
-        modal.style.display = "block";
-
-        document.getElementById("lectureId").value = button.dataset.id;
-        document.getElementById("lecturer").value = button.dataset.lecturer;
-        document.getElementById("module").value = button.dataset.module;
-        document.getElementById("classroom").value = button.dataset.classroom;
-        document.getElementById("date").value = button.dataset.date;
-        document.getElementById("start").value = button.dataset.start;
-        document.getElementById("finish").value = button.dataset.finish;
-    }
-
-    function closeEditModal() {
-        document.getElementById("editModal").style.display = "none";
-    }
-
-    function saveEdit() {
-        const lectureData = {
-            LectureId: document.getElementById("lectureId").value,
-            Lecturer: document.getElementById("lecturer").value,
-            ModuleCode: document.getElementById("module").value,
-            ClassroomCode: document.getElementById("classroom").value,
-            Date: document.getElementById("date").value,
-            Start: document.getElementById("start").value,
-            Finish: document.getElementById("finish").value,
-        };
-
-        fetch('/Admin/UpdateLecture', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(lectureData),
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert("Lecture updated successfully!");
-                    location.reload();
-                } else {
-                    alert("Failed to update lecture: " + data.message);
-                }
-            })
-            .catch(error => {
-                console.error("Error:", error);
-                alert("An error occurred while updating the lecture.");
-            });
-
-        closeEditModal();
-    }
+    
 </script>
-<style>
-    .modal {
+@*<style>
+     .modal {
         display: none; /* Hidden by default */
         position: fixed;
         z-index: 1000;
@@ -278,4 +227,4 @@
             #editForm button:hover {
                 background-color: #0056b3;
             }
-</style>
+</style> *@
