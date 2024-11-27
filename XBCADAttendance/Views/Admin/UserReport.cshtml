@@ -85,6 +85,7 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
+            // Handle row click to populate modal
             $('.user-row').on('click', function () {
                 const userId = $(this).data('id');
                 const userName = $(this).find('td:nth-child(2)').text().trim();
@@ -92,31 +93,37 @@
 
                 $('#userId').val(userId);
                 $('#userName').val(userName);
-                $('#userRole').val(userRole); 
+                $('#userRole').val(userRole); // This line should correctly set the selected role
                 $('#userModal').modal('show');
             });
 
+            // Handle update user
             $('#updateUser').on('click', function () {
-                const userId = $('#userId').val();
+                // Implement your AJAX update logic here
+                const userId = $('#userId').val(); // Get the selected user's ID
                 const userName = $('#userName').val();
-                const userRole = $('#userRole').val();
+                const userRole = $('#userRole').val(); // Capture selected role
                 const userPassword = $('#userPassword').val();
 
+                // Example AJAX call
                 $.ajax({
-                    url: '/Admin/UpdateUsers',
+                    url: '/Admin/UpdateUsers', // Ensure this URL matches your route
                     type: 'POST',
                     data: {
-                        Id: userId, 
-                        UserName: userName,   
-                        Role: userRole,      
-                        Password: userPassword 
+                        Id: userId,           // Send the user ID
+                        UserName: userName,   // Send the user name
+                        Role: userRole,       // Send the selected role
+                        Password: userPassword // Send the password
                     },
                     success: function (response) {
+                        // Handle success
                         $('#userModal').modal('hide');
                         location.reload();
+                        // Optionally, refresh the table or show a success message
                     },
                     error: function (xhr, status, error) {
-                        
+                        // Handle error
+
                     }
                 });
             });

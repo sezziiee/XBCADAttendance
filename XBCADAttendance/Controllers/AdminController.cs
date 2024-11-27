@@ -63,16 +63,9 @@ namespace XBCADAttendance.Controllers
 
         [HttpGet]
         [Authorize(Policy = "AdminOnly")]
-        public async Task<IActionResult> UserReport(AdminViewModel model)
+        public async Task<IActionResult> UserReport()
         {
 
-            return View(model);
-        }
-
-        [HttpGet]
-        [Authorize(Policy = "AdminOnly")]
-        public IActionResult LectureReport()
-        {
             var model = new AdminViewModel
             {
                 Users = DataAccess.Context.TblUsers.ToList(),
@@ -81,6 +74,15 @@ namespace XBCADAttendance.Controllers
                 StaffLectures = DataAccess.Context.TblStaffLectures.ToList(),
                 lstRoles = DataAccess.Context.TblRoles.ToList()
             };
+
+            return View(model);
+        }
+
+        [HttpGet]
+        [Authorize(Policy = "AdminOnly")]
+        public IActionResult LectureReport(AdminViewModel model)
+        {
+            
             return View(model);
         }
 
@@ -266,7 +268,7 @@ namespace XBCADAttendance.Controllers
             return RedirectToAction("UserReport", "Admin");
 
         }
-        [HttpPost]
+        /*[HttpPost]
         public async Task<IActionResult> UpdateLecture([FromBody] TblStaffLecture lecture)
         {
             if (lecture == null)
@@ -284,7 +286,7 @@ namespace XBCADAttendance.Controllers
             {
                 return Json(new { success = false, message = result });
             }
-        }
+        }*/
 
 
         [Authorize(Policy = "AdminOnly")]
