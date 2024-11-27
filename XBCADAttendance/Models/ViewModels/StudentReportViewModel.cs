@@ -116,10 +116,11 @@ namespace XBCADAttendance.Models
 
         public float CalcAttendencePerModule(string moduleCode)
          {
-             var attendedLectures = DataAccess.Context.TblStudentLectures.Where(x => x.ScanOut != null && x.UserId == UserID).ToList();
+             var attendedLectures = DataAccess.Context.TblStudentLectures.Where(x => x.ScanOut != null && x.UserId == UserID && x.ModuleCode == moduleCode).ToList();
              var totalLectures = DataAccess.GetStaffLectures().Result.Where(x => x.ModuleCode == moduleCode).ToList();
 
-             return ((float)attendedLectures.Count / totalLectures.Count) * 100;
+
+             return totalLectures.Count != 0 ? ((float)attendedLectures.Count / totalLectures.Count) * 100: 0;
          }
 
         public float CalcTotalAttendencePerModule(string moduleCode)
@@ -127,7 +128,7 @@ namespace XBCADAttendance.Models
             var attendedLectures = DataAccess.Context.TblStudentLectures.Where(x => x.ScanOut != null && x.UserId == UserID).ToList();
             var totalLectures = DataAccess.GetStaffLectures().Result.Where(x => x.ModuleCode == moduleCode).ToList();
 
-            return ((float)attendedLectures.Count / totalLectures.Count) * 100;
+            return totalLectures.Count != 0 ? ((float)attendedLectures.Count / totalLectures.Count) * 100 : 0;
         }
 
         public List<string> GetStudentModules()
@@ -213,7 +214,7 @@ namespace XBCADAttendance.Models
         {
             int total = 0;
             var staffLectures = DataAccess.GetStaffLectures().Result;
-            var modules = lstLectures.Select(x => x.ModuleCode).Distinct().ToList();
+            var modules = lstModules.Select(x => x.ModuleCode).ToList();
             var attended = lstLectures.Where(x => x.ScanOut != null).ToList();
 
             total += lstLectures.Where(x => x.ScanOut == null).Count();

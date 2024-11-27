@@ -34,10 +34,17 @@ namespace XBCADAttendance.Models
             name = user.UserName;
 
             lstModules = DataAccess.GetModulesById(userId).Result;
+            List<DataPoint> chartData = new List<DataPoint>();
+            List<string> headings = new List<string>();
 
             foreach (string moduleCode in lstModules)
             {
                 var students = DataAccess.GetStudentsByModule(moduleCode).Result;
+                headings.Add(moduleCode);
+
+                string staffId = DataAccess.GetStaffIdFromUserId(userId).Result;
+
+                chartData.Add(new DataPoint(moduleCode, students.Count));
 
                 foreach (var student in students)
                 {
@@ -46,19 +53,6 @@ namespace XBCADAttendance.Models
             }
 
             var lecturers = DataAccess.GetAllLecturers().Result;
-
-            List<DataPoint> chartData = new List<DataPoint>();
-            List<string> headings = new List<string>();
-
-            foreach (var lecturer in lecturers)
-            {
-                headings.Add(lecturer.UserName);
-
-                string staffId = DataAccess.GetStaffIdFromUserId(userId).Result;
-
-                chartData.Add(new DataPoint(lecturer.UserName, GetAttendanceByLecturer(staffId)));
-            }
-
             chart = new AttendanceByLecturerChart(chartData, headings);
 
             lstLectures = DataAccess.GetStaffLecturesById(user.UserId).Result;
