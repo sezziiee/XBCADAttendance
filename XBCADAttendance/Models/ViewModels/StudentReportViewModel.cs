@@ -45,7 +45,7 @@ namespace XBCADAttendance.Models
 
             List<DataPoint> dataPoints = new List<DataPoint>();
             List<string> headings = new List<string>();
-            
+
             foreach (var module in lstModules)
             {
                 headings.Add(module.ModuleCode);
@@ -57,7 +57,7 @@ namespace XBCADAttendance.Models
 
         private int GetAttendanceByModule(string moduleCode)
         {
-            var lectures = DataAccess.Context.TblStudentLectures.Where(x => x.ModuleCode == moduleCode).ToList();
+            var lectures = lstLectures.Where(x => x.ModuleCode == moduleCode).ToList();
             return lectures.Where(x => GetAttendance(x) != "Absent").Count();
         }
 
@@ -115,21 +115,20 @@ namespace XBCADAttendance.Models
         }
 
         public float CalcAttendencePerModule(string moduleCode)
-         {
-             var attendedLectures = DataAccess.Context.TblStudentLectures.Where(x => x.ScanOut != null && x.UserId == UserID && x.ModuleCode == moduleCode).ToList();
-             var totalLectures = DataAccess.GetStaffLectures().Result.Where(x => x.ModuleCode == moduleCode).ToList();
+        {
+            var attendedLectures = GetAttendanceByModule(moduleCode);
+            var totalLectures = DataAccess.GetStaffLectures().Result.Where(x => x.ModuleCode == moduleCode).ToList();
 
+            return totalLectures.Count != 0 ? ((float)attendedLectures / totalLectures.Count) * 100 : 0;
+        }
 
-             return totalLectures.Count != 0 ? ((float)attendedLectures.Count / totalLectures.Count) * 100: 0;
-         }
-
-        public float CalcTotalAttendencePerModule(string moduleCode)
+        /*public float CalcTotalAttendencePerModule(string moduleCode)
         {
             var attendedLectures = DataAccess.Context.TblStudentLectures.Where(x => x.ScanOut != null && x.UserId == UserID).ToList();
             var totalLectures = DataAccess.GetStaffLectures().Result.Where(x => x.ModuleCode == moduleCode).ToList();
 
             return totalLectures.Count != 0 ? ((float)attendedLectures.Count / totalLectures.Count) * 100 : 0;
-        }
+        }*/
 
         public List<string> GetStudentModules()
         {
@@ -154,15 +153,15 @@ namespace XBCADAttendance.Models
         {
             if (lecture.ScanOut != null)
             {
-   
+
                 var staffLecture = DataAccess.Context.TblStaffLectures.Where(x => x.LectureId == lecture.LectureId).FirstOrDefault();
-                if (lecture.ScanOut - lecture.ScanIn <= TimeSpan.FromMinutes(5))
+                if (lecture.ScanOut < lecture.ScanIn.AddMinutes(5))
                 {
                     return "Absent";
                 }
                 return staffLecture.Start?.AddMinutes(5) > lecture.ScanIn ? "Present" : "Late";
             }
-           
+
 
             return "Absent";
         }
@@ -212,34 +211,10 @@ namespace XBCADAttendance.Models
 
         public int GetMissedLectures()
         {
-            int total = 0;
-            var staffLectures = DataAccess.GetStaffLectures().Result;
-            var modules = lstModules.Select(x => x.ModuleCode).ToList();
-            var attended = lstLectures.Where(x => x.ScanOut != null).ToList();
-
-            total += lstLectures.Where(x => x.ScanOut == null).Count();
-
-            foreach (var lecture in staffLectures)
-            {
-                var attendedLecture = attended.FirstOrDefault(x => x.LectureId == lecture.LectureId);
-
-                if (modules.Contains(lecture.ModuleCode) && attendedLecture == null)
-                {
-                    total++;
-                }
-                else if (attendedLecture != null)
-                {
-                    if (attendedLecture.ScanOut - attendedLecture.ScanIn <= TimeSpan.FromMinutes(5))
-                    {
-                        total++;
-                    }
-                }
-            }
-
-            return total;
+            return GetTotalLectures() - (GetLateLectures() + GetAttendedLectures());
         }
 
-        public float GetTotalAttendance()
+        public int GetTotalLectures()
         {
             var staffLectures = DataAccess.GetStaffLectures().Result;
             List<TblStaffLecture> actualLectures = new List<TblStaffLecture>();
@@ -249,14 +224,19 @@ namespace XBCADAttendance.Models
                 actualLectures.AddRange(staffLectures.Where(x => x.ModuleCode == module.ModuleCode).ToList());
             }
 
-            int totalLectures = actualLectures.Count;
+            return actualLectures.Count;
+        }
+
+        public float GetTotalAttendance()
+        {
+            int totalLectures = GetTotalLectures();
 
             if (totalLectures == 0)
             {
-                return 0; 
+                return 0;
             }
 
-            int attendedLectures = GetAttendedLectures(); 
+            int attendedLectures = GetAttendedLectures();
 
             var attendancePercentage = ((float)attendedLectures / totalLectures) * 100;
 
@@ -268,15 +248,16 @@ namespace XBCADAttendance.Models
         {
             int total = 0;
 
-            var prelimAttended = lstLectures.Where(x => x.UserId == UserID && x.ScanOut != null).ToList();
+            var prelimAttended = lstLectures.Where(x => x.ScanOut != null).ToList();
 
             var allLectures = DataAccess.GetStaffLectures().Result;
 
             foreach (var lecture in prelimAttended)
             {
                 var attendedLecture = allLectures.Where(x => x.LectureId == lecture.LectureId).FirstOrDefault();
+                var attendance = GetAttendance(lecture);
 
-                if (attendedLecture.Finish > lecture.ScanIn && GetAttendance(lecture) == "Present")
+                if (attendance == "Present")
                 {
                     total++;
                 }
@@ -309,8 +290,7 @@ namespace XBCADAttendance.Models
             if (userId != null)
             {
                 await DataAccess.UpdateUser(userId, newUserName, newPassword);
-            }
-            else
+            } else
             {
                 throw new ArgumentException("User not found");
             }
@@ -326,8 +306,8 @@ namespace XBCADAttendance.Models
         }
     }
 
-    public class AttendanceChartData 
-    { 
+    public class AttendanceChartData
+    {
         public List<DataPoint> attendanceValues { get; set; }
         public List<string> headings { get; set; }
 
