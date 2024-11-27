@@ -68,7 +68,11 @@ namespace XBCADAttendance.Controllers
 
             var model = new AdminViewModel
             {
-                StaffLectures = DataAccess.Context.TblStaffLectures.ToList()
+                Users = DataAccess.Context.TblUsers.ToList(),
+                Students = DataAccess.Context.TblStudents.ToList(),
+                Staff = DataAccess.Context.TblStaffs.ToList(),
+                StaffLectures = DataAccess.Context.TblStaffLectures.ToList(),
+                lstRoles = DataAccess.Context.TblRoles.ToList()
             };
 
             return View(model);
@@ -76,16 +80,9 @@ namespace XBCADAttendance.Controllers
 
         [HttpGet]
         [Authorize(Policy = "AdminOnly")]
-        public IActionResult LectureReport()
+        public IActionResult LectureReport(AdminViewModel model)
         {
-            var model = new AdminViewModel
-            {
-                Users = DataAccess.Context.TblUsers.ToList(),
-                Students = DataAccess.Context.TblStudents.ToList(),
-                Staff = DataAccess.Context.TblStaffs.ToList(),
-                StaffLectures = DataAccess.Context.TblStaffLectures.ToList(),
-                lstRoles = DataAccess.Context.TblRoles.ToList()
-            };
+            
             return View(model);
         }
 
@@ -271,7 +268,7 @@ namespace XBCADAttendance.Controllers
             return RedirectToAction("UserReport", "Admin");
 
         }
-        [HttpPost]
+        /*[HttpPost]
         public async Task<IActionResult> UpdateLecture([FromBody] TblStaffLecture lecture)
         {
             if (lecture == null)
@@ -289,7 +286,7 @@ namespace XBCADAttendance.Controllers
             {
                 return Json(new { success = false, message = result });
             }
-        }
+        }*/
 
 
         [Authorize(Policy = "AdminOnly")]
