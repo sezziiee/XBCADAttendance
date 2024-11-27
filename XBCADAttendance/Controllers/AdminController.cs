@@ -63,13 +63,8 @@ namespace XBCADAttendance.Controllers
 
         [HttpGet]
         [Authorize(Policy = "AdminOnly")]
-        public async Task<IActionResult> UserReport()
+        public async Task<IActionResult> UserReport(AdminViewModel model)
         {
-
-            var model = new AdminViewModel
-            {
-                StaffLectures = DataAccess.Context.TblStaffLectures.ToList()
-            };
 
             return View(model);
         }
